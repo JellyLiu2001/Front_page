@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JELLY的书签导航</title>
+    <title>我的书签导航 - 云同步版</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
 
@@ -884,11 +884,11 @@
             <h1>📚 我的书签导航</h1>
             <p>云端同步，随时随地访问你的书签</p>
             <div class="login-buttons">
-                <button class="login-btn google" onclick="loginWithGoogle()">
+                <button class="login-btn google" id="googleLoginBtn">
                     <span>🔐</span>
                     使用 Google 登录
                 </button>
-                <button class="login-btn anonymous" onclick="loginAnonymously()">
+                <button class="login-btn anonymous" id="anonymousLoginBtn">
                     <span>👤</span>
                     匿名登录（临时账号）
                 </button>
@@ -905,7 +905,7 @@
             <span id="syncText">已同步</span>
             <div class="user-info">
                 <span id="userEmail"></span>
-                <button class="logout-btn" onclick="logout()">登出</button>
+                <button class="logout-btn" id="logoutBtn">登出</button>
             </div>
         </div>
 
@@ -1136,6 +1136,41 @@
         let bookmarks = [];
         let quickLinks = [];
         let currentCategory = null;
+
+        // 立即绑定登录按钮 - 在页面加载时就绑定
+        document.addEventListener('DOMContentLoaded', () => {
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
+            const anonymousLoginBtn = document.getElementById('anonymousLoginBtn');
+
+            if (googleLoginBtn) {
+                googleLoginBtn.addEventListener('click', async () => {
+                    console.log('🔐 点击了Google登录按钮');
+                    const provider = new GoogleAuthProvider();
+                    try {
+                        document.getElementById('loginError').textContent = '';
+                        console.log('📡 正在调用Firebase登录...');
+                        await signInWithPopup(auth, provider);
+                    } catch (error) {
+                        console.error('❌ 登录错误:', error);
+                        document.getElementById('loginError').textContent = '登录失败: ' + error.message;
+                    }
+                });
+            }
+
+            if (anonymousLoginBtn) {
+                anonymousLoginBtn.addEventListener('click', async () => {
+                    console.log('👤 点击了匿名登录按钮');
+                    try {
+                        document.getElementById('loginError').textContent = '';
+                        console.log('📡 正在调用Firebase匿名登录...');
+                        await signInAnonymously(auth);
+                    } catch (error) {
+                        console.error('❌ 登录错误:', error);
+                        document.getElementById('loginError').textContent = '登录失败: ' + error.message;
+                    }
+                });
+            }
+        });
 
         // 默认数据
         const defaultBookmarks =             [
@@ -2201,7 +2236,9 @@
 
         // 监听认证状态
         onAuthStateChanged(auth, async (user) => {
+            console.log('🔐 认证状态变化:', user ? '已登录' : '未登录');
             if (user) {
+                console.log('👤 用户信息:', user.email || '匿名用户');
                 currentUser = user;
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'block';
@@ -2209,8 +2246,21 @@
                 const email = user.email || '匿名用户';
                 document.getElementById('userEmail').textContent = email;
 
+                // 绑定登出按钮
+                const logoutBtn = document.getElementById('logoutBtn');
+                if (logoutBtn) {
+                    logoutBtn.onclick = async () => {
+                        if (confirm('确定要登出吗？')) {
+                            await signOut(auth);
+                        }
+                    };
+                }
+
+                console.log('📥 开始加载用户数据...');
                 await loadUserData();
+                console.log('🎬 开始初始化界面...');
                 init();
+                console.log('✅ 初始化完成！');
             } else {
                 currentUser = null;
                 document.getElementById('loginScreen').style.display = 'flex';
@@ -2226,13 +2276,18 @@
 
             try {
                 const userRef = ref(database, `users/${currentUser.uid}`);
+                console.log('📡 正在从Firebase获取数据...');
                 const snapshot = await get(userRef);
 
                 if (snapshot.exists()) {
+                    console.log('✅ 找到用户数据');
                     const data = snapshot.val();
                     bookmarks = data.bookmarks || defaultBookmarks;
                     quickLinks = data.quickLinks || defaultQuickLinks;
+                    console.log(`📚 加载了 ${bookmarks.length} 个分类`);
+                    console.log(`⚡ 加载了 ${quickLinks.length} 个快捷链接`);
                 } else {
+                    console.log('ℹ️ 新用户，使用默认数据');
                     // 新用户，使用默认数据
                     bookmarks = JSON.parse(JSON.stringify(defaultBookmarks));
                     quickLinks = JSON.parse(JSON.stringify(defaultQuickLinks));

@@ -1,1 +1,2749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的书签导航 - 云同步版</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-dark: #0f0f23;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --card-hover: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(at 20% 30%, rgba(102, 126, 234, 0.15) 0px, transparent 50%),
+                radial-gradient(at 80% 70%, rgba(118, 75, 162, 0.15) 0px, transparent 50%);
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 400px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-card p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .login-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .login-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .login-btn.google {
+            background: white;
+            color: #333;
+        }
+
+        .login-btn.google:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+        }
+
+        .login-btn.anonymous {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .login-btn.anonymous:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .sync-status {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 1000;
+        }
+
+        .sync-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .sync-indicator.syncing {
+            background: #f59e0b;
+        }
+
+        .sync-indicator.offline {
+            background: #ef4444;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .weather-widget {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: fadeIn 1s ease-out 0.1s both;
+        }
+
+        .weather-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .weather-icon {
+            font-size: 3rem;
+        }
+
+        .weather-details h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .weather-details p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .weather-temp {
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .quick-links-container {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            animation: fadeIn 1s ease-out 0.15s both;
+        }
+
+        .quick-links-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0 0.5rem;
+        }
+
+        .quick-links-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .quick-link-add-btn {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-link-add-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .quick-link-item {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+
+        .quick-link-item:hover {
+            transform: translateY(-4px);
+            background: var(--card-hover);
+            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+        }
+
+        .quick-link-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 0.5rem;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .quick-link-icon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .quick-link-icon.has-image {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .quick-link-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .quick-link-delete {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            width: 20px;
+            height: 20px;
+            background: rgba(245, 87, 108, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-link-item:hover .quick-link-delete {
+            opacity: 1;
+        }
+
+        .quick-link-delete:hover {
+            transform: scale(1.2);
+            background: rgba(245, 87, 108, 1);
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            position: relative;
+            animation: fadeIn 1s ease-out 0.2s both;
+        }
+
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .type-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            text-align: center;
+        }
+
+        .search-type {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            list-style: none;
+        }
+
+        .search-type input[type="radio"] {
+            display: none;
+        }
+
+        .search-type label {
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            backdrop-filter: blur(10px);
+            display: block;
+        }
+
+        .search-type input[type="radio"]:checked + label {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-type label:hover {
+            transform: translateY(-2px);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1.25rem 3.5rem 1.25rem 1.5rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .bookmarks-section {
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            background: var(--card-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: var(--primary-gradient);
+            border-color: transparent;
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .category-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .category-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .category-btn:hover:not(.active) {
+            background: var(--card-hover);
+            color: var(--text-primary);
+        }
+
+        .bookmarks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .bookmark-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .bookmark-card:hover {
+            transform: translateY(-4px);
+            background: var(--card-hover);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+        }
+
+        .bookmark-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bookmark-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .bookmark-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bookmark-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bookmark-url {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bookmark-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .bookmark-footer {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .bookmark-link {
+            flex: 1;
+            padding: 0.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .bookmark-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+
+        .bookmark-delete {
+            padding: 0.5rem 1rem;
+            background: rgba(245, 87, 108, 0.1);
+            border: 1px solid rgba(245, 87, 108, 0.2);
+            border-radius: 8px;
+            color: #f5576c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .bookmark-delete:hover {
+            background: rgba(245, 87, 108, 0.2);
+            border-color: rgba(245, 87, 108, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--card-hover);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .categories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            background: var(--card-hover);
+        }
+
+        .category-info {
+            flex: 1;
+        }
+
+        .category-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .category-count {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .delete-category-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(245, 87, 108, 0.1);
+            border: 1px solid rgba(245, 87, 108, 0.2);
+            border-radius: 8px;
+            color: #f5576c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            border: none;
+        }
+
+        .delete-category-btn:hover {
+            background: rgba(245, 87, 108, 0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .error-message {
+            background: rgba(245, 87, 108, 0.1);
+            border: 1px solid rgba(245, 87, 108, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            color: #f5576c;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .bookmarks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-links-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .category-filters {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h1>📚 我的书签导航</h1>
+            <p>云端同步，随时随地访问你的书签</p>
+            <div class="login-buttons">
+                <button class="login-btn google" id="googleLoginBtn">
+                    <span>🔐</span>
+                    使用 Google 登录
+                </button>
+                <button class="login-btn anonymous" id="anonymousLoginBtn">
+                    <span>👤</span>
+                    匿名登录（临时账号）
+                </button>
+            </div>
+            <div id="loginError" style="margin-top: 1rem; color: #f5576c; font-size: 0.9rem;"></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" style="display: none;">
+        <!-- Sync Status -->
+        <div class="sync-status">
+            <div class="sync-indicator" id="syncIndicator"></div>
+            <span id="syncText">已同步</span>
+            <div class="user-info">
+                <span id="userEmail"></span>
+                <button class="logout-btn" id="logoutBtn">登出</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <h1>📚 我的书签导航</h1>
+                <p>云端同步版 - 你的个人网址收藏夹</p>
+            </div>
+
+            <!-- Weather Widget -->
+            <div class="weather-widget">
+                <div class="weather-info">
+                    <div class="weather-icon" id="weatherIcon">☀️</div>
+                    <div class="weather-details">
+                        <h3 id="weatherCity">加载中...</h3>
+                        <p id="weatherDesc">正在获取天气信息</p>
+                    </div>
+                </div>
+                <div class="weather-temp" id="weatherTemp">--°</div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="quick-links-container">
+                <div class="quick-links-header">
+                    <h3>⚡ 常用网站</h3>
+                    <button class="quick-link-add-btn" id="addQuickLinkBtn">+</button>
+                </div>
+                <div class="quick-links-grid" id="quickLinksGrid">
+                    <!-- Quick links will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div class="search-container">
+                <div class="search-group">
+                    <span class="type-text">搜索引擎</span>
+                    <ul class="search-type">
+                        <li><input checked="" hidden="" type="radio" name="type" id="type-baidu"
+                                value="https://www.baidu.com/s?wd=" data-placeholder="百度一下，你就知道"><label
+                                for="type-baidu"><span style="color:#2529d8">百度</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-google"
+                                value="https://www.google.com/search?q=" data-placeholder="Don't be evil 👾"><label
+                                for="type-google"><span style="color:#4285f4">G</span><span
+                                    style="color:#ea4335">o</span><span style="color:#fbbc05">o</span><span
+                                    style="color:#4285f4">g</span><span style="color:#34a853">l</span><span
+                                    style="color:#ea4335">e</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-github" value="https://github.com/search?q="
+                                data-placeholder="How people build software"><label for="type-github"><span
+                                    style="color:#00bbff">GitHub</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-bristol"
+                                value="https://www.bristol.ac.uk/cgi-bin/search?words="
+                                data-placeholder="轻轻松松, 布里一下 👾"><label for="type-bristol"><span
+                                    style="color:#DE5833">布里一下</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-bing" value="https://cn.bing.com/search?q="
+                                data-placeholder="Bing is for doing"><label for="type-bing"><span
+                                    style="color:#0C8484">Bing</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-mj" value="https://mijisou.com/?q="
+                                data-placeholder="不追踪你的搜索引擎"><label for="type-mj"><span
+                                    style="color:#ffee00">秘迹</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-ddg" value="https://duckduckgo.com/?q="
+                                data-placeholder="隐私保护，化繁为简 👾"><label for="type-ddg"><span
+                                    style="color:#DE5833">Duck</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-gpt" value="https://chat.openai.com/?q="
+                                data-placeholder="和 AI 对话，直接给答案 🤖"><label for="type-gpt"><span
+                                    style="color:#10A37F">GPT</span></label></li>
+                        <li><input hidden type="radio" name="type" id="type-ieee"
+                                value="https://ieeexplore.ieee.org/search/searchresult.jsp?queryText="
+                                data-placeholder="搜索 IEEE 论文"><label for="type-ieee"><span
+                                    style="color:#00629B">IEEE</span></label></li>
+                    </ul>
+                    <div class="search-wrapper">
+                        <input type="text" class="search-box" id="searchInput" placeholder="百度一下，你就知道">
+                        <button class="search-btn" id="searchBtn">🔍</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookmarks Section -->
+            <div class="bookmarks-section">
+                <div class="section-header">
+                    <h2 class="section-title">我的书签</h2>
+                    <div class="action-buttons">
+                        <button class="btn" onclick="openManageCategoriesModal()">📁 管理分类</button>
+                        <button class="btn primary" onclick="openAddBookmarkModal()">➕ 添加书签</button>
+                    </div>
+                </div>
+
+                <div class="category-filters" id="categoryFilters">
+                    <!-- Category buttons will be rendered here -->
+                </div>
+
+                <div class="bookmarks-grid" id="bookmarksGrid">
+                    <!-- Bookmarks will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bookmark Modal -->
+    <div class="modal" id="addBookmarkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">添加新书签</h3>
+                <button class="modal-close" id="closeBookmarkModalBtn">×</button>
+            </div>
+            <form id="addBookmarkForm">
+                <div class="form-group">
+                    <label class="form-label">名称</label>
+                    <input type="text" class="form-input" id="bookmarkName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">网址</label>
+                    <input type="url" class="form-input" id="bookmarkUrl" required placeholder="https://">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">描述（可选）</label>
+                    <textarea class="form-textarea" id="bookmarkDesc"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">图标（emoji）</label>
+                    <input type="text" class="form-input" id="bookmarkIcon" placeholder="📌">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分类</label>
+                    <select class="form-select" id="bookmarkCategory" required>
+                        <!-- Categories will be populated here -->
+                    </select>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="btn" onclick="closeAddBookmarkModal()">取消</button>
+                    <button type="submit" class="btn primary">添加</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Quick Link Modal -->
+    <div class="modal" id="addQuickLinkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">添加常用网站</h3>
+                <button class="modal-close" id="closeQuickLinkModalBtn">×</button>
+            </div>
+            <form id="addQuickLinkForm">
+                <div class="form-group">
+                    <label class="form-label">名称</label>
+                    <input type="text" class="form-input" id="quickLinkName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">网址</label>
+                    <input type="url" class="form-input" id="quickLinkUrl" required placeholder="https://">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">图标（emoji，可选）</label>
+                    <input type="text" class="form-input" id="quickLinkIcon" placeholder="留空自动获取网站图标">
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="btn" onclick="closeQuickLinkModal()">取消</button>
+                    <button type="submit" class="btn primary">添加</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Manage Categories Modal -->
+    <div class="modal" id="manageCategoriesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">管理分类</h3>
+                <button class="modal-close" id="closeCategoriesModalBtn">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">添加新分类</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" class="form-input" id="newCategoryName" placeholder="分类名称">
+                    <button class="btn primary" onclick="addNewCategory()">添加</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">现有分类</label>
+                <div class="categories-list" id="categoriesList">
+                    <!-- Categories will be listed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Firebase配置说明将在设置指南中提供
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import {
+            getAuth,
+            signInWithPopup,
+            signInAnonymously,
+            GoogleAuthProvider,
+            onAuthStateChanged,
+            signOut
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import {
+            getDatabase,
+            ref,
+            set,
+            get,
+            remove,
+            onValue
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // ⚠️ 重要：请在这里填入你的Firebase配置
+        const firebaseConfig = {
+            apiKey: "AIzaSyBKlchUsgjdTzaXRzBkpIEFEBTJ_kbQzcM",
+            authDomain: "my-bookmark-539cc.firebaseapp.com",
+            databaseURL: "https://my-bookmark-539cc-default-rtdb.firebaseio.com",
+            projectId: "my-bookmark-539cc",
+            storageBucket: "my-bookmark-539cc.firebasestorage.app",
+            messagingSenderId: "922728791651",
+            appId: "1:922728791651:web:e080e442608c2f4f8dc256",
+            measurementId: "G-1WQYR3JWXF"
+        };
+
+        // 初始化Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        let currentUser = null;
+        let bookmarks = [];
+        let quickLinks = [];
+        let currentCategory = null;
+
+        // 立即绑定登录按钮 - 在页面加载时就绑定
+        document.addEventListener('DOMContentLoaded', () => {
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
+            const anonymousLoginBtn = document.getElementById('anonymousLoginBtn');
+
+            if (googleLoginBtn) {
+                googleLoginBtn.addEventListener('click', async () => {
+                    console.log('🔐 点击了Google登录按钮');
+                    const provider = new GoogleAuthProvider();
+                    try {
+                        document.getElementById('loginError').textContent = '';
+                        console.log('📡 正在调用Firebase登录...');
+                        await signInWithPopup(auth, provider);
+                    } catch (error) {
+                        console.error('❌ 登录错误:', error);
+                        document.getElementById('loginError').textContent = '登录失败: ' + error.message;
+                    }
+                });
+            }
+
+            if (anonymousLoginBtn) {
+                anonymousLoginBtn.addEventListener('click', async () => {
+                    console.log('👤 点击了匿名登录按钮');
+                    try {
+                        document.getElementById('loginError').textContent = '';
+                        console.log('📡 正在调用Firebase匿名登录...');
+                        await signInAnonymously(auth);
+                    } catch (error) {
+                        console.error('❌ 登录错误:', error);
+                        document.getElementById('loginError').textContent = '登录失败: ' + error.message;
+                    }
+                });
+            }
+        });
+
+        // 默认数据
+        const defaultBookmarks =             [
+                        {
+                                    "category": "大学",
+                                    "links": [
+                                                {
+                                                            "name": "Project Bluebird | The Alan Turing Institute",
+                                                            "url": "https://www.turing.ac.uk/research/research-programmes/project-bluebird",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Docx2LaTeX Automatic converter Dashboard",
+                                                            "url": "https://www.docx2latex.com/word-to-latex-converter/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "UOB | 用户登陆",
+                                                            "url": "https://sso.bris.ac.uk/sso/login?service=https://mybristol.bris.ac.uk/mybristol/Login",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "音乐教室预定",
+                                                            "url": "https://bristolsu.roombookingsystem.co.uk/user/overviewday",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        },
+                        {
+                                    "category": "机器人",
+                                    "links": [
+                                                {
+                                                            "name": "paulodowd/EMATM0054_53: Teaching materials for unit EMATM0054/53",
+                                                            "url": "https://github.com/paulodowd/EMATM0054_53/tree/main?tab=readme-ov-file#ematm005453-robotic-systems",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Pololu - 5.9. Pin assignments",
+                                                            "url": "https://www.pololu.com/docs/0J83/5.9",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Pololu 3pi Robot User’s Guide",
+                                                            "url": "https://www.pololu.com/docs/0J21",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "布里斯托大学机器人 Robotics (Msc) 的学习攻略 - 知乎",
+                                                            "url": "https://zhuanlan.zhihu.com/p/67585492",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "smart recorder cloud",
+                                                            "url": "https://cloud.iflytekrecord.com/eu-en/index",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "研究计划(Research Proposal)各个章节怎么写？ - Wordvice Blog",
+                                                            "url": "https://blog.wordvice.cn/research-proposal-sections-explained/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "小米未来星二面_牛客网",
+                                                            "url": "https://www.nowcoder.com/discuss/399330018638180352",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Engineering Student Study Rooms",
+                                                            "url": "https://outlook.office.com/book/ENGFStudentStudyRoomsBookingSystem@bristol.ac.uk/?ae=true&login_hint",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "大学会议室/自习预定",
+                                                            "url": "https://librarybookings.bristol.ac.uk/r/new?lid=1711&gid=0&zone=0&capacity=2&filters%5B0%5D=304&date=2024-10-06&start=&end=",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "BS1 5JU - Park street avenue， Bristol， BS1 5JU 的相关信息 - 检查邮编",
+                                                            "url": "https://www.checkpostcode.uk/bristol/BS1/BS15JU",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "ENG239 博士生奖学金： 罗尔斯-罗伊斯赞助的博士生奖学金 – 用于航空发动机翼内维修的刚度可调机器人系统的设计和模拟 - 诺丁汉大学工作",
+                                                            "url": "https://jobs.nottingham.ac.uk/vacancy.aspx?ref=ENG239",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "百度",
+                                                            "url": "http://www.baidu.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Home Page - University of Bristol",
+                                                            "url": "https://check-in.bristol.ac.uk/campusm/home#menu",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "uwe",
+                                                            "url": "https://newmy.uwe.ac.uk/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "uwe狗东西",
+                                                            "url": "https://blackboard.uwe.ac.uk/ultra/course",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "BB狗东西",
+                                                            "url": "https://www.ole.bris.ac.uk/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_1_1",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Bookmarks",
+                                                            "url": "file:///C:/Users/Jelly/Desktop/frontweb/frontweb-main/bookmarks.html",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "GitHub | 同性论坛",
+                                                            "url": "https://github.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "谷歌地图",
+                                                            "url": "https://maps.google.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "DeepL翻译：全世界最准确的翻译",
+                                                            "url": "https://www.deepl.com/zh/translator",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "境外翻译",
+                                                            "url": "https://translate.google.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        },
+                        {
+                                    "category": "工具",
+                                    "links": [
+                                                {
+                                                            "name": "跑分软件 3DMGAME",
+                                                            "url": "https://dl.3dmgame.com/patch/paofenruanjian.html",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "图标下载，ICON(SVG/PNG/ICO/ICNS)图标搜索下载 - Easyicon",
+                                                            "url": "https://www.easyicon.net/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Greasy Fork - 安全、实用的用户脚本大全",
+                                                            "url": "https://greasyfork.org/zh-CN",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "快搜 - 搜索快人一步 - Google",
+                                                            "url": "https://search.chongbuluo.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "照片EXIF信息在线查看器、手机照片拍摄时间地点位置在线查询 - 改图宝",
+                                                            "url": "https://www.gaitubao.com/exif",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "极限计算器",
+                                                            "url": "https://zh.numberempire.com/limitcalculator.php",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "进制转换 - 在线工具",
+                                                            "url": "https://tool.lu/hexconvert/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "EEE - OneDrive",
+                                                            "url": "https://uob-my.sharepoint.com/personal/jp18942_bristol_ac_uk/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fjp18942%5Fbristol%5Fac%5Fuk%2FDocuments%2FUoB%20By%20Year%2FUOB%2020%2D21%2FALLs%2FEEE&originalPath=aHR0cHM6Ly91b2ItbXkuc2hhcmVwb2ludC5jb20vOmY6L2cvcGVyc29uYWwvanAxODk0Ml9icmlzdG9sX2FjX3VrL0V0cGhnclV2YTFWSW5HbWp4d3pNVkswQmU4OVoxbEY1THJmOHVYaFlGSVFoc2c_cnRpbWU9VldYRlh1WjgyRWc",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "算数器",
+                                                            "url": "https://www.wolframalpha.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Classviva",
+                                                            "url": "https://www.classviva.org/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "查电子元件专用",
+                                                            "url": "https://alldatasheet.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "机甲大师个人中心 | ONES.AI",
+                                                            "url": "https://robomaster.ones.ai/project/#/profile/account_setting",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "pjialin/py12306: 🚂 12306 购票助手，支持集群，多账号，多任务购票以及 Web 页面管理",
+                                                            "url": "https://github.com/pjialin/py12306",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "购物车-RAMShard",
+                                                            "url": "https://my.ramshard.com/cart.php?a=checkout",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Online MP3 Cutter - 剪辑歌曲，制作铃声",
+                                                            "url": "https://mp3cut.net/cn/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "高精度IP定位3 - openGPS.cn",
+                                                            "url": "https://www.opengps.cn/Data/IP/rtb.aspx",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "中国元器件查询",
+                                                            "url": "http://datasheets.eccn.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "更精准的全球IP地址定位平台_IP问问 -埃文科技(ipplus360.com)",
+                                                            "url": "https://www.ipplus360.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "路由追踪 - 站长工具",
+                                                            "url": "http://tool.chinaz.com/Tracert/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "采纳明星-支持天文学研究的非营利组织",
+                                                            "url": "https://adoptastar.org/#atarget",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "免费接码 - 免费短信验证码接收平台",
+                                                            "url": "https://www.becmd.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "图表秀",
+                                                            "url": "https://www.tubiaoxiu.com/src/index.html#/app/charting_resource",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "GeoGebra | 免费的数学应用软件 - 全球学生与教师用户超过一亿",
+                                                            "url": "https://www.geogebra.org/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "大数据导航-大数据工具导航-199IT大数据导航-199IT大数据工具导航-Hao.199it.com",
+                                                            "url": "http://hao.199it.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "PNG转ICO,PNG转ICNS | 图标格式在线转换 - EASYICON.NET",
+                                                            "url": "https://www.easyicon.net/covert/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "中国网站|国内优秀网站推荐- eGouz上网导航",
+                                                            "url": "https://www.egouz.com/asia/china/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Tinkercad | Create 3D digital designs with online CAD",
+                                                            "url": "https://www.tinkercad.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "控制面板",
+                                                            "url": "https://mapleleafschools.instructure.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "PowerSchool",
+                                                            "url": "https://powerschool.mapleleaf.cn/admin/pw.html",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "fritzing 组件库",
+                                                            "url": "https://forum.fritzing.org/c/parts-submit",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "联想-工具库",
+                                                            "url": "https://iknow.lenovo.com.cn/detail/dc_172545.html?_ga=2.200761966.172882237.1591524769-2132236039.1591524769",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "report套话",
+                                                            "url": "https://www.phrasebank.manchester.ac.uk/summary-and-transition/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "随机抽签转盘",
+                                                            "url": "https://cn.piliapp.com/random/wheel/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "(2 封私信 / 2 条消息) 变压器的工作原理是什么？ - 知乎",
+                                                            "url": "https://www.zhihu.com/zvideo/1379139140949266432",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "万聪英语智适应教学系统",
+                                                            "url": "http://t.wancongai.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "What to do next",
+                                                            "url": "https://visas-immigration.service.gov.uk/nextSteps",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "字体库",
+                                                            "url": "http://www.zhaozi.cn/s/china/shufa/index_47.php",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "文档翻译",
+                                                            "url": "https://fanyi.pdf365.cn/?agent=zhihu",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "电学计算器",
+                                                            "url": "https://calculator.academy/peak-voltage-calculator/#f1p1|f2p0",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "布尔表达式化简",
+                                                            "url": "https://www.emathhelp.net/en/calculators/discrete-mathematics/boolean-algebra-calculator/?f=BC%2B%7EA%7EB%7EC&forms=on",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "快递追踪",
+                                                            "url": "https://k2track.in/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "win更新摸鱼",
+                                                            "url": "https://fakeupdate.net/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "雅思小作文一",
+                                                            "url": "https://zhuanlan.zhihu.com/p/83528343",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "英国租车网站",
+                                                            "url": "https://www.govirtuo.com/uk",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "icon网站 win图标",
+                                                            "url": "https://www.iconfinder.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "【音乐合辑】Now That's What I Call Music【英音吧】_百度贴吧",
+                                                            "url": "https://tieba.baidu.com/p/2128064461",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "LCD/LED Screenshot Generator",
+                                                            "url": "http://avtanski.net/projects/lcd/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "好玩的",
+                                                            "url": "https://www.makemepulse.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "ChatGPT",
+                                                            "url": "https://chat.openai.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        },
+                        {
+                                    "category": "学习",
+                                    "links": [
+                                                {
+                                                            "name": "from…import * 语句与 import 区别",
+                                                            "url": "https://www.runoob.com/note/26325",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "wistbean/learn_python3_spider: python爬虫教程系列、从0到1学习python爬虫，包括浏览器抓包，手机APP抓包，如 fiddler、mitmproxy，各种爬虫涉及的模块的使用，如：requests、beautifulSoup、selenium、appium、scrapy等，以及IP代理，验证码识别，Mysql，MongoDB数据库的python使用，多线程多进程爬虫的使用，css 爬虫加密逆向破解，JS爬虫逆向，分布式爬虫，爬虫项目实战实例等",
+                                                            "url": "https://github.com/wistbean/learn_python3_spider",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "github上传项目（使用git）、删除项目、添加协作者 - sakurayeah - 博客园",
+                                                            "url": "https://www.cnblogs.com/sakurayeah/p/5800424.html",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "同济高数第七版答案（全） - 简书",
+                                                            "url": "https://www.jianshu.com/p/d21adb5ff6c1",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "计算机面试问题总结",
+                                                            "url": "https://github.com/wolverinn/Waking-Up/blob/master/README.md",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Python100天",
+                                                            "url": "https://github.com/jackfrued/Python-100-Days",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Visual Studio Code 如何编写运行 C、C++ 程序？ - 知乎",
+                                                            "url": "https://www.zhihu.com/question/30315894",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "课程： 微积分导读",
+                                                            "url": "https://courses.gdut.edu.cn/course/view.php?id=51",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "MSVCRTD.lib(crtexew.obj) : error LNK2019: 无法解析的外部符号 _WinMain@16_C/C++_沈春旭的博客-CSDN博客",
+                                                            "url": "https://blog.csdn.net/shenziheng1/article/details/53188168?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "网盘资料",
+                                                            "url": "https://docs.qq.com/sheet/DTEJhdW9UQ0FOcHNG?tab=BB08J2&c=D43A0AN0",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "MSP430单片机_百度百科",
+                                                            "url": "https://baike.baidu.com/item/MSP430%E5%8D%95%E7%89%87%E6%9C%BA/10582864?fromtitle=MSP430&fromid=3897155&fr=aladdin",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "【面向机器人】一种双向离合平行弹性储能驱动器结构介绍——精巧的设计与高能量效率 - 知乎",
+                                                            "url": "https://zhuanlan.zhihu.com/p/38261426",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "百度架构师手把手教深度学习_AI学习 - 百度AI Studio - 一站式AI开发实训平台",
+                                                            "url": "https://aistudio.baidu.com/aistudio/education/group/info/888",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Final Exam Review - OneDrive",
+                                                            "url": "https://onedrive.live.com/?authkey=%21%2AqMyF5XrMcA%24&id=DA2FEF6284466D58%2120372&cid=DA2FEF6284466D58",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "【分钟物理】狭义相对论合集（熟肉）_哔哩哔哩 (゜-゜)つロ 干杯~-bilibili",
+                                                            "url": "https://www.bilibili.com/video/av30068816/?p=1",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "CircuitVerse - Digital Circuit Simulator online",
+                                                            "url": "https://circuitverse.org/simulator",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "电工基础知识 - 学习电工技术 - 电工学网",
+                                                            "url": "https://www.dgxue.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "VHDL快速入门",
+                                                            "url": "https://blog.csdn.net/messyking/article/details/115559198",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "计算机网络微课堂第034讲 MAC地址、IP地址以及ARP协议（2） — IP地址（有字幕无背景音乐版）_哔哩哔哩_bilibili",
+                                                            "url": "https://www.bilibili.com/video/BV18E411b71T/?spm_id_from=333.999.0.0&vd_source=79876e6cdc3052eb1cb9fc50724c3a93",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Google工程师亲授 Tensorflow2.0－入门到进阶_哔哩哔哩 (゜-゜)つロ 干杯~-bilibili",
+                                                            "url": "https://www.bilibili.com/video/BV1Z541167M3?from=search&seid=6047542351509657677",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "ROS：入门",
+                                                            "url": "https://www.ros.org/blog/getting-started/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        },
+                        {
+                                    "category": "雪茄",
+                                    "links": [
+                                                {
+                                                            "name": "Log In ‹ The Cigar Manor — WordPress",
+                                                            "url": "https://thecigarmanor.co.uk/wp-login.php?redirect_to=https%3A%2F%2Fthecigarmanor.co.uk%2Fwp-admin%2Findex.php&reauth=1",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "el;",
+                                                            "url": "https://thecigarmanor.co.uk/?et_fb=1&PageSpeed=off",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        },
+                        {
+                                    "category": "官网",
+                                    "links": [
+                                                {
+                                                            "name": "菜鸟教程",
+                                                            "url": "https://www.runoob.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "bilibili",
+                                                            "url": "https://www.bilibili.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "领英",
+                                                            "url": "https://www.linkedin.com/notifications/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "线上CAD",
+                                                            "url": "https://www.tinkercad.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Logitech",
+                                                            "url": "https://support.logi.com/hc/zh-cn",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "apple中国",
+                                                            "url": "https://www.apple.com.cn/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "三星中国",
+                                                            "url": "https://www.samsung.com/cn/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "惠普中国",
+                                                            "url": "https://support.hp.com/cn-zh/drivers/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "微星中国",
+                                                            "url": "https://cn.msi.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Topbook | 高效生活视频书",
+                                                            "url": "https://topbook.cc/overview?selectedArticle=1829",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Google",
+                                                            "url": "https://www.google.com.hk/webhp?hl=zh-CN&sourceid=cnhp&gws_rd=ssl",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "微信公众平台",
+                                                            "url": "https://mp.weixin.qq.com/advanced/autoreply?action=smartreply&t=ivr/keywords&token=1588455273&lang=zh_CN",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "始祖鸟英国",
+                                                            "url": "https://outlet.arcteryx.com/gb/en",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "adidas",
+                                                            "url": "https://www.adidas.co.uk/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "NIKE",
+                                                            "url": "https://www.nike.com/gb",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "JD Sports",
+                                                            "url": "https://www.jdsports.co.uk/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Log In — WordPress.com",
+                                                            "url": "https://wordpress.com/log-in/link",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        },
+                        {
+                                    "category": "AI",
+                                    "links": [
+                                                {
+                                                            "name": "ChatGPT",
+                                                            "url": "https://chatgpt.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "查找论文",
+                                                            "url": "https://getliner.com/zh/main",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "代码",
+                                                            "url": "https://claude.ai/new",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "文献总结",
+                                                            "url": "https://library.scholarcy.com/try",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "思维导图",
+                                                            "url": "https://mindmapai.app/canvas",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Gemini",
+                                                            "url": "https://gemini.google.com/app",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        },
+                        {
+                                    "category": "签证",
+                                    "links": [
+                                                {
+                                                            "name": "Customer Gateway",
+                                                            "url": "https://visas-fr.tlscontact.com/appointment/gb/gbLON2fr/15540576",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "法国签证 |Accueil |我的申请",
+                                                            "url": "https://application-form.france-visas.gouv.fr/fv-fo-dde/accueil.xhtml",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "西班牙签证",
+                                                            "url": "https://uk.blsspainglobal.com/Global/bls/VisaTypeVerification",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        },
+                        {
+                                    "category": "求职",
+                                    "links": [
+                                                {
+                                                            "name": "Petar Kormushev Profile | Imperial College London",
+                                                            "url": "https://profiles.imperial.ac.uk/p.kormushev/about",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "career.huawei.com/reccampportal/portal5/campus-recruitment-detail.html?jobId=3819&dataSource=1&jobType=2",
+                                                            "url": "https://career.huawei.com/reccampportal/portal5/campus-recruitment-detail.html?jobId=3819&dataSource=1&jobType=2",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "E&E System Engineer | Volvo Group",
+                                                            "url": "https://www.volvogroup.com/cn/careers/job-openings/140419BR.html",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "沃尔沃招聘流程指引-Volvo Cars | 沃尔沃汽车官方网站",
+                                                            "url": "https://www.volvocars.com.cn/zh-cn/l/about/our-company/careers/our-application-process/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "沃尔沃人才招聘-Volvo Cars | 沃尔沃汽车官方网站",
+                                                            "url": "https://www.volvocars.com.cn/zh-cn/l/about/our-company/careers/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "社招职位-西门子",
+                                                            "url": "https://jobs.siemens.com.cn/siemens/position/index?utm_source=j_c_cn",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Schneider Electric Careers Apply",
+                                                            "url": "https://careers.se.com/global/jobs?keywords=&lang=en-US&view=search&country=China&page=2",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "alian",
+                                                            "url": "https://www.myperfectcv.co.uk/build-cv/section/educ-det/ff596f3b-e480-4a68-8173-937b4e167ce4/fbd4f0ba-94fd-4c36-bc52-31fd2f181c7e",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "候选人主页",
+                                                            "url": "https://ag.wd3.myworkdayjobs.com/en-US/Airbus/userHome",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "PP action details",
+                                                            "url": "https://maya.um.edu.my/sitsvision/wrd/SIW_IPP_IPR",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Career Opportunities: Apply for Graduate Development Programme - Technology (221274)",
+                                                            "url": "https://career5.successfactors.eu/portalcareer?_s.crb=ZjnCdoRU%252bWKqYqTuKWyh5jNDvV5m9ItWo%252bI4%252bCOwRng%253d",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "辅助可穿戴技术：什么是合适的裤子？他们适合谁？在布里斯托大学 FindAPhD.com",
+                                                            "url": "https://www.findaphd.com/phds/project/assistive-wearable-technologies-what-are-the-right-trousers-and-who-are-they-right-for/?p185662",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "FindAPhD.com 日，约克大学在用于紧急救援的自主无人机 （UAV） [RoboStar] 的循环中进行人工自动化现场测试",
+                                                            "url": "https://www.findaphd.com/phds/project/automated-field-testing-with-humans-in-the-loop-of-an-autonomous-unmanned-aerial-vehicle-uav-for-emergency-relief-robostar/?p180845",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "FindAPhD.com 年约克大学核退役自主机器人的安全性 [RoboStar]",
+                                                            "url": "https://www.findaphd.com/phds/project/safety-of-autonomous-robots-for-nuclear-decommissioning-robostar/?p183239",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "FindAPhD.com 年布里斯托大学高级航空机器人",
+                                                            "url": "https://www.findaphd.com/phds/project/advanced-aerial-robotics/?p161640",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "FindAPhD.com 年伯明翰大学的自主环境协同感知和智能列车控制",
+                                                            "url": "https://www.findaphd.com/phds/project/autonomous-environment-cooperative-perception-and-intelligent-train-control/?p184348",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "罗尔斯-罗伊斯于 FindAPhD.com 年在诺丁汉大学赞助博士奖学金 – 智能机电一体化和机器人系统 （ENG241）",
+                                                            "url": "https://www.findaphd.com/phds/project/rolls-royce-sponsored-phd-scholarship-intelligent-mechatronics-and-robotics-systems-eng241/?p184047",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "毕业论文模板 - Online LaTeX Editor Overleaf",
+                                                            "url": "https://www.overleaf.com/project/68908ac512f069c2020a2608",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Home - Samsung Promotions",
+                                                            "url": "https://samsungoffers.claims/sam/galaxygift2025/en-GB/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Morphy: a Compliant and Morphologically-Aware Flying Robot - YouTube",
+                                                            "url": "https://www.youtube.com/watch?v=C6l7Vklbc9k",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        },
+                        {
+                                    "category": "游戏",
+                                    "links": [
+                                                {
+                                                            "name": "Red Alert 2: Chrono Divide",
+                                                            "url": "https://game.chronodivide.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "飞机",
+                                                            "url": "https://www.simbrief.com/system/dispatch.php?newflight=1",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "恶搞摇晃的小棍网站",
+                                                            "url": "http://www.staggeringbeauty.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Gmail",
+                                                            "url": "https://accounts.google.com/b/0/AddMailService",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "YouTube",
+                                                            "url": "https://youtube.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "地图",
+                                                            "url": "https://maps.google.com/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Bristol Temple Meads Live Departures | Trainboard",
+                                                            "url": "https://www.trainboard.uk/BRI",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Linktree Admin",
+                                                            "url": "https://linktr.ee/admin",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "My Home ‹ JELLY刘金哲 — WordPress.com",
+                                                            "url": "https://wordpress.com/home/jellyjinzheliu.wordpress.com",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "东邻西舍第一季-美剧-第02集-高清免费在线观看-美剧窝",
+                                                            "url": "https://www.mjwo.net/play/1242-1-2/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "华北电力大学VPN系统",
+                                                            "url": "https://vpn.ncepu.edu.cn/dana-na/auth/url_default/welcome.cgi",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "华为路由WS5200 四核版",
+                                                            "url": "http://192.168.3.1/html/index.html#/home",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "低端影视",
+                                                            "url": "https://ddrk.me/category/movie/western-movie/page/2/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        },
+                        {
+                                    "category": "阅读列表保存",
+                                    "links": [
+                                                {
+                                                            "name": "【中考历史】2020新冠肺炎中考历史原创题目",
+                                                            "url": "https://mp.weixin.qq.com/s?__biz=MzI4OTc4MDY5OA==&mid=2247488018&idx=6&sn=4b79e2fcaaca1049d5c9922a5d75bb5d&chksm=ec28b4a7db5f3db1e690d557032ab36f14d0f415caa61e83716b356fba2acf0393d75cfda359&scene=21#wechat_redirect",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "新建标签页",
+                                                            "url": "edge://newtab/",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "5053vcds - 搜索",
+                                                            "url": "https://www.bing.com/search?q=5053vcds&setmkt=zh-CN&PC=EMMX01&form=LWS002&scope=web&mkt=zh-CN",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "YouTube",
+                                                            "url": "https://www.youtube.com/watch?v=aqEjinMc95Y",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                },
+                                                {
+                                                            "name": "Dashboard",
+                                                            "url": "https://account.ring.com/account/dashboard?l=07321980-fbeb-45df-886d-dd131f975a49",
+                                                            "description": "",
+                                                            "icon": "📌"
+                                                }
+                                    ]
+                        }
+            ]
+        ];
+
+        const defaultQuickLinks = [
+            { name: "Google", url: "https://google.com", icon: "🔍" },
+            { name: "YouTube", url: "https://youtube.com", icon: "📺" },
+            { name: "Twitter", url: "https://twitter.com", icon: "🐦" }
+        ];
+
+        // 登录相关
+        window.loginWithGoogle = async function () {
+            const provider = new GoogleAuthProvider();
+            try {
+                document.getElementById('loginError').textContent = '';
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error('登录错误:', error);
+                document.getElementById('loginError').textContent = '登录失败: ' + error.message;
+            }
+        };
+
+        window.loginAnonymously = async function () {
+            try {
+                document.getElementById('loginError').textContent = '';
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error('登录错误:', error);
+                document.getElementById('loginError').textContent = '登录失败: ' + error.message;
+            }
+        };
+
+        window.logout = async function () {
+            if (confirm('确定要登出吗？')) {
+                await signOut(auth);
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+        };
+
+        // 监听认证状态
+        onAuthStateChanged(auth, async (user) => {
+            console.log('🔐 认证状态变化:', user ? '已登录' : '未登录');
+            if (user) {
+                console.log('👤 用户信息:', user.email || '匿名用户');
+                currentUser = user;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+
+                const email = user.email || '匿名用户';
+                document.getElementById('userEmail').textContent = email;
+
+                // 绑定登出按钮
+                const logoutBtn = document.getElementById('logoutBtn');
+                if (logoutBtn) {
+                    logoutBtn.onclick = async () => {
+                        if (confirm('确定要登出吗？')) {
+                            await signOut(auth);
+                        }
+                    };
+                }
+
+                console.log('📥 开始加载用户数据...');
+                await loadUserData();
+                console.log('🎬 开始初始化界面...');
+                init();
+                console.log('✅ 初始化完成！');
+            } else {
+                currentUser = null;
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+        });
+
+        // 加载用户数据
+        async function loadUserData() {
+            if (!currentUser) return;
+
+            updateSyncStatus('syncing', '同步中...');
+
+            try {
+                const userRef = ref(database, `users/${currentUser.uid}`);
+                console.log('📡 正在从Firebase获取数据...');
+                const snapshot = await get(userRef);
+
+                if (snapshot.exists()) {
+                    console.log('✅ 找到用户数据');
+                    const data = snapshot.val();
+                    bookmarks = data.bookmarks || defaultBookmarks;
+                    quickLinks = data.quickLinks || defaultQuickLinks;
+                    console.log(`📚 加载了 ${bookmarks.length} 个分类`);
+                    console.log(`⚡ 加载了 ${quickLinks.length} 个快捷链接`);
+                } else {
+                    console.log('ℹ️ 新用户，使用默认数据');
+                    // 新用户，使用默认数据
+                    bookmarks = JSON.parse(JSON.stringify(defaultBookmarks));
+                    quickLinks = JSON.parse(JSON.stringify(defaultQuickLinks));
+                    await saveUserData();
+                }
+
+                // 监听数据变化
+                onValue(userRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        bookmarks = data.bookmarks || [];
+                        quickLinks = data.quickLinks || [];
+                        renderQuickLinks();
+                        setupCategoryFilters();
+                    }
+                });
+
+                updateSyncStatus('synced', '已同步');
+            } catch (error) {
+                console.error('加载数据错误:', error);
+                updateSyncStatus('offline', '同步失败');
+            }
+        }
+
+        // 保存用户数据
+        async function saveUserData() {
+            if (!currentUser) return;
+
+            updateSyncStatus('syncing', '保存中...');
+
+            try {
+                const userRef = ref(database, `users/${currentUser.uid}`);
+                await set(userRef, {
+                    bookmarks: bookmarks,
+                    quickLinks: quickLinks,
+                    lastUpdated: new Date().toISOString()
+                });
+                updateSyncStatus('synced', '已同步');
+            } catch (error) {
+                console.error('保存数据错误:', error);
+                updateSyncStatus('offline', '保存失败');
+            }
+        }
+
+        // 更新同步状态
+        function updateSyncStatus(status, text) {
+            const indicator = document.getElementById('syncIndicator');
+            const syncText = document.getElementById('syncText');
+
+            indicator.className = 'sync-indicator ' + status;
+            syncText.textContent = text;
+        }
+
+        // 初始化
+        function init() {
+            setupSearch();
+            setupWeather();
+            setupQuickLinks();
+            setupCategoryFilters();
+            renderQuickLinks();
+        }
+
+        // 搜索功能
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const searchTypeInputs = document.querySelectorAll('input[name="type"]');
+
+            // 更新placeholder
+            searchTypeInputs.forEach(input => {
+                input.addEventListener('change', function () {
+                    const placeholder = this.getAttribute('data-placeholder');
+                    searchInput.placeholder = placeholder;
+                });
+            });
+
+            function performSearch() {
+                const query = searchInput.value.trim();
+                if (!query) return;
+
+                const selectedEngine = document.querySelector('input[name="type"]:checked');
+                const searchUrl = selectedEngine.value + encodeURIComponent(query);
+                window.open(searchUrl, '_blank');
+            }
+
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch();
+            });
+        }
+
+        // 天气功能
+        async function setupWeather() {
+            try {
+                // 使用免费的天气API
+                const response = await fetch('https://wttr.in/?format=j1');
+                const data = await response.json();
+
+                const current = data.current_condition[0];
+                const location = data.nearest_area[0];
+                
+                document.getElementById('weatherCity').textContent = location.areaName[0].value || '当前位置';
+                document.getElementById('weatherDesc').textContent = current.weatherDesc[0].value || current.lang_zh[0].value || '晴朗';
+                document.getElementById('weatherTemp').textContent = current.temp_C + '°';
+
+                // 天气图标映射
+                const weatherCode = current.weatherCode;
+                const iconMap = {
+                    '113': '☀️',  // 晴天
+                    '116': '⛅',  // 局部多云
+                    '119': '☁️',  // 多云
+                    '122': '☁️',  // 阴天
+                    '143': '🌫️',  // 雾
+                    '176': '🌦️',  // 局部小雨
+                    '179': '🌨️',  // 局部小雪
+                    '182': '🌧️',  // 冻雨
+                    '185': '🌧️',  // 冻毛毛雨
+                    '200': '⛈️',  // 雷暴
+                    '227': '🌨️',  // 暴风雪
+                    '230': '🌨️',  // 暴风雪
+                    '248': '🌫️',  // 大雾
+                    '260': '🌫️',  // 冰雾
+                    '263': '🌦️',  // 小雨
+                    '266': '🌧️',  // 小雨
+                    '281': '🌧️',  // 冻毛毛雨
+                    '284': '🌧️',  // 强冻毛毛雨
+                    '293': '🌧️',  // 小雨
+                    '296': '🌧️',  // 小雨
+                    '299': '🌧️',  // 中雨
+                    '302': '🌧️',  // 中雨
+                    '305': '🌧️',  // 大雨
+                    '308': '⛈️',  // 暴雨
+                    '311': '🌧️',  // 冻雨
+                    '314': '🌧️',  // 冻雨
+                    '317': '🌨️',  // 雨夹雪
+                    '320': '🌨️',  // 雨夹雪
+                    '323': '🌨️',  // 小雪
+                    '326': '🌨️',  // 小雪
+                    '329': '🌨️',  // 中雪
+                    '332': '🌨️',  // 中雪
+                    '335': '❄️',  // 大雪
+                    '338': '❄️',  // 暴雪
+                    '350': '🌧️',  // 冰雹
+                    '353': '🌦️',  // 小阵雨
+                    '356': '🌧️',  // 中到大阵雨
+                    '359': '⛈️',  // 暴雨
+                    '362': '🌨️',  // 雨夹雪
+                    '365': '🌨️',  // 雨夹雪
+                    '368': '🌨️',  // 小阵雪
+                    '371': '❄️',  // 中到大阵雪
+                    '374': '🌧️',  // 冰雹
+                    '377': '🌧️',  // 冰雹
+                    '386': '⛈️',  // 雷阵雨
+                    '389': '⛈️',  // 雷阵雨
+                    '392': '⛈️',  // 雷阵雪
+                    '395': '⛈️'   // 雷阵雪
+                };
+                
+                document.getElementById('weatherIcon').textContent = iconMap[weatherCode] || '🌤️';
+            } catch (error) {
+                console.log('天气获取失败，使用默认信息:', error);
+                // 优雅降级 - 显示默认信息
+                document.getElementById('weatherCity').textContent = '欢迎使用';
+                document.getElementById('weatherDesc').textContent = '云端同步书签';
+                document.getElementById('weatherTemp').textContent = '😊';
+                document.getElementById('weatherIcon').textContent = '📚';
+            }
+        }
+
+        // 常用网站功能
+        function renderQuickLinks() {
+            const grid = document.getElementById('quickLinksGrid');
+            grid.innerHTML = '';
+
+            quickLinks.forEach((link, index) => {
+                const item = document.createElement('a');
+                item.className = 'quick-link-item';
+                item.href = link.url;
+                item.target = '_blank';
+
+                const icon = document.createElement('div');
+                icon.className = 'quick-link-icon';
+
+                if (link.icon) {
+                    icon.textContent = link.icon;
+                } else {
+                    try {
+                        const url = new URL(link.url);
+                        const img = document.createElement('img');
+                        img.src = `https://www.google.com/s2/favicons?domain=${url.hostname}&sz=128`;
+                        img.alt = link.name;
+                        img.onload = () => icon.classList.add('has-image');
+                        icon.appendChild(img);
+                    } catch (e) {
+                        icon.textContent = '🔗';
+                    }
+                }
+
+                const name = document.createElement('div');
+                name.className = 'quick-link-name';
+                name.textContent = link.name;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'quick-link-delete';
+                deleteBtn.textContent = '×';
+                deleteBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    deleteQuickLink(index);
+                });
+
+                item.appendChild(deleteBtn);
+                item.appendChild(icon);
+                item.appendChild(name);
+                grid.appendChild(item);
+            });
+        }
+
+        function setupQuickLinks() {
+            const addBtn = document.getElementById('addQuickLinkBtn');
+            const modal = document.getElementById('addQuickLinkModal');
+            const closeBtn = document.getElementById('closeQuickLinkModalBtn');
+            const form = document.getElementById('addQuickLinkForm');
+
+            addBtn.addEventListener('click', () => modal.classList.add('active'));
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                form.reset();
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const newLink = {
+                    name: document.getElementById('quickLinkName').value,
+                    url: document.getElementById('quickLinkUrl').value,
+                    icon: document.getElementById('quickLinkIcon').value || null
+                };
+                quickLinks.push(newLink);
+                await saveUserData();
+                renderQuickLinks();
+                modal.classList.remove('active');
+                form.reset();
+            });
+        }
+
+        window.closeQuickLinkModal = function () {
+            document.getElementById('addQuickLinkModal').classList.remove('active');
+            document.getElementById('addQuickLinkForm').reset();
+        };
+
+        async function deleteQuickLink(index) {
+            if (confirm('确定要删除这个常用网站吗？')) {
+                quickLinks.splice(index, 1);
+                await saveUserData();
+                renderQuickLinks();
+            }
+        }
+
+        // 书签分类功能
+        function setupCategoryFilters() {
+            const container = document.getElementById('categoryFilters');
+            container.innerHTML = '';
+
+            bookmarks.forEach((section, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn';
+                btn.textContent = section.category;
+                if (index === 0 && !currentCategory) {
+                    btn.classList.add('active');
+                    currentCategory = section.category;
+                }
+                if (section.category === currentCategory) {
+                    btn.classList.add('active');
+                }
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = section.category;
+                    renderBookmarks();
+                });
+                container.appendChild(btn);
+            });
+
+            renderBookmarks();
+            populateCategorySelect();
+        }
+
+        function renderBookmarks() {
+            const grid = document.getElementById('bookmarksGrid');
+            const section = bookmarks.find(s => s.category === currentCategory);
+
+            if (!section || !section.links.length) {
+                grid.innerHTML = '<p class="loading">这个分类还没有书签</p>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            section.links.forEach((link, index) => {
+                const card = document.createElement('div');
+                card.className = 'bookmark-card';
+
+                card.innerHTML = `
+                    <div class="bookmark-header">
+                        <div class="bookmark-icon">${link.icon || '📌'}</div>
+                        <div class="bookmark-info">
+                            <div class="bookmark-title">${link.name}</div>
+                            <div class="bookmark-url">${link.url}</div>
+                        </div>
+                    </div>
+                    ${link.description ? `<div class="bookmark-desc">${link.description}</div>` : ''}
+                    <div class="bookmark-footer">
+                        <a href="${link.url}" target="_blank" class="bookmark-link">访问</a>
+                        <button class="bookmark-delete" onclick="deleteBookmark(${index})">删除</button>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        window.deleteBookmark = async function (index) {
+            if (confirm('确定要删除这个书签吗？')) {
+                const section = bookmarks.find(s => s.category === currentCategory);
+                section.links.splice(index, 1);
+                await saveUserData();
+                renderBookmarks();
+            }
+        };
+
+        // 添加书签
+        window.openAddBookmarkModal = function () {
+            document.getElementById('addBookmarkModal').classList.add('active');
+        };
+
+        window.closeAddBookmarkModal = function () {
+            document.getElementById('addBookmarkModal').classList.remove('active');
+            document.getElementById('addBookmarkForm').reset();
+        };
+
+        document.getElementById('closeBookmarkModalBtn').addEventListener('click', closeAddBookmarkModal);
+
+        document.getElementById('addBookmarkForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newBookmark = {
+                name: document.getElementById('bookmarkName').value,
+                url: document.getElementById('bookmarkUrl').value,
+                description: document.getElementById('bookmarkDesc').value,
+                icon: document.getElementById('bookmarkIcon').value || '📌'
+            };
+
+            const category = document.getElementById('bookmarkCategory').value;
+            const section = bookmarks.find(s => s.category === category);
+
+            if (section) {
+                section.links.push(newBookmark);
+                await saveUserData();
+                if (category === currentCategory) {
+                    renderBookmarks();
+                }
+                closeAddBookmarkModal();
+            }
+        });
+
+        function populateCategorySelect() {
+            const select = document.getElementById('bookmarkCategory');
+            select.innerHTML = '';
+            bookmarks.forEach(section => {
+                const option = document.createElement('option');
+                option.value = section.category;
+                option.textContent = section.category;
+                select.appendChild(option);
+            });
+        }
+
+        // 管理分类
+        window.openManageCategoriesModal = function () {
+            renderCategoriesList();
+            document.getElementById('manageCategoriesModal').classList.add('active');
+        };
+
+        document.getElementById('closeCategoriesModalBtn').addEventListener('click', () => {
+            document.getElementById('manageCategoriesModal').classList.remove('active');
+        });
+
+        function renderCategoriesList() {
+            const container = document.getElementById('categoriesList');
+            container.innerHTML = '';
+
+            bookmarks.forEach((section, index) => {
+                const item = document.createElement('div');
+                item.className = 'category-item';
+
+                const info = document.createElement('div');
+                info.className = 'category-info';
+
+                const name = document.createElement('div');
+                name.className = 'category-name';
+                name.textContent = section.category;
+
+                const count = document.createElement('span');
+                count.className = 'category-count';
+                count.textContent = `(${section.links.length} 个书签)`;
+
+                info.appendChild(name);
+                info.appendChild(count);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-category-btn';
+                deleteBtn.textContent = '🗑️';
+                deleteBtn.addEventListener('click', () => deleteCategory(index));
+
+                item.appendChild(info);
+                item.appendChild(deleteBtn);
+                container.appendChild(item);
+            });
+        }
+
+        window.addNewCategory = async function () {
+            const name = document.getElementById('newCategoryName').value.trim();
+            if (!name) {
+                alert('请输入分类名称');
+                return;
+            }
+
+            if (bookmarks.find(b => b.category === name)) {
+                alert('该分类已存在');
+                return;
+            }
+
+            bookmarks.push({ category: name, links: [] });
+            await saveUserData();
+            renderCategoriesList();
+            setupCategoryFilters();
+            populateCategorySelect();
+            document.getElementById('newCategoryName').value = '';
+        };
+
+        async function deleteCategory(index) {
+            const category = bookmarks[index];
+            if (category.links.length > 0) {
+                if (!confirm(`分类"${category.category}"中有 ${category.links.length} 个书签，确定要删除吗？`)) {
+                    return;
+                }
+            }
+
+            bookmarks.splice(index, 1);
+            await saveUserData();
+            renderCategoriesList();
+            setupCategoryFilters();
+            populateCategorySelect();
+        }
+
+        // 导出到全局
+        window.saveUserData = saveUserData;
+    </script>
+</body>
+
+</html>

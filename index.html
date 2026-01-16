@@ -851,27 +851,318 @@
             margin-bottom: 1rem;
         }
 
+        @media (max-width: 1024px) {
+            /* 平板横屏 */
+            .container {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .bookmarks-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
         @media (max-width: 768px) {
+            /* 手机和平板竖屏 */
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                margin-bottom: 2rem;
+            }
+
             .header h1 {
                 font-size: 2rem;
             }
 
-            .bookmarks-grid {
-                grid-template-columns: 1fr;
+            .header p {
+                font-size: 0.95rem;
             }
 
+            /* 天气组件 */
+            .weather-widget {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .weather-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .weather-icon {
+                font-size: 2.5rem;
+            }
+
+            /* 同步状态 */
+            .sync-status {
+                top: 0.5rem;
+                right: 0.5rem;
+                font-size: 0.75rem;
+                padding: 0.4rem 0.75rem;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .user-info span {
+                font-size: 0.7rem;
+            }
+
+            /* 搜索 */
+            .search-container {
+                margin-bottom: 2rem;
+            }
+
+            .search-type {
+                gap: 0.4rem;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 0.5rem;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .search-type label {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                white-space: nowrap;
+            }
+
+            .search-box {
+                padding: 1rem 3rem 1rem 1rem;
+                font-size: 1rem;
+            }
+
+            .search-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            /* 快捷链接 */
             .quick-links-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                gap: 0.75rem;
+            }
+
+            .quick-link-item {
+                padding: 0.75rem;
+            }
+
+            .quick-link-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .quick-link-name {
+                font-size: 0.8rem;
+            }
+
+            /* 书签部分 */
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
             }
 
             .action-buttons {
+                width: 100%;
                 flex-direction: column;
             }
 
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* 分类筛选 */
             .category-filters {
                 overflow-x: auto;
                 flex-wrap: nowrap;
                 padding-bottom: 0.5rem;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .category-filters::-webkit-scrollbar {
+                display: none;
+            }
+
+            .category-btn {
+                white-space: nowrap;
+                padding: 0.6rem 1.2rem;
+                font-size: 0.85rem;
+            }
+
+            /* 书签网格 */
+            .bookmarks-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .bookmark-card {
+                padding: 1.25rem;
+            }
+
+            .bookmark-header {
+                gap: 0.75rem;
+            }
+
+            .bookmark-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 1.3rem;
+            }
+
+            .bookmark-title {
+                font-size: 1rem;
+            }
+
+            .bookmark-url {
+                font-size: 0.8rem;
+            }
+
+            /* 模态框 */
+            .modal {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                max-height: 85vh;
+            }
+
+            .modal-title {
+                font-size: 1.3rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.25rem;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+
+            .form-buttons .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* 小屏手机 */
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .quick-links-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 0.5rem;
+            }
+
+            .quick-link-item {
+                padding: 0.6rem;
+            }
+
+            .quick-link-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+            }
+
+            .quick-link-name {
+                font-size: 0.75rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .category-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .bookmark-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* 横屏优化 */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .login-screen {
+                padding: 1rem;
+            }
+
+            .login-card {
+                padding: 2rem;
+                max-width: 500px;
+            }
+
+            .login-card h1 {
+                font-size: 2rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .login-card p {
+                margin-bottom: 1rem;
+            }
+
+            .header {
+                margin-bottom: 1.5rem;
+            }
+
+            .weather-widget {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                max-height: 80vh;
+            }
+        }
+
+        /* 触摸设备优化 */
+        @media (hover: none) and (pointer: coarse) {
+            /* 增大可点击区域 */
+            .btn,
+            .category-btn,
+            .bookmark-link,
+            .bookmark-delete {
+                min-height: 44px;
+            }
+
+            .quick-link-item {
+                min-height: 80px;
+            }
+
+            /* 移除hover效果，使用active */
+            .btn:active,
+            .category-btn:active,
+            .quick-link-item:active {
+                transform: scale(0.98);
+            }
+
+            .bookmark-card:active {
+                transform: translateY(0);
             }
         }
     </style>

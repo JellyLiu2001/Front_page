@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的书签导航</title>
+    <title>我的书签导航 - 云同步版</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
 
@@ -32,6 +32,147 @@
             background-image:
                 radial-gradient(at 20% 30%, rgba(102, 126, 234, 0.15) 0px, transparent 50%),
                 radial-gradient(at 80% 70%, rgba(118, 75, 162, 0.15) 0px, transparent 50%);
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 400px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-card p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .login-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .login-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .login-btn.google {
+            background: white;
+            color: #333;
+        }
+
+        .login-btn.google:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+        }
+
+        .login-btn.anonymous {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .login-btn.anonymous:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .sync-status {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 1000;
+        }
+
+        .sync-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .sync-indicator.syncing {
+            background: #f59e0b;
+        }
+
+        .sync-indicator.offline {
+            background: #ef4444;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
         }
 
         .container {
@@ -63,8 +204,30 @@
             font-weight: 300;
         }
 
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
         .weather-widget {
-            background: var(--card-bg);
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 1.5rem;
@@ -101,7 +264,6 @@
             font-weight: 600;
         }
 
-        /* Quick Links */
         .quick-links-container {
             max-width: 1200px;
             margin: 0 auto 2rem;
@@ -150,7 +312,7 @@
 
         .quick-link-item {
             position: relative;
-            background: var(--card-bg);
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1rem;
@@ -242,102 +404,262 @@
             gap: 1rem;
         }
 
-        .type-text {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            font-weight: 300;
-        }
-
         .search-type {
             display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            list-style: none;
-            margin-bottom: 2rem;
+            gap: 0.5rem;
+            justify-content: center;
         }
 
-        .search-type input[type="radio"] {
-            display: none;
-        }
-
-        .search-type label {
-            padding: 0.5rem 1rem;
-            background: var(--card-bg);
+        .search-type button {
+            padding: 0.5rem 1.5rem;
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 20px;
+            color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.875rem;
-            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
         }
 
-        .search-type input[type="radio"]:checked+label {
+        .search-type button.active {
             background: var(--primary-gradient);
+            color: white;
             border-color: transparent;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
-        .search-type label:hover {
-            transform: translateY(-2px);
-            border-color: rgba(102, 126, 234, 0.5);
-        }
-
-        .search-input-wrapper {
+        .search-wrapper {
             position: relative;
         }
 
-        .search-input {
+        .search-box {
             width: 100%;
-            padding: 1rem 3rem 1rem 1.5rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            padding: 1.25rem 3.5rem 1.25rem 1.5rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
             border-radius: 50px;
             color: var(--text-primary);
-            font-size: 1rem;
-            backdrop-filter: blur(10px);
+            font-size: 1.1rem;
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
-        .search-input:focus {
+        .search-box:focus {
             outline: none;
-            background: var(--card-hover);
             border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
-        .search-icon {
+        .search-btn {
             position: absolute;
-            right: 1.5rem;
+            right: 0.5rem;
             top: 50%;
             transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        .add-bookmark-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
+            width: 44px;
+            height: 44px;
             background: var(--primary-gradient);
             border: none;
             border-radius: 50%;
             color: white;
-            font-size: 2rem;
+            font-size: 1.2rem;
             cursor: pointer;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
             transition: all 0.3s ease;
-            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .add-bookmark-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
 
+        .bookmarks-section {
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            background: var(--card-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn.primary {
+            background: var(--primary-gradient);
+            border-color: transparent;
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .category-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .category-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .category-btn:hover:not(.active) {
+            background: var(--card-hover);
+            color: var(--text-primary);
+        }
+
+        .bookmarks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .bookmark-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .bookmark-card:hover {
+            transform: translateY(-4px);
+            background: var(--card-hover);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+        }
+
+        .bookmark-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bookmark-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .bookmark-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bookmark-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bookmark-url {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bookmark-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .bookmark-footer {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .bookmark-link {
+            flex: 1;
+            padding: 0.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .bookmark-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+
+        .bookmark-delete {
+            padding: 0.5rem 1rem;
+            background: rgba(245, 87, 108, 0.1);
+            border: 1px solid rgba(245, 87, 108, 0.2);
+            border-radius: 8px;
+            color: #f5576c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .bookmark-delete:hover {
+            background: rgba(245, 87, 108, 0.2);
+            border-color: rgba(245, 87, 108, 0.4);
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -346,15 +668,15 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            animation: fadeIn 0.3s ease-out;
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
         }
 
         .modal.active {
             display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .modal-content {
@@ -363,8 +685,9 @@
             border-radius: 20px;
             padding: 2rem;
             max-width: 500px;
-            width: 90%;
-            animation: slideUp 0.3s ease-out;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-header {
@@ -374,216 +697,139 @@
             margin-bottom: 1.5rem;
         }
 
-        .modal-header h2 {
+        .modal-title {
             font-size: 1.5rem;
+            font-weight: 700;
         }
 
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .close-btn:hover {
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
             color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--card-hover);
+            transform: rotate(90deg);
         }
 
         .form-group {
             margin-bottom: 1.5rem;
         }
 
-        .form-group label {
+        .form-label {
             display: block;
             margin-bottom: 0.5rem;
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-input,
+        .form-select,
+        .form-textarea {
             width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--card-bg);
+            padding: 0.75rem;
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 8px;
             color: var(--text-primary);
             font-size: 1rem;
             transition: all 0.3s ease;
         }
 
-        .form-group input:focus,
-        .form-group select:focus {
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
             outline: none;
             border-color: rgba(102, 126, 234, 0.5);
-            background: var(--card-hover);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
-        .submit-btn {
-            width: 100%;
-            padding: 1rem;
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
         }
 
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-        }
-
-        .categories {
+        .form-buttons {
             display: flex;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            animation: fadeIn 1s ease-out 0.3s both;
+            gap: 1rem;
+            justify-content: flex-end;
         }
 
-        .category-filter {
-            padding: 0.5rem 1.5rem;
-            background: var(--card-bg);
+        .categories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 50px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            background: var(--card-hover);
+        }
+
+        .category-info {
+            flex: 1;
+        }
+
+        .category-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .category-count {
+            font-size: 0.85rem;
             color: var(--text-secondary);
+        }
+
+        .delete-category-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(245, 87, 108, 0.1);
+            border: 1px solid rgba(245, 87, 108, 0.2);
+            border-radius: 8px;
+            color: #f5576c;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.875rem;
-            backdrop-filter: blur(10px);
+            font-size: 1.2rem;
+            border: none;
         }
 
-        .category-filter:hover,
-        .category-filter.active {
-            background: var(--primary-gradient);
-            border-color: transparent;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        .delete-category-btn:hover {
+            background: rgba(245, 87, 108, 0.2);
         }
 
-        .bookmark-section {
-            margin-bottom: 3rem;
-            animation: fadeInUp 1s ease-out both;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-            padding-left: 1rem;
-            border-left: 4px solid;
-            border-image: var(--primary-gradient) 1;
-        }
-
-        .bookmark-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .bookmark-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.5rem;
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            animation: fadeIn 0.6s ease-out both;
-        }
-
-        .bookmark-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--primary-gradient);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .bookmark-card:hover {
-            transform: translateY(-8px);
-            background: var(--card-hover);
-            border-color: rgba(102, 126, 234, 0.3);
-            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
-        }
-
-        .bookmark-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .bookmark-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
-        }
-
-        .bookmark-url {
-            font-size: 0.875rem;
+        .loading {
+            text-align: center;
+            padding: 2rem;
             color: var(--text-secondary);
-            opacity: 0.8;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .error-message {
+            background: rgba(245, 87, 108, 0.1);
+            border: 1px solid rgba(245, 87, 108, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            color: #f5576c;
+            margin-bottom: 1rem;
         }
 
         @media (max-width: 768px) {
@@ -591,389 +837,187 @@
                 font-size: 2rem;
             }
 
-            .bookmark-grid {
+            .bookmarks-grid {
                 grid-template-columns: 1fr;
             }
 
-            .container {
-                padding: 1rem;
+            .quick-links-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             }
 
-            .weather-widget {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .add-bookmark-btn {
-                bottom: 1rem;
-                right: 1rem;
-            }
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.3);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 126, 234, 0.5);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        /* Checkbox and Delete Mode */
-        .edit-mode-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-dark);
-            border-top: 1px solid var(--border-color);
-            padding: 1rem 2rem;
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 1500;
-            backdrop-filter: blur(10px);
-        }
-
-        .edit-mode-bar.active {
-            display: flex;
-        }
-
-        .edit-mode-info {
-            color: var(--text-secondary);
-        }
-
-        .edit-mode-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .edit-mode-btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-cancel {
-            background: var(--card-bg);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-cancel:hover {
-            background: var(--card-hover);
-        }
-
-        .btn-delete {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-
-        .btn-delete:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(245, 87, 108, 0.4);
-        }
-
-        .btn-delete:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .bookmark-checkbox {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            accent-color: #667eea;
-            display: none;
-        }
-
-        .edit-mode .bookmark-checkbox {
-            display: block;
-        }
-
-        .bookmark-card.selected {
-            border-color: rgba(102, 126, 234, 0.6);
-            background: rgba(102, 126, 234, 0.1);
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            z-index: 1000;
-        }
-
-        .action-btn {
-            width: 60px;
-            height: 60px;
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .action-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
-        }
-
-        .action-btn.edit-btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .action-btn.category-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        /* Category Management Modal */
-        .category-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            margin-bottom: 0.75rem;
-        }
-
-        .category-name {
-            font-weight: 500;
-        }
-
-        .category-count {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            margin-left: 0.5rem;
-        }
-
-        .delete-category-btn {
-            background: none;
-            border: none;
-            color: #f5576c;
-            cursor: pointer;
-            font-size: 1.2rem;
-            padding: 0.25rem 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .delete-category-btn:hover {
-            transform: scale(1.2);
-        }
-
-        .add-category-form {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .add-category-input {
-            flex: 1;
-        }
-
-        .add-category-btn {
-            padding: 0.75rem 1.5rem;
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .add-category-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
-        }
-
-        @media (max-width: 768px) {
             .action-buttons {
-                bottom: 1rem;
-                right: 1rem;
-            }
-
-            .edit-mode-bar {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-
-            .edit-mode-actions {
-                width: 100%;
                 flex-direction: column;
             }
 
-            .edit-mode-btn {
-                width: 100%;
+            .category-filters {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 0.5rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>Jelly的小网页</h1>
-            <p>读什么读, 学又学不会</p>
-            <div id="datetime"></div>
-            <script>
-                function updateDateTime() {
-                    const now = new Date();
-                    // 英国常用：日/月/年 + 24小时制
-                    const date = now.toLocaleDateString('en-GB');
-                    const time = now.toLocaleTimeString('en-GB', { hour12: false });
-                    document.getElementById('datetime').textContent = `${date} ${time}`;
-                }
-                updateDateTime();
-                setInterval(updateDateTime, 1000);
-            </script>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h1>📚 我的书签导航</h1>
+            <p>云端同步，随时随地访问你的书签</p>
+            <div class="login-buttons">
+                <button class="login-btn google" onclick="loginWithGoogle()">
+                    <span>🔐</span>
+                    使用 Google 登录
+                </button>
+                <button class="login-btn anonymous" onclick="loginAnonymously()">
+                    <span>👤</span>
+                    匿名登录（临时账号）
+                </button>
+            </div>
+            <div id="loginError" style="margin-top: 1rem; color: #f5576c; font-size: 0.9rem;"></div>
+        </div>
+    </div>
 
-        </header>
+    <!-- Main App -->
+    <div id="mainApp" style="display: none;">
+        <!-- Sync Status -->
+        <div class="sync-status">
+            <div class="sync-indicator" id="syncIndicator"></div>
+            <span id="syncText">已同步</span>
+            <div class="user-info">
+                <span id="userEmail"></span>
+                <button class="logout-btn" onclick="logout()">登出</button>
+            </div>
+        </div>
 
-        <div class="weather-widget" id="weatherWidget">
-            <div class="weather-info">
-                <div class="weather-icon" id="weatherIcon">🌤️</div>
-                <div class="weather-details">
-                    <h3 id="weatherLocation">Bristol, UK</h3>
-                    <p id="weatherDescription">获取天气信息中...</p>
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <h1>📚 我的书签导航</h1>
+                <p>云端同步版 - 你的个人网址收藏夹</p>
+            </div>
+
+            <!-- Weather Widget -->
+            <div class="weather-widget">
+                <div class="weather-info">
+                    <div class="weather-icon" id="weatherIcon">☀️</div>
+                    <div class="weather-details">
+                        <h3 id="weatherCity">加载中...</h3>
+                        <p id="weatherDesc">正在获取天气信息</p>
+                    </div>
+                </div>
+                <div class="weather-temp" id="weatherTemp">--°</div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="quick-links-container">
+                <div class="quick-links-header">
+                    <h3>⚡ 常用网站</h3>
+                    <button class="quick-link-add-btn" id="addQuickLinkBtn">+</button>
+                </div>
+                <div class="quick-links-grid" id="quickLinksGrid">
+                    <!-- Quick links will be rendered here -->
                 </div>
             </div>
-            <div class="weather-temp" id="weatherTemp">--°C</div>
-        </div>
 
-        <!-- Quick Links -->
-        <div class="quick-links-container" id="quickLinksContainer">
-            <div class="quick-links-header">
-                <h3>常用网站</h3>
-                <button class="quick-link-add-btn" id="addQuickLinkBtn" title="添加常用网站">+</button>
+            <!-- Search -->
+            <div class="search-container">
+                <div class="search-group">
+                    <div class="search-type">
+                        <button class="active" data-engine="google">Google</button>
+                        <button data-engine="bing">Bing</button>
+                        <button data-engine="baidu">百度</button>
+                    </div>
+                    <div class="search-wrapper">
+                        <input type="text" class="search-box" id="searchInput" placeholder="搜索你想要的内容...">
+                        <button class="search-btn" id="searchBtn">🔍</button>
+                    </div>
+                </div>
             </div>
-            <div class="quick-links-grid" id="quickLinksGrid">
-                <!-- Quick links will be rendered here -->
+
+            <!-- Bookmarks Section -->
+            <div class="bookmarks-section">
+                <div class="section-header">
+                    <h2 class="section-title">我的书签</h2>
+                    <div class="action-buttons">
+                        <button class="btn" onclick="openManageCategoriesModal()">📁 管理分类</button>
+                        <button class="btn primary" onclick="openAddBookmarkModal()">➕ 添加书签</button>
+                    </div>
+                </div>
+
+                <div class="category-filters" id="categoryFilters">
+                    <!-- Category buttons will be rendered here -->
+                </div>
+
+                <div class="bookmarks-grid" id="bookmarksGrid">
+                    <!-- Bookmarks will be rendered here -->
+                </div>
             </div>
-        </div>
-
-        <div class="search-container">
-            <div class="search-group group-a s-current">
-                <span class="type-text">搜索</span>
-                <ul class="search-type">
-                    <li><input checked="" hidden="" type="radio" name="type" id="type-baidu"
-                            value="https://www.baidu.com/s?wd=" data-placeholder="百度一下，你就知道"><label
-                            for="type-baidu"><span style="color:#2529d8">百度</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-google"
-                            value="https://www.google.com/search?q=" data-placeholder="Don't be evil 👾"><label
-                            for="type-google"><span style="color:#4285f4">G</span><span
-                                style="color:#ea4335">o</span><span style="color:#fbbc05">o</span><span
-                                style="color:#4285f4">g</span><span style="color:#34a853">l</span><span
-                                style="color:#ea4335">e</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-github" value="https://github.com/search?q="
-                            data-placeholder="How people build software"><label for="type-github"><span
-                                style="color:#00bbff">同性论坛</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-bristol"
-                            value="https://www.bristol.ac.uk/cgi-bin/search?words="
-                            data-placeholder="轻轻松松, 布里一下 👾"><label for="type-bristol"><span
-                                style="color:#DE5833">布里一下</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-bing1" value="https://cn.bing.com/search?q="
-                            data-placeholder="Bing is for doing"><label for="type-bing1"><span
-                                style="color:#0C8484">Bing</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-mj" value="https://mijisou.com/?q="
-                            data-placeholder=" 不追踪你的搜索引擎"><label for="type-mj"><span
-                                style="color:#ffee00">秘迹</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-ddg" value="https://duckduckgo.com/?q="
-                            data-placeholder="隐私保护，化繁为简 👾"><label for="type-ddg"><span
-                                style="color:#DE5833">Duck</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-gpt" value="https://chat.openai.com/?q="
-                            data-placeholder="和 AI 对话，直接给答案 🤖"><label for="type-gpt"><span
-                                style="color:#10A37F">GPT</span></label></li>
-                    <li><input hidden type="radio" name="type" id="type-ieee"
-                            value="https://ieeexplore.ieee.org/search/searchresult.jsp?queryText="
-                            data-placeholder="搜索 IEEE 论文"><label for="type-ieee"><span
-                                style="color:#00629B">IEEE</span></label></li>
-                </ul>
-            </div>
-            <div class="search-input-wrapper">
-                <input type="text" class="search-input" id="searchInput" placeholder="百度一下，你就知道">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-            </div>
-        </div>
-
-        <div class="categories" id="categoryFilters">
-            <!-- Category filters will be added dynamically -->
-        </div>
-
-        <div id="bookmarksContainer"></div>
-    </div>
-
-    <div class="action-buttons">
-        <button class="action-btn category-btn" id="manageCategoriesBtn" title="管理分类">📁</button>
-        <button class="action-btn edit-btn" id="editModeBtn" title="编辑书签">✏️</button>
-        <button class="action-btn" id="addBookmarkBtn" title="添加书签">+</button>
-    </div>
-
-    <!-- Edit Mode Bar -->
-    <div class="edit-mode-bar" id="editModeBar">
-        <div class="edit-mode-info">
-            已选择 <span id="selectedCount">0</span> 个书签
-        </div>
-        <div class="edit-mode-actions">
-            <button class="edit-mode-btn btn-cancel" id="cancelEditBtn">取消</button>
-            <button class="edit-mode-btn btn-delete" id="deleteSelectedBtn" disabled>删除选中</button>
         </div>
     </div>
 
+    <!-- Add Bookmark Modal -->
     <div class="modal" id="addBookmarkModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>添加书签</h2>
-                <button class="close-btn" id="closeModalBtn">&times;</button>
+                <h3 class="modal-title">添加新书签</h3>
+                <button class="modal-close" id="closeBookmarkModalBtn">×</button>
             </div>
             <form id="addBookmarkForm">
                 <div class="form-group">
-                    <label for="bookmarkTitle">标题</label>
-                    <input type="text" id="bookmarkTitle" required>
+                    <label class="form-label">名称</label>
+                    <input type="text" class="form-input" id="bookmarkName" required>
                 </div>
                 <div class="form-group">
-                    <label for="bookmarkUrl">网址</label>
-                    <input type="url" id="bookmarkUrl" placeholder="https://example.com" required>
+                    <label class="form-label">网址</label>
+                    <input type="url" class="form-input" id="bookmarkUrl" required placeholder="https://">
                 </div>
                 <div class="form-group">
-                    <label for="bookmarkCategory">分类</label>
-                    <select id="bookmarkCategory" required></select>
+                    <label class="form-label">描述（可选）</label>
+                    <textarea class="form-textarea" id="bookmarkDesc"></textarea>
                 </div>
-                <button type="submit" class="submit-btn">添加书签</button>
+                <div class="form-group">
+                    <label class="form-label">图标（emoji）</label>
+                    <input type="text" class="form-input" id="bookmarkIcon" placeholder="📌">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">分类</label>
+                    <select class="form-select" id="bookmarkCategory" required>
+                        <!-- Categories will be populated here -->
+                    </select>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="btn" onclick="closeAddBookmarkModal()">取消</button>
+                    <button type="submit" class="btn primary">添加</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Quick Link Modal -->
+    <div class="modal" id="addQuickLinkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">添加常用网站</h3>
+                <button class="modal-close" id="closeQuickLinkModalBtn">×</button>
+            </div>
+            <form id="addQuickLinkForm">
+                <div class="form-group">
+                    <label class="form-label">名称</label>
+                    <input type="text" class="form-input" id="quickLinkName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">网址</label>
+                    <input type="url" class="form-input" id="quickLinkUrl" required placeholder="https://">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">图标（emoji，可选）</label>
+                    <input type="text" class="form-input" id="quickLinkIcon" placeholder="留空自动获取网站图标">
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="btn" onclick="closeQuickLinkModal()">取消</button>
+                    <button type="submit" class="btn primary">添加</button>
+                </div>
             </form>
         </div>
     </div>
@@ -982,615 +1026,279 @@
     <div class="modal" id="manageCategoriesModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>管理分类</h2>
-                <button class="close-btn" id="closeCategoriesModalBtn">&times;</button>
+                <h3 class="modal-title">管理分类</h3>
+                <button class="modal-close" id="closeCategoriesModalBtn">×</button>
             </div>
-            <div id="categoriesList"></div>
-            <div class="add-category-form">
-                <input type="text" class="form-group input add-category-input" id="newCategoryInput"
-                    placeholder="新分类名称">
-                <button class="add-category-btn" id="addCategoryBtn">添加分类</button>
+            <div class="form-group">
+                <label class="form-label">添加新分类</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" class="form-input" id="newCategoryName" placeholder="分类名称">
+                    <button class="btn primary" onclick="addNewCategory()">添加</button>
+                </div>
             </div>
-            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-                <button class="edit-mode-btn btn-cancel" id="resetBookmarksBtn" style="width: 100%;">重置为初始书签</button>
+            <div class="form-group">
+                <label class="form-label">现有分类</label>
+                <div class="categories-list" id="categoriesList">
+                    <!-- Categories will be listed here -->
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Add Quick Link Modal -->
-    <div class="modal" id="addQuickLinkModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>添加常用网站</h2>
-                <button class="close-btn" id="closeQuickLinkModalBtn">&times;</button>
-            </div>
-            <form id="addQuickLinkForm">
-                <div class="form-group">
-                    <label for="quickLinkName">网站名称</label>
-                    <input type="text" id="quickLinkName" required>
-                </div>
-                <div class="form-group">
-                    <label for="quickLinkUrl">网址</label>
-                    <input type="url" id="quickLinkUrl" placeholder="https://example.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="quickLinkIcon">图标 (Emoji，可选)</label>
-                    <input type="text" id="quickLinkIcon" placeholder="🔗 留空将自动获取网站图标" maxlength="2">
-                    <small
-                        style="color: var(--text-secondary); font-size: 0.75rem; display: block; margin-top: 0.25rem;">
-                        留空将自动显示网站的favicon图标
-                    </small>
-                </div>
-                <button type="submit" class="submit-btn">添加</button>
-            </form>
-        </div>
-    </div>
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Firebase配置说明将在设置指南中提供
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import {
+            getAuth,
+            signInWithPopup,
+            signInAnonymously,
+            GoogleAuthProvider,
+            onAuthStateChanged,
+            signOut
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import {
+            getDatabase,
+            ref,
+            set,
+            get,
+            remove,
+            onValue
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-    <script>
-        const initialBookmarks = [{ "category": "大学", "links": [{ "href": "https://www.turing.ac.uk/research/research-programmes/project-bluebird", "title": "Project Bluebird | The Alan Turing Institute" }, { "href": "https://www.docx2latex.com/word-to-latex-converter/", "title": "Docx2LaTeX Automatic converter Dashboard" }, { "href": "https://sso.bris.ac.uk/sso/login?service=https://mybristol.bris.ac.uk/mybristol/Login", "title": "UOB | 用户登陆" }, { "href": "https://bristolsu.roombookingsystem.co.uk/user/overviewday", "title": "音乐教室预定" }] }, { "category": "机器人", "links": [{ "href": "https://github.com/paulodowd/EMATM0054_53/tree/main?tab=readme-ov-file#ematm005453-robotic-systems", "title": "paulodowd/EMATM0054_53: Teaching materials for unit EMATM0054/53" }, { "href": "https://www.pololu.com/docs/0J83/5.9", "title": "Pololu - 5.9. Pin assignments" }, { "href": "https://www.pololu.com/docs/0J21", "title": "Pololu 3pi Robot User’s Guide" }, { "href": "https://zhuanlan.zhihu.com/p/67585492", "title": "布里斯托大学机器人 Robotics (Msc) 的学习攻略 - 知乎" }, { "href": "https://cloud.iflytekrecord.com/eu-en/index", "title": "smart recorder cloud" }, { "href": "https://blog.wordvice.cn/research-proposal-sections-explained/", "title": "研究计划(Research Proposal)各个章节怎么写？ - Wordvice Blog" }, { "href": "https://www.nowcoder.com/discuss/399330018638180352", "title": "小米未来星二面_牛客网" }, { "href": "https://outlook.office.com/book/ENGFStudentStudyRoomsBookingSystem@bristol.ac.uk/?ae=true&login_hint", "title": "Engineering Student Study Rooms" }, { "href": "https://librarybookings.bristol.ac.uk/r/new?lid=1711&gid=0&zone=0&capacity=2&filters%5B0%5D=304&date=2024-10-06&start=&end=", "title": "大学会议室/自习预定" }, { "href": "https://www.checkpostcode.uk/bristol/BS1/BS15JU", "title": "BS1 5JU - Park street avenue， Bristol， BS1 5JU 的相关信息 - 检查邮编" }, { "href": "https://jobs.nottingham.ac.uk/vacancy.aspx?ref=ENG239", "title": "ENG239 博士生奖学金： 罗尔斯-罗伊斯赞助的博士生奖学金 – 用于航空发动机翼内维修的刚度可调机器人系统的设计和模拟 - 诺丁汉大学工作" }, { "href": "http://www.baidu.com/", "title": "百度" }, { "href": "https://check-in.bristol.ac.uk/campusm/home#menu", "title": "Home Page - University of Bristol" }, { "href": "https://newmy.uwe.ac.uk/", "title": "uwe" }, { "href": "https://blackboard.uwe.ac.uk/ultra/course", "title": "uwe狗东西" }, { "href": "https://www.ole.bris.ac.uk/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_1_1", "title": "BB狗东西" }, { "href": "file:///C:/Users/Jelly/Desktop/frontweb/frontweb-main/bookmarks.html", "title": "Bookmarks" }, { "href": "https://github.com/", "title": "GitHub | 同性论坛" }, { "href": "https://maps.google.com/", "title": "谷歌地图" }, { "href": "https://www.deepl.com/zh/translator", "title": "DeepL翻译：全世界最准确的翻译" }, { "href": "https://translate.google.com/", "title": "境外翻译" }] }, { "category": "工具", "links": [{ "href": "https://dl.3dmgame.com/patch/paofenruanjian.html", "title": "跑分软件 3DMGAME" }, { "href": "https://www.easyicon.net/", "title": "图标下载，ICON(SVG/PNG/ICO/ICNS)图标搜索下载 - Easyicon" }, { "href": "https://greasyfork.org/zh-CN", "title": "Greasy Fork - 安全、实用的用户脚本大全" }, { "href": "https://search.chongbuluo.com/", "title": "快搜 - 搜索快人一步 - Google" }, { "href": "https://www.gaitubao.com/exif", "title": "照片EXIF信息在线查看器、手机照片拍摄时间地点位置在线查询 - 改图宝" }, { "href": "https://zh.numberempire.com/limitcalculator.php", "title": "极限计算器" }, { "href": "https://tool.lu/hexconvert/", "title": "进制转换 - 在线工具" }, { "href": "https://uob-my.sharepoint.com/personal/jp18942_bristol_ac_uk/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fjp18942%5Fbristol%5Fac%5Fuk%2FDocuments%2FUoB%20By%20Year%2FUOB%2020%2D21%2FALLs%2FEEE&originalPath=aHR0cHM6Ly91b2ItbXkuc2hhcmVwb2ludC5jb20vOmY6L2cvcGVyc29uYWwvanAxODk0Ml9icmlzdG9sX2FjX3VrL0V0cGhnclV2YTFWSW5HbWp4d3pNVkswQmU4OVoxbEY1THJmOHVYaFlGSVFoc2c_cnRpbWU9VldYRlh1WjgyRWc", "title": "EEE - OneDrive" }, { "href": "https://www.wolframalpha.com/", "title": "算数器" }, { "href": "https://www.classviva.org/", "title": "Classviva" }, { "href": "https://alldatasheet.com/", "title": "查电子元件专用" }, { "href": "https://robomaster.ones.ai/project/#/profile/account_setting", "title": "机甲大师个人中心 | ONES.AI" }, { "href": "https://github.com/pjialin/py12306", "title": "pjialin/py12306: 🚂 12306 购票助手，支持集群，多账号，多任务购票以及 Web 页面管理" }, { "href": "https://my.ramshard.com/cart.php?a=checkout", "title": "购物车-RAMShard" }, { "href": "https://mp3cut.net/cn/", "title": "Online MP3 Cutter - 剪辑歌曲，制作铃声" }, { "href": "https://www.opengps.cn/Data/IP/rtb.aspx", "title": "高精度IP定位3 - openGPS.cn" }, { "href": "http://datasheets.eccn.com/", "title": "中国元器件查询" }, { "href": "https://www.ipplus360.com/", "title": "更精准的全球IP地址定位平台_IP问问 -埃文科技(ipplus360.com)" }, { "href": "http://tool.chinaz.com/Tracert/", "title": "路由追踪 - 站长工具" }, { "href": "https://adoptastar.org/#atarget", "title": "采纳明星-支持天文学研究的非营利组织" }, { "href": "https://www.becmd.com/", "title": "免费接码 - 免费短信验证码接收平台" }, { "href": "https://www.tubiaoxiu.com/src/index.html#/app/charting_resource", "title": "图表秀" }, { "href": "https://www.geogebra.org/", "title": "GeoGebra | 免费的数学应用软件 - 全球学生与教师用户超过一亿" }, { "href": "http://hao.199it.com/", "title": "大数据导航-大数据工具导航-199IT大数据导航-199IT大数据工具导航-Hao.199it.com" }, { "href": "https://www.easyicon.net/covert/", "title": "PNG转ICO,PNG转ICNS | 图标格式在线转换 - EASYICON.NET" }, { "href": "https://www.egouz.com/asia/china/", "title": "中国网站|国内优秀网站推荐- eGouz上网导航" }, { "href": "https://www.tinkercad.com/", "title": "Tinkercad | Create 3D digital designs with online CAD" }, { "href": "https://mapleleafschools.instructure.com/", "title": "控制面板" }, { "href": "https://powerschool.mapleleaf.cn/admin/pw.html", "title": "PowerSchool" }, { "href": "https://forum.fritzing.org/c/parts-submit", "title": "fritzing 组件库" }, { "href": "https://iknow.lenovo.com.cn/detail/dc_172545.html?_ga=2.200761966.172882237.1591524769-2132236039.1591524769", "title": "联想-工具库" }, { "href": "https://www.phrasebank.manchester.ac.uk/summary-and-transition/", "title": "report套话" }, { "href": "https://cn.piliapp.com/random/wheel/", "title": "随机抽签转盘" }, { "href": "https://www.zhihu.com/zvideo/1379139140949266432", "title": "(2 封私信 / 2 条消息) 变压器的工作原理是什么？ - 知乎" }, { "href": "http://t.wancongai.com/", "title": "万聪英语智适应教学系统" }, { "href": "https://visas-immigration.service.gov.uk/nextSteps", "title": "What to do next" }, { "href": "http://www.zhaozi.cn/s/china/shufa/index_47.php", "title": "字体库" }, { "href": "https://fanyi.pdf365.cn/?agent=zhihu", "title": "文档翻译" }, { "href": "https://calculator.academy/peak-voltage-calculator/#f1p1|f2p0", "title": "电学计算器" }, { "href": "https://www.emathhelp.net/en/calculators/discrete-mathematics/boolean-algebra-calculator/?f=BC%2B%7EA%7EB%7EC&forms=on", "title": "布尔表达式化简" }, { "href": "https://k2track.in/", "title": "快递追踪" }, { "href": "https://fakeupdate.net/", "title": "win更新摸鱼" }, { "href": "https://zhuanlan.zhihu.com/p/83528343", "title": "雅思小作文一" }, { "href": "https://www.govirtuo.com/uk", "title": "英国租车网站" }, { "href": "https://www.iconfinder.com/", "title": "icon网站 win图标" }, { "href": "https://tieba.baidu.com/p/2128064461", "title": "【音乐合辑】Now That's What I Call Music【英音吧】_百度贴吧" }, { "href": "http://avtanski.net/projects/lcd/", "title": "LCD/LED Screenshot Generator" }, { "href": "https://www.makemepulse.com/", "title": "好玩的" }, { "href": "https://chat.openai.com/", "title": "ChatGPT" }] }, { "category": "学习", "links": [{ "href": "https://www.runoob.com/note/26325", "title": "from…import * 语句与 import 区别" }, { "href": "https://github.com/wistbean/learn_python3_spider", "title": "wistbean/learn_python3_spider: python爬虫教程系列、从0到1学习python爬虫，包括浏览器抓包，手机APP抓包，如 fiddler、mitmproxy，各种爬虫涉及的模块的使用，如：requests、beautifulSoup、selenium、appium、scrapy等，以及IP代理，验证码识别，Mysql，MongoDB数据库的python使用，多线程多进程爬虫的使用，css 爬虫加密逆向破解，JS爬虫逆向，分布式爬虫，爬虫项目实战实例等" }, { "href": "https://www.cnblogs.com/sakurayeah/p/5800424.html", "title": "github上传项目（使用git）、删除项目、添加协作者 - sakurayeah - 博客园" }, { "href": "https://www.jianshu.com/p/d21adb5ff6c1", "title": "同济高数第七版答案（全） - 简书" }, { "href": "https://github.com/wolverinn/Waking-Up/blob/master/README.md", "title": "计算机面试问题总结" }, { "href": "https://github.com/jackfrued/Python-100-Days", "title": "Python100天" }, { "href": "https://www.zhihu.com/question/30315894", "title": "Visual Studio Code 如何编写运行 C、C++ 程序？ - 知乎" }, { "href": "https://courses.gdut.edu.cn/course/view.php?id=51", "title": "课程： 微积分导读" }, { "href": "https://blog.csdn.net/shenziheng1/article/details/53188168?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task", "title": "MSVCRTD.lib(crtexew.obj) : error LNK2019: 无法解析的外部符号 _WinMain@16_C/C++_沈春旭的博客-CSDN博客" }, { "href": "https://docs.qq.com/sheet/DTEJhdW9UQ0FOcHNG?tab=BB08J2&c=D43A0AN0", "title": "网盘资料" }, { "href": "https://baike.baidu.com/item/MSP430%E5%8D%95%E7%89%87%E6%9C%BA/10582864?fromtitle=MSP430&fromid=3897155&fr=aladdin", "title": "MSP430单片机_百度百科" }, { "href": "https://zhuanlan.zhihu.com/p/38261426", "title": "【面向机器人】一种双向离合平行弹性储能驱动器结构介绍——精巧的设计与高能量效率 - 知乎" }, { "href": "https://aistudio.baidu.com/aistudio/education/group/info/888", "title": "百度架构师手把手教深度学习_AI学习 - 百度AI Studio - 一站式AI开发实训平台" }, { "href": "https://onedrive.live.com/?authkey=%21%2AqMyF5XrMcA%24&id=DA2FEF6284466D58%2120372&cid=DA2FEF6284466D58", "title": "Final Exam Review - OneDrive" }, { "href": "https://www.bilibili.com/video/av30068816/?p=1", "title": "【分钟物理】狭义相对论合集（熟肉）_哔哩哔哩 (゜-゜)つロ 干杯~-bilibili" }, { "href": "https://circuitverse.org/simulator", "title": "CircuitVerse - Digital Circuit Simulator online" }, { "href": "https://www.dgxue.com/", "title": "电工基础知识 - 学习电工技术 - 电工学网" }, { "href": "https://blog.csdn.net/messyking/article/details/115559198", "title": "VHDL快速入门" }, { "href": "https://www.bilibili.com/video/BV18E411b71T/?spm_id_from=333.999.0.0&vd_source=79876e6cdc3052eb1cb9fc50724c3a93", "title": "计算机网络微课堂第034讲 MAC地址、IP地址以及ARP协议（2） — IP地址（有字幕无背景音乐版）_哔哩哔哩_bilibili" }, { "href": "https://www.bilibili.com/video/BV1Z541167M3?from=search&seid=6047542351509657677", "title": "Google工程师亲授 Tensorflow2.0－入门到进阶_哔哩哔哩 (゜-゜)つロ 干杯~-bilibili" }, { "href": "https://www.ros.org/blog/getting-started/", "title": "ROS：入门" }] }, { "category": "雪茄", "links": [{ "href": "https://thecigarmanor.co.uk/wp-login.php?redirect_to=https%3A%2F%2Fthecigarmanor.co.uk%2Fwp-admin%2Findex.php&reauth=1", "title": "Log In ‹ The Cigar Manor — WordPress" }, { "href": "https://thecigarmanor.co.uk/?et_fb=1&PageSpeed=off", "title": "el;" }] }, { "category": "官网", "links": [{ "href": "https://www.runoob.com/", "title": "菜鸟教程" }, { "href": "https://www.bilibili.com/", "title": "bilibili" }, { "href": "https://www.linkedin.com/notifications/", "title": "领英" }, { "href": "https://www.tinkercad.com/", "title": "线上CAD" }, { "href": "https://support.logi.com/hc/zh-cn", "title": "Logitech" }, { "href": "https://www.apple.com.cn/", "title": "apple中国" }, { "href": "https://www.samsung.com/cn/", "title": "三星中国" }, { "href": "https://support.hp.com/cn-zh/drivers/", "title": "惠普中国" }, { "href": "https://cn.msi.com/", "title": "微星中国" }, { "href": "https://topbook.cc/overview?selectedArticle=1829", "title": "Topbook | 高效生活视频书" }, { "href": "https://www.google.com.hk/webhp?hl=zh-CN&sourceid=cnhp&gws_rd=ssl", "title": "Google" }, { "href": "https://mp.weixin.qq.com/advanced/autoreply?action=smartreply&t=ivr/keywords&token=1588455273&lang=zh_CN", "title": "微信公众平台" }, { "href": "https://outlet.arcteryx.com/gb/en", "title": "始祖鸟英国" }, { "href": "https://www.adidas.co.uk/", "title": "adidas" }, { "href": "https://www.nike.com/gb", "title": "NIKE" }, { "href": "https://www.jdsports.co.uk/", "title": "JD Sports" }, { "href": "https://wordpress.com/log-in/link", "title": "Log In — WordPress.com" }] }, { "category": "AI", "links": [{ "href": "https://chatgpt.com/", "title": "ChatGPT" }, { "href": "https://getliner.com/zh/main", "title": "查找论文" }, { "href": "https://claude.ai/new", "title": "代码" }, { "href": "https://library.scholarcy.com/try", "title": "文献总结" }, { "href": "https://mindmapai.app/canvas", "title": "思维导图" }, { "href": "https://gemini.google.com/app", "title": "Gemini" }] }, { "category": "签证", "links": [{ "href": "https://visas-fr.tlscontact.com/appointment/gb/gbLON2fr/15540576", "title": "Customer Gateway" }, { "href": "https://application-form.france-visas.gouv.fr/fv-fo-dde/accueil.xhtml", "title": "法国签证 |Accueil |我的申请" }, { "href": "https://uk.blsspainglobal.com/Global/bls/VisaTypeVerification", "title": "西班牙签证" }] }, { "category": "求职", "links": [{ "href": "https://profiles.imperial.ac.uk/p.kormushev/about", "title": "Petar Kormushev Profile | Imperial College London" }, { "href": "https://career.huawei.com/reccampportal/portal5/campus-recruitment-detail.html?jobId=3819&dataSource=1&jobType=2", "title": "career.huawei.com/reccampportal/portal5/campus-recruitment-detail.html?jobId=3819&dataSource=1&jobType=2" }, { "href": "https://www.volvogroup.com/cn/careers/job-openings/140419BR.html", "title": "E&E System Engineer | Volvo Group" }, { "href": "https://www.volvocars.com.cn/zh-cn/l/about/our-company/careers/our-application-process/", "title": "沃尔沃招聘流程指引-Volvo Cars | 沃尔沃汽车官方网站" }, { "href": "https://www.volvocars.com.cn/zh-cn/l/about/our-company/careers/", "title": "沃尔沃人才招聘-Volvo Cars | 沃尔沃汽车官方网站" }, { "href": "https://jobs.siemens.com.cn/siemens/position/index?utm_source=j_c_cn", "title": "社招职位-西门子" }, { "href": "https://careers.se.com/global/jobs?keywords=&lang=en-US&view=search&country=China&page=2", "title": "Schneider Electric Careers Apply" }, { "href": "https://www.myperfectcv.co.uk/build-cv/section/educ-det/ff596f3b-e480-4a68-8173-937b4e167ce4/fbd4f0ba-94fd-4c36-bc52-31fd2f181c7e", "title": "alian" }, { "href": "https://ag.wd3.myworkdayjobs.com/en-US/Airbus/userHome", "title": "候选人主页" }, { "href": "https://maya.um.edu.my/sitsvision/wrd/SIW_IPP_IPR", "title": "PP action details" }, { "href": "https://career5.successfactors.eu/portalcareer?_s.crb=ZjnCdoRU%252bWKqYqTuKWyh5jNDvV5m9ItWo%252bI4%252bCOwRng%253d", "title": "Career Opportunities: Apply for Graduate Development Programme - Technology (221274)" }, { "href": "https://www.findaphd.com/phds/project/assistive-wearable-technologies-what-are-the-right-trousers-and-who-are-they-right-for/?p185662", "title": "辅助可穿戴技术：什么是合适的裤子？他们适合谁？在布里斯托大学 FindAPhD.com" }, { "href": "https://www.findaphd.com/phds/project/automated-field-testing-with-humans-in-the-loop-of-an-autonomous-unmanned-aerial-vehicle-uav-for-emergency-relief-robostar/?p180845", "title": "FindAPhD.com 日，约克大学在用于紧急救援的自主无人机 （UAV） [RoboStar] 的循环中进行人工自动化现场测试" }, { "href": "https://www.findaphd.com/phds/project/safety-of-autonomous-robots-for-nuclear-decommissioning-robostar/?p183239", "title": "FindAPhD.com 年约克大学核退役自主机器人的安全性 [RoboStar]" }, { "href": "https://www.findaphd.com/phds/project/advanced-aerial-robotics/?p161640", "title": "FindAPhD.com 年布里斯托大学高级航空机器人" }, { "href": "https://www.findaphd.com/phds/project/autonomous-environment-cooperative-perception-and-intelligent-train-control/?p184348", "title": "FindAPhD.com 年伯明翰大学的自主环境协同感知和智能列车控制" }, { "href": "https://www.findaphd.com/phds/project/rolls-royce-sponsored-phd-scholarship-intelligent-mechatronics-and-robotics-systems-eng241/?p184047", "title": "罗尔斯-罗伊斯于 FindAPhD.com 年在诺丁汉大学赞助博士奖学金 – 智能机电一体化和机器人系统 （ENG241）" }, { "href": "https://www.overleaf.com/project/68908ac512f069c2020a2608", "title": "毕业论文模板 - Online LaTeX Editor Overleaf" }, { "href": "https://samsungoffers.claims/sam/galaxygift2025/en-GB/", "title": "Home - Samsung Promotions" }, { "href": "https://www.youtube.com/watch?v=C6l7Vklbc9k", "title": "Morphy: a Compliant and Morphologically-Aware Flying Robot - YouTube" }] }, { "category": "游戏", "links": [{ "href": "https://game.chronodivide.com/", "title": "Red Alert 2: Chrono Divide" }, { "href": "https://www.simbrief.com/system/dispatch.php?newflight=1", "title": "飞机" }, { "href": "http://www.staggeringbeauty.com/", "title": "恶搞摇晃的小棍网站" }, { "href": "https://accounts.google.com/b/0/AddMailService", "title": "Gmail" }, { "href": "https://youtube.com/", "title": "YouTube" }, { "href": "https://maps.google.com/", "title": "地图" }, { "href": "https://www.trainboard.uk/BRI", "title": "Bristol Temple Meads Live Departures | Trainboard" }, { "href": "https://linktr.ee/admin", "title": "Linktree Admin" }, { "href": "https://wordpress.com/home/jellyjinzheliu.wordpress.com", "title": "My Home ‹ JELLY刘金哲 — WordPress.com" }, { "href": "https://www.mjwo.net/play/1242-1-2/", "title": "东邻西舍第一季-美剧-第02集-高清免费在线观看-美剧窝" }, { "href": "https://vpn.ncepu.edu.cn/dana-na/auth/url_default/welcome.cgi", "title": "华北电力大学VPN系统" }, { "href": "http://192.168.3.1/html/index.html#/home", "title": "华为路由WS5200 四核版" }, { "href": "https://ddrk.me/category/movie/western-movie/page/2/", "title": "低端影视" }] }, { "category": "阅读列表保存", "links": [{ "href": "https://mp.weixin.qq.com/s?__biz=MzI4OTc4MDY5OA==&mid=2247488018&idx=6&sn=4b79e2fcaaca1049d5c9922a5d75bb5d&chksm=ec28b4a7db5f3db1e690d557032ab36f14d0f415caa61e83716b356fba2acf0393d75cfda359&scene=21#wechat_redirect", "title": "【中考历史】2020新冠肺炎中考历史原创题目" }, { "href": "edge://newtab/", "title": "新建标签页" }, { "href": "https://www.bing.com/search?q=5053vcds&setmkt=zh-CN&PC=EMMX01&form=LWS002&scope=web&mkt=zh-CN", "title": "5053vcds - 搜索" }, { "href": "https://www.youtube.com/watch?v=aqEjinMc95Y", "title": "YouTube" }, { "href": "https://account.ring.com/account/dashboard?l=07321980-fbeb-45df-886d-dd131f975a49", "title": "Dashboard" }] }];
+        // ⚠️ 重要：请在这里填入你的Firebase配置
+        const firebaseConfig = {
+            apiKey: "AIzaSyBKlchUsgjdTzaXRzBkpIEFEBTJ_kbQzcM",
+            authDomain: "my-bookmark-539cc.firebaseapp.com",
+            databaseURL: "https://my-bookmark-539cc-default-rtdb.firebaseio.com",
+            projectId: "my-bookmark-539cc",
+            storageBucket: "my-bookmark-539cc.firebasestorage.app",
+            messagingSenderId: "922728791651",
+            appId: "1:922728791651:web:e080e442608c2f4f8dc256",
+            measurementId: "G-1WQYR3JWXF"
+        };
 
-        let bookmarks = JSON.parse(JSON.stringify(initialBookmarks));
+        // 初始化Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
 
-        // Quick Links - Initial default links
-        const defaultQuickLinks = [
-            { name: 'ChatGPT', url: 'https://chatgpt.com/' },
-            { name: 'GitHub', url: 'https://github.com/' },
-            { name: 'Gmail', url: 'https://mail.google.com/' },
-            { name: 'YouTube', url: 'https://youtube.com/' },
-            { name: 'Google', url: 'https://google.com/' },
-            { name: 'Twitter', url: 'https://twitter.com/' }
+        let currentUser = null;
+        let bookmarks = [];
+        let quickLinks = [];
+        let currentCategory = null;
+        let searchEngine = 'google';
+
+        // 默认数据
+        const defaultBookmarks = [
+            {
+                category: "开发工具",
+                links: [
+                    { name: "GitHub", url: "https://github.com", description: "代码托管平台", icon: "💻" },
+                    { name: "Stack Overflow", url: "https://stackoverflow.com", description: "编程问答社区", icon: "📚" }
+                ]
+            },
+            {
+                category: "设计资源",
+                links: [
+                    { name: "Dribbble", url: "https://dribbble.com", description: "设计师社区", icon: "🎨" },
+                    { name: "Figma", url: "https://figma.com", description: "在线设计工具", icon: "✏️" }
+                ]
+            }
         ];
 
-        let quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || JSON.parse(JSON.stringify(defaultQuickLinks));
-        // Weather API
-        async function fetchWeather() {
+        const defaultQuickLinks = [
+            { name: "Google", url: "https://google.com", icon: "🔍" },
+            { name: "YouTube", url: "https://youtube.com", icon: "📺" },
+            { name: "Twitter", url: "https://twitter.com", icon: "🐦" }
+        ];
+
+        // 登录相关
+        window.loginWithGoogle = async function () {
+            const provider = new GoogleAuthProvider();
             try {
-                const response = await fetch('https://wttr.in/Bristol?format=j1');
-                const data = await response.json();
+                document.getElementById('loginError').textContent = '';
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error('登录错误:', error);
+                document.getElementById('loginError').textContent = '登录失败: ' + error.message;
+            }
+        };
 
-                const current = data.current_condition[0];
-                const temp = current.temp_C;
-                const desc = current.weatherDesc[0].value;
+        window.loginAnonymously = async function () {
+            try {
+                document.getElementById('loginError').textContent = '';
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error('登录错误:', error);
+                document.getElementById('loginError').textContent = '登录失败: ' + error.message;
+            }
+        };
 
-                document.getElementById('weatherTemp').textContent = temp + '°C';
-                document.getElementById('weatherDescription').textContent = desc;
+        window.logout = async function () {
+            if (confirm('确定要登出吗？')) {
+                await signOut(auth);
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+        };
 
-                const weatherIcons = {
-                    'Sunny': '☀️', 'Clear': '🌙', 'Partly cloudy': '⛅',
-                    'Cloudy': '☁️', 'Overcast': '☁️', 'Mist': '🌫️',
-                    'Patchy rain possible': '🌦️', 'Light rain': '🌧️',
-                    'Moderate rain': '🌧️', 'Heavy rain': '🌧️',
-                    'Light snow': '🌨️', 'Heavy snow': '❄️'
+        // 监听认证状态
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+
+                const email = user.email || '匿名用户';
+                document.getElementById('userEmail').textContent = email;
+
+                await loadUserData();
+                init();
+            } else {
+                currentUser = null;
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+        });
+
+        // 加载用户数据
+        async function loadUserData() {
+            if (!currentUser) return;
+
+            updateSyncStatus('syncing', '同步中...');
+
+            try {
+                const userRef = ref(database, `users/${currentUser.uid}`);
+                const snapshot = await get(userRef);
+
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    bookmarks = data.bookmarks || defaultBookmarks;
+                    quickLinks = data.quickLinks || defaultQuickLinks;
+                } else {
+                    // 新用户，使用默认数据
+                    bookmarks = JSON.parse(JSON.stringify(defaultBookmarks));
+                    quickLinks = JSON.parse(JSON.stringify(defaultQuickLinks));
+                    await saveUserData();
+                }
+
+                // 监听数据变化
+                onValue(userRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        bookmarks = data.bookmarks || [];
+                        quickLinks = data.quickLinks || [];
+                        renderQuickLinks();
+                        setupCategoryFilters();
+                    }
+                });
+
+                updateSyncStatus('synced', '已同步');
+            } catch (error) {
+                console.error('加载数据错误:', error);
+                updateSyncStatus('offline', '同步失败');
+            }
+        }
+
+        // 保存用户数据
+        async function saveUserData() {
+            if (!currentUser) return;
+
+            updateSyncStatus('syncing', '保存中...');
+
+            try {
+                const userRef = ref(database, `users/${currentUser.uid}`);
+                await set(userRef, {
+                    bookmarks: bookmarks,
+                    quickLinks: quickLinks,
+                    lastUpdated: new Date().toISOString()
+                });
+                updateSyncStatus('synced', '已同步');
+            } catch (error) {
+                console.error('保存数据错误:', error);
+                updateSyncStatus('offline', '保存失败');
+            }
+        }
+
+        // 更新同步状态
+        function updateSyncStatus(status, text) {
+            const indicator = document.getElementById('syncIndicator');
+            const syncText = document.getElementById('syncText');
+
+            indicator.className = 'sync-indicator ' + status;
+            syncText.textContent = text;
+        }
+
+        // 初始化
+        function init() {
+            setupSearch();
+            setupWeather();
+            setupQuickLinks();
+            setupCategoryFilters();
+            renderQuickLinks();
+        }
+
+        // 搜索功能
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const engineButtons = document.querySelectorAll('.search-type button');
+
+            engineButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    engineButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    searchEngine = btn.dataset.engine;
+                });
+            });
+
+            function performSearch() {
+                const query = searchInput.value.trim();
+                if (!query) return;
+
+                const engines = {
+                    google: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+                    bing: `https://www.bing.com/search?q=${encodeURIComponent(query)}`,
+                    baidu: `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`
                 };
 
-                document.getElementById('weatherIcon').textContent = weatherIcons[desc] || '🌤️';
+                window.open(engines[searchEngine], '_blank');
+            }
+
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch();
+            });
+        }
+
+        // 天气功能
+        async function setupWeather() {
+            try {
+                const response = await fetch('https://api.weatherapi.com/v1/current.json?key=demo&q=auto:ip&lang=zh');
+                const data = await response.json();
+
+                document.getElementById('weatherCity').textContent = data.location.name;
+                document.getElementById('weatherDesc').textContent = data.current.condition.text;
+                document.getElementById('weatherTemp').textContent = Math.round(data.current.temp_c) + '°';
+
+                const iconMap = {
+                    'Sunny': '☀️',
+                    'Clear': '🌙',
+                    'Partly cloudy': '⛅',
+                    'Cloudy': '☁️',
+                    'Rain': '🌧️',
+                    'Snow': '❄️'
+                };
+                document.getElementById('weatherIcon').textContent = iconMap[data.current.condition.text] || '🌤️';
             } catch (error) {
-                console.error('Weather fetch error:', error);
-                document.getElementById('weatherDescription').textContent = '无法获取天气';
+                console.error('天气获取失败:', error);
+                document.getElementById('weatherCity').textContent = '天气信息';
+                document.getElementById('weatherDesc').textContent = '暂时无法获取';
             }
         }
 
-        function init() {
-            // Load saved bookmarks first
-            loadBookmarksFromStorage();
-
-            // Then initialize everything
-            fetchWeather();
-            renderQuickLinks();
-            setupCategoryFilters(); // This will render the first category
-            setupEventListeners();
-            populateCategorySelect();
-            setupModalEvents();
-            setupSearchEngine();
-            setupEditMode();
-            setupCategoryManagement();
-            setupResetButton();
-            setupQuickLinks();
-        }
-
-        function renderBookmarks(data) {
-            const container = document.getElementById('bookmarksContainer');
-            container.innerHTML = '';
-
-            data.forEach((section, index) => {
-                const sectionDiv = document.createElement('div');
-                sectionDiv.className = 'bookmark-section';
-                sectionDiv.style.animationDelay = `${index * 0.1}s`;
-                sectionDiv.dataset.category = section.category;
-
-                const title = document.createElement('h2');
-                title.className = 'section-title';
-                title.textContent = section.category;
-
-                const grid = document.createElement('div');
-                grid.className = 'bookmark-grid';
-
-                section.links.forEach((link, linkIndex) => {
-                    const card = document.createElement('a');
-                    card.className = 'bookmark-card';
-                    card.href = link.href;
-                    card.target = '_blank';
-                    card.style.animationDelay = `${0.05 * linkIndex}s`;
-                    card.dataset.category = section.category;
-                    card.dataset.linkIndex = linkIndex;
-
-                    // Add checkbox for edit mode
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'bookmark-checkbox';
-                    checkbox.addEventListener('change', updateSelectedCount);
-                    checkbox.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                    });
-
-                    const titleEl = document.createElement('div');
-                    titleEl.className = 'bookmark-title';
-                    titleEl.textContent = link.title;
-
-                    const urlEl = document.createElement('div');
-                    urlEl.className = 'bookmark-url';
-                    try {
-                        urlEl.textContent = new URL(link.href).hostname;
-                    } catch {
-                        urlEl.textContent = link.href;
-                    }
-
-                    card.appendChild(checkbox);
-                    card.appendChild(titleEl);
-                    card.appendChild(urlEl);
-
-                    // Prevent navigation when clicking checkbox in edit mode
-                    card.addEventListener('click', (e) => {
-                        if (document.body.classList.contains('edit-mode')) {
-                            e.preventDefault();
-                            checkbox.checked = !checkbox.checked;
-                            updateSelectedCount();
-                            if (checkbox.checked) {
-                                card.classList.add('selected');
-                            } else {
-                                card.classList.remove('selected');
-                            }
-                        }
-                    });
-
-                    grid.appendChild(card);
-                });
-
-                sectionDiv.appendChild(title);
-                sectionDiv.appendChild(grid);
-                container.appendChild(sectionDiv);
-            });
-        }
-
-        function setupCategoryFilters() {
-            const filterContainer = document.getElementById('categoryFilters');
-
-            // Clear existing filters
-            filterContainer.innerHTML = '';
-
-            // Add category buttons
-            const categories = bookmarks.map(b => b.category);
-            categories.forEach((category, index) => {
-                const button = document.createElement('button');
-                button.className = 'category-filter';
-                button.textContent = category;
-                button.dataset.category = category;
-
-                // Set first category as active
-                if (index === 0) {
-                    button.classList.add('active');
-                }
-
-                filterContainer.appendChild(button);
-            });
-
-            // Add click event listeners
-            filterContainer.querySelectorAll('.category-filter').forEach(button => {
-                button.addEventListener('click', () => {
-                    filterContainer.querySelectorAll('.category-filter').forEach(b =>
-                        b.classList.remove('active')
-                    );
-                    button.classList.add('active');
-
-                    const category = button.dataset.category;
-                    const filtered = bookmarks.filter(section => section.category === category);
-                    renderBookmarks(filtered);
-                });
-            });
-
-            // Show first category by default
-            if (categories.length > 0) {
-                const firstCategory = bookmarks.filter(section => section.category === categories[0]);
-                renderBookmarks(firstCategory);
-            }
-        }
-
-        function setupEventListeners() {
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase().trim();
-                if (query.length > 0) {
-                    filterBookmarks(query);
-                } else {
-                    // When search is cleared, show current active category
-                    const activeCategory = document.querySelector('.category-filter.active');
-                    if (activeCategory) {
-                        const category = activeCategory.dataset.category;
-                        const filtered = bookmarks.filter(section => section.category === category);
-                        renderBookmarks(filtered);
-                    }
-                }
-            });
-        }
-
-        function filterBookmarks(query) {
-            const sections = document.querySelectorAll('.bookmark-section');
-            sections.forEach(section => {
-                const cards = section.querySelectorAll('.bookmark-card');
-                let hasVisible = false;
-
-                cards.forEach(card => {
-                    const title = card.querySelector('.bookmark-title').textContent.toLowerCase();
-                    const url = card.querySelector('.bookmark-url').textContent.toLowerCase();
-
-                    if (title.includes(query) || url.includes(query)) {
-                        card.classList.remove('hidden');
-                        hasVisible = true;
-                    } else {
-                        card.classList.add('hidden');
-                    }
-                });
-
-                section.style.display = hasVisible ? 'block' : 'none';
-            });
-        }
-
-        function populateCategorySelect() {
-            const select = document.getElementById('bookmarkCategory');
-
-            // Clear existing options
-            select.innerHTML = '';
-
-            // Add all categories
-            bookmarks.forEach(section => {
-                const option = document.createElement('option');
-                option.value = section.category;
-                option.textContent = section.category;
-                select.appendChild(option);
-            });
-        }
-
-        function setupModalEvents() {
-            const modal = document.getElementById('addBookmarkModal');
-            const addBtn = document.getElementById('addBookmarkBtn');
-            const closeBtn = document.getElementById('closeModalBtn');
-            const form = document.getElementById('addBookmarkForm');
-
-            addBtn.addEventListener('click', () => {
-                modal.classList.add('active');
-            });
-
-            closeBtn.addEventListener('click', () => {
-                modal.classList.remove('active');
-                form.reset();
-            });
-
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
-                    form.reset();
-                }
-            });
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                const title = document.getElementById('bookmarkTitle').value;
-                const url = document.getElementById('bookmarkUrl').value;
-                const category = document.getElementById('bookmarkCategory').value;
-
-                const categorySection = bookmarks.find(b => b.category === category);
-                if (categorySection) {
-                    categorySection.links.push({ title, href: url });
-
-                    // Save to localStorage
-                    localStorage.setItem('customBookmarks', JSON.stringify(bookmarks));
-
-                    // Re-render current category
-                    const activeCategory = document.querySelector('.category-filter.active');
-                    if (activeCategory && activeCategory.dataset.category === category) {
-                        const filtered = bookmarks.filter(section => section.category === category);
-                        renderBookmarks(filtered);
-                    }
-
-                    // Update category filters
-                    setupCategoryFilters();
-
-                    // Close modal and reset form
-                    modal.classList.remove('active');
-                    form.reset();
-                }
-            });
-        }
-
-        function loadBookmarksFromStorage() {
-            const saved = localStorage.getItem('customBookmarks');
-            if (saved) {
-                try {
-                    bookmarks = JSON.parse(saved);
-                } catch (e) {
-                    console.error('Failed to load bookmarks from localStorage:', e);
-                }
-            }
-        }
-
-        function setupSearchEngine() {
-            const searchInput = document.getElementById('searchInput');
-            const searchTypeInputs = document.querySelectorAll('input[name="type"]');
-
-            searchTypeInputs.forEach(input => {
-                input.addEventListener('change', function () {
-                    const placeholder = this.getAttribute('data-placeholder');
-                    searchInput.placeholder = placeholder;
-                });
-            });
-
-            searchInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    const query = this.value.trim();
-                    if (query) {
-                        const selectedEngine = document.querySelector('input[name="type"]:checked');
-                        const searchUrl = selectedEngine.value + encodeURIComponent(query);
-                        window.open(searchUrl, '_blank');
-                    }
-                }
-            });
-        }
-
-        // Edit Mode Functions
-        function setupEditMode() {
-            const editBtn = document.getElementById('editModeBtn');
-            const cancelBtn = document.getElementById('cancelEditBtn');
-            const deleteBtn = document.getElementById('deleteSelectedBtn');
-            const editBar = document.getElementById('editModeBar');
-
-            editBtn.addEventListener('click', () => {
-                document.body.classList.add('edit-mode');
-                editBar.classList.add('active');
-            });
-
-            cancelBtn.addEventListener('click', () => {
-                exitEditMode();
-            });
-
-            deleteBtn.addEventListener('click', () => {
-                deleteSelectedBookmarks();
-            });
-        }
-
-        function updateSelectedCount() {
-            const checkboxes = document.querySelectorAll('.bookmark-checkbox:checked');
-            const count = checkboxes.length;
-            document.getElementById('selectedCount').textContent = count;
-            document.getElementById('deleteSelectedBtn').disabled = count === 0;
-
-            // Update card styling
-            document.querySelectorAll('.bookmark-card').forEach(card => {
-                const checkbox = card.querySelector('.bookmark-checkbox');
-                if (checkbox && checkbox.checked) {
-                    card.classList.add('selected');
-                } else {
-                    card.classList.remove('selected');
-                }
-            });
-        }
-
-        function deleteSelectedBookmarks() {
-            if (!confirm('确定要删除选中的书签吗？')) {
-                return;
-            }
-
-            const checkboxes = document.querySelectorAll('.bookmark-checkbox:checked');
-
-            // Group deletions by category
-            const deletionsByCategory = new Map();
-
-            checkboxes.forEach(checkbox => {
-                const card = checkbox.closest('.bookmark-card');
-                const category = card.dataset.category;
-                const linkIndex = parseInt(card.dataset.linkIndex);
-
-                if (!deletionsByCategory.has(category)) {
-                    deletionsByCategory.set(category, []);
-                }
-                deletionsByCategory.get(category).push(linkIndex);
-            });
-
-            // Delete bookmarks from each category (from highest index to lowest)
-            deletionsByCategory.forEach((indices, category) => {
-                const section = bookmarks.find(b => b.category === category);
-                if (section) {
-                    // Sort indices in descending order to delete from end to start
-                    indices.sort((a, b) => b - a);
-                    indices.forEach(index => {
-                        section.links.splice(index, 1);
-                    });
-                }
-            });
-
-            // Remove empty categories if needed
-            bookmarks = bookmarks.filter(section => section.links.length > 0);
-
-            // Save and refresh everything
-            localStorage.setItem('customBookmarks', JSON.stringify(bookmarks));
-
-            // Exit edit mode first
-            exitEditMode();
-
-            // Re-render and update all UI components
-            setupCategoryFilters(); // This will show first category
-            populateCategorySelect();
-        }
-
-        function exitEditMode() {
-            document.body.classList.remove('edit-mode');
-            document.getElementById('editModeBar').classList.remove('active');
-            document.querySelectorAll('.bookmark-checkbox').forEach(cb => cb.checked = false);
-            document.querySelectorAll('.bookmark-card').forEach(card => card.classList.remove('selected'));
-            updateSelectedCount();
-        }
-
-        // Category Management Functions
-        function setupCategoryManagement() {
-            const manageBtn = document.getElementById('manageCategoriesBtn');
-            const modal = document.getElementById('manageCategoriesModal');
-            const closeBtn = document.getElementById('closeCategoriesModalBtn');
-            const addBtn = document.getElementById('addCategoryBtn');
-            const input = document.getElementById('newCategoryInput');
-
-            manageBtn.addEventListener('click', () => {
-                renderCategoriesList();
-                modal.classList.add('active');
-            });
-
-            closeBtn.addEventListener('click', () => {
-                modal.classList.remove('active');
-            });
-
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
-                }
-            });
-
-            addBtn.addEventListener('click', () => {
-                addNewCategory(input.value.trim());
-                input.value = '';
-            });
-
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    addNewCategory(input.value.trim());
-                    input.value = '';
-                }
-            });
-        }
-
-        function renderCategoriesList() {
-            const container = document.getElementById('categoriesList');
-            container.innerHTML = '';
-
-            bookmarks.forEach((section, index) => {
-                const item = document.createElement('div');
-                item.className = 'category-item';
-
-                const info = document.createElement('div');
-                const name = document.createElement('span');
-                name.className = 'category-name';
-                name.textContent = section.category;
-
-                const count = document.createElement('span');
-                count.className = 'category-count';
-                count.textContent = `(${section.links.length} 个书签)`;
-
-                info.appendChild(name);
-                info.appendChild(count);
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-category-btn';
-                deleteBtn.textContent = '🗑️';
-                deleteBtn.title = '删除分类';
-                deleteBtn.addEventListener('click', () => {
-                    deleteCategory(index);
-                });
-
-                item.appendChild(info);
-                item.appendChild(deleteBtn);
-                container.appendChild(item);
-            });
-        }
-
-        function addNewCategory(name) {
-            if (!name) {
-                alert('请输入分类名称');
-                return;
-            }
-
-            if (bookmarks.find(b => b.category === name)) {
-                alert('该分类已存在');
-                return;
-            }
-
-            bookmarks.push({
-                category: name,
-                links: []
-            });
-
-            // Save to localStorage
-            localStorage.setItem('customBookmarks', JSON.stringify(bookmarks));
-
-            // Update all UI components
-            renderCategoriesList();
-            setupCategoryFilters(); // This will show first category
-            populateCategorySelect();
-
-            alert(`分类"${name}"已添加成功！`);
-        }
-
-        function deleteCategory(index) {
-            const category = bookmarks[index];
-
-            if (!category) {
-                return;
-            }
-
-            if (category.links.length > 0) {
-                if (!confirm(`分类"${category.category}"中有 ${category.links.length} 个书签，确定要删除吗？`)) {
-                    return;
-                }
-            }
-
-            // Remove the category
-            bookmarks.splice(index, 1);
-
-            // Save to localStorage
-            localStorage.setItem('customBookmarks', JSON.stringify(bookmarks));
-
-            // Update all UI components
-            renderCategoriesList();
-            setupCategoryFilters(); // This will show first category
-            populateCategorySelect();
-
-            alert(`分类"${category.category}"已删除`);
-        }
-
-        function setupResetButton() {
-            const resetBtn = document.getElementById('resetBookmarksBtn');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    if (confirm('确定要重置为初始书签吗？这将删除所有自定义修改！')) {
-                        // Clear localStorage
-                        localStorage.removeItem('customBookmarks');
-                        localStorage.removeItem('quickLinks');
-
-                        // Reset to initial bookmarks
-                        bookmarks = JSON.parse(JSON.stringify(initialBookmarks));
-                        quickLinks = JSON.parse(JSON.stringify(defaultQuickLinks));
-
-                        // Update all UI
-                        renderQuickLinks();
-                        setupCategoryFilters(); // This will show first category
-                        populateCategorySelect();
-                        renderCategoriesList();
-
-                        alert('已重置为初始书签！');
-                    }
-                });
-            }
-        }
-
-        // Quick Links Functions
+        // 常用网站功能
         function renderQuickLinks() {
             const grid = document.getElementById('quickLinksGrid');
             grid.innerHTML = '';
@@ -1604,57 +1312,17 @@
                 const icon = document.createElement('div');
                 icon.className = 'quick-link-icon';
 
-                // If user provided an emoji icon, use it
                 if (link.icon) {
                     icon.textContent = link.icon;
                 } else {
-                    // Try to get favicon from URL
                     try {
                         const url = new URL(link.url);
-                        const domain = url.hostname;
-
-                        // Try multiple favicon services in order
-                        const faviconServices = [
-                            `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
-                            `https://icons.duckduckgo.com/ip3/${domain}.ico`,
-                            `https://${domain}/favicon.ico`
-                        ];
-
                         const img = document.createElement('img');
+                        img.src = `https://www.google.com/s2/favicons?domain=${url.hostname}&sz=128`;
                         img.alt = link.name;
-
-                        let currentServiceIndex = 0;
-
-                        function tryNextService() {
-                            if (currentServiceIndex < faviconServices.length) {
-                                img.src = faviconServices[currentServiceIndex];
-                                currentServiceIndex++;
-                            } else {
-                                // All services failed, use default emoji
-                                icon.innerHTML = '';
-                                icon.textContent = '🔗';
-                                icon.classList.remove('has-image');
-                            }
-                        }
-
-                        img.onerror = function () {
-                            tryNextService();
-                        };
-
-                        img.onload = function () {
-                            // Check if image is actually loaded (not a 1x1 placeholder)
-                            if (this.naturalWidth > 1 && this.naturalHeight > 1) {
-                                icon.classList.add('has-image');
-                            } else {
-                                tryNextService();
-                            }
-                        };
-
+                        img.onload = () => icon.classList.add('has-image');
                         icon.appendChild(img);
-                        tryNextService(); // Start with first service
-
                     } catch (e) {
-                        // If URL parsing fails, use default emoji
                         icon.textContent = '🔗';
                     }
                 }
@@ -1666,7 +1334,6 @@
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'quick-link-delete';
                 deleteBtn.textContent = '×';
-                deleteBtn.title = '删除';
                 deleteBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -1686,54 +1353,237 @@
             const closeBtn = document.getElementById('closeQuickLinkModalBtn');
             const form = document.getElementById('addQuickLinkForm');
 
-            addBtn.addEventListener('click', () => {
-                modal.classList.add('active');
-            });
-
+            addBtn.addEventListener('click', () => modal.classList.add('active'));
             closeBtn.addEventListener('click', () => {
                 modal.classList.remove('active');
                 form.reset();
             });
 
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
-                    form.reset();
-                }
-            });
-
-            form.addEventListener('submit', (e) => {
+            form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-
-                const name = document.getElementById('quickLinkName').value;
-                const url = document.getElementById('quickLinkUrl').value;
-                const iconInput = document.getElementById('quickLinkIcon').value.trim();
-
-                const newLink = { name, url };
-
-                // Only add icon if user provided one
-                if (iconInput) {
-                    newLink.icon = iconInput;
-                }
-
+                const newLink = {
+                    name: document.getElementById('quickLinkName').value,
+                    url: document.getElementById('quickLinkUrl').value,
+                    icon: document.getElementById('quickLinkIcon').value || null
+                };
                 quickLinks.push(newLink);
-                localStorage.setItem('quickLinks', JSON.stringify(quickLinks));
-
+                await saveUserData();
                 renderQuickLinks();
                 modal.classList.remove('active');
                 form.reset();
             });
         }
 
-        function deleteQuickLink(index) {
+        window.closeQuickLinkModal = function () {
+            document.getElementById('addQuickLinkModal').classList.remove('active');
+            document.getElementById('addQuickLinkForm').reset();
+        };
+
+        async function deleteQuickLink(index) {
             if (confirm('确定要删除这个常用网站吗？')) {
                 quickLinks.splice(index, 1);
-                localStorage.setItem('quickLinks', JSON.stringify(quickLinks));
+                await saveUserData();
                 renderQuickLinks();
             }
         }
 
-        init();
+        // 书签分类功能
+        function setupCategoryFilters() {
+            const container = document.getElementById('categoryFilters');
+            container.innerHTML = '';
+
+            bookmarks.forEach((section, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn';
+                btn.textContent = section.category;
+                if (index === 0 && !currentCategory) {
+                    btn.classList.add('active');
+                    currentCategory = section.category;
+                }
+                if (section.category === currentCategory) {
+                    btn.classList.add('active');
+                }
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = section.category;
+                    renderBookmarks();
+                });
+                container.appendChild(btn);
+            });
+
+            renderBookmarks();
+            populateCategorySelect();
+        }
+
+        function renderBookmarks() {
+            const grid = document.getElementById('bookmarksGrid');
+            const section = bookmarks.find(s => s.category === currentCategory);
+
+            if (!section || !section.links.length) {
+                grid.innerHTML = '<p class="loading">这个分类还没有书签</p>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            section.links.forEach((link, index) => {
+                const card = document.createElement('div');
+                card.className = 'bookmark-card';
+
+                card.innerHTML = `
+                    <div class="bookmark-header">
+                        <div class="bookmark-icon">${link.icon || '📌'}</div>
+                        <div class="bookmark-info">
+                            <div class="bookmark-title">${link.name}</div>
+                            <div class="bookmark-url">${link.url}</div>
+                        </div>
+                    </div>
+                    ${link.description ? `<div class="bookmark-desc">${link.description}</div>` : ''}
+                    <div class="bookmark-footer">
+                        <a href="${link.url}" target="_blank" class="bookmark-link">访问</a>
+                        <button class="bookmark-delete" onclick="deleteBookmark(${index})">删除</button>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        window.deleteBookmark = async function (index) {
+            if (confirm('确定要删除这个书签吗？')) {
+                const section = bookmarks.find(s => s.category === currentCategory);
+                section.links.splice(index, 1);
+                await saveUserData();
+                renderBookmarks();
+            }
+        };
+
+        // 添加书签
+        window.openAddBookmarkModal = function () {
+            document.getElementById('addBookmarkModal').classList.add('active');
+        };
+
+        window.closeAddBookmarkModal = function () {
+            document.getElementById('addBookmarkModal').classList.remove('active');
+            document.getElementById('addBookmarkForm').reset();
+        };
+
+        document.getElementById('closeBookmarkModalBtn').addEventListener('click', closeAddBookmarkModal);
+
+        document.getElementById('addBookmarkForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newBookmark = {
+                name: document.getElementById('bookmarkName').value,
+                url: document.getElementById('bookmarkUrl').value,
+                description: document.getElementById('bookmarkDesc').value,
+                icon: document.getElementById('bookmarkIcon').value || '📌'
+            };
+
+            const category = document.getElementById('bookmarkCategory').value;
+            const section = bookmarks.find(s => s.category === category);
+
+            if (section) {
+                section.links.push(newBookmark);
+                await saveUserData();
+                if (category === currentCategory) {
+                    renderBookmarks();
+                }
+                closeAddBookmarkModal();
+            }
+        });
+
+        function populateCategorySelect() {
+            const select = document.getElementById('bookmarkCategory');
+            select.innerHTML = '';
+            bookmarks.forEach(section => {
+                const option = document.createElement('option');
+                option.value = section.category;
+                option.textContent = section.category;
+                select.appendChild(option);
+            });
+        }
+
+        // 管理分类
+        window.openManageCategoriesModal = function () {
+            renderCategoriesList();
+            document.getElementById('manageCategoriesModal').classList.add('active');
+        };
+
+        document.getElementById('closeCategoriesModalBtn').addEventListener('click', () => {
+            document.getElementById('manageCategoriesModal').classList.remove('active');
+        });
+
+        function renderCategoriesList() {
+            const container = document.getElementById('categoriesList');
+            container.innerHTML = '';
+
+            bookmarks.forEach((section, index) => {
+                const item = document.createElement('div');
+                item.className = 'category-item';
+
+                const info = document.createElement('div');
+                info.className = 'category-info';
+
+                const name = document.createElement('div');
+                name.className = 'category-name';
+                name.textContent = section.category;
+
+                const count = document.createElement('span');
+                count.className = 'category-count';
+                count.textContent = `(${section.links.length} 个书签)`;
+
+                info.appendChild(name);
+                info.appendChild(count);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-category-btn';
+                deleteBtn.textContent = '🗑️';
+                deleteBtn.addEventListener('click', () => deleteCategory(index));
+
+                item.appendChild(info);
+                item.appendChild(deleteBtn);
+                container.appendChild(item);
+            });
+        }
+
+        window.addNewCategory = async function () {
+            const name = document.getElementById('newCategoryName').value.trim();
+            if (!name) {
+                alert('请输入分类名称');
+                return;
+            }
+
+            if (bookmarks.find(b => b.category === name)) {
+                alert('该分类已存在');
+                return;
+            }
+
+            bookmarks.push({ category: name, links: [] });
+            await saveUserData();
+            renderCategoriesList();
+            setupCategoryFilters();
+            populateCategorySelect();
+            document.getElementById('newCategoryName').value = '';
+        };
+
+        async function deleteCategory(index) {
+            const category = bookmarks[index];
+            if (category.links.length > 0) {
+                if (!confirm(`分类"${category.category}"中有 ${category.links.length} 个书签，确定要删除吗？`)) {
+                    return;
+                }
+            }
+
+            bookmarks.splice(index, 1);
+            await saveUserData();
+            renderCategoriesList();
+            setupCategoryFilters();
+            populateCategorySelect();
+        }
+
+        // 导出到全局
+        window.saveUserData = saveUserData;
     </script>
 </body>
 

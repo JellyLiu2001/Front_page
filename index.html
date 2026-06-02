@@ -1165,6 +1165,331 @@
                 transform: translateY(0);
             }
         }
+
+        /* ===== MAIN TABS ===== */
+        .main-tabs {
+            display: flex;
+            background: rgba(15, 15, 35, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            backdrop-filter: blur(10px);
+        }
+        .main-tab {
+            padding: 0.9rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .main-tab:hover { color: var(--text-primary); }
+        .main-tab.active { color: var(--text-primary); border-bottom-color: #667eea; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        #tab-timeline.active {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 50px);
+            overflow: hidden;
+        }
+        #tab-todos.active { display: block; min-height: calc(100vh - 50px); }
+
+        /* ===== TIMELINE ===== */
+        #tab-timeline {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --tl-bg: #0f1117; --tl-bg2: #161b27; --tl-bg3: #1e2536;
+            --tl-border: rgba(255,255,255,0.08);
+            --tl-text: #e8eaf0; --tl-text2: #8a93a8;
+            --tl-accent: #4f8ef7; --tl-accent2: #7b5cf0;
+        }
+        .tl-toolbar {
+            height: 56px; background: var(--tl-bg2);
+            border-bottom: 1px solid var(--tl-border);
+            display: flex; align-items: center; padding: 0 20px; gap: 16px;
+            flex-shrink: 0; box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+        }
+        .tl-toolbar-left { display: flex; align-items: center; gap: 10px; flex: 1; }
+        .tl-toolbar-center { display: flex; align-items: center; gap: 8px; }
+        .tl-toolbar-right { flex: 1; display: flex; justify-content: flex-end; }
+        .tl-app-title {
+            font-size: 18px; font-weight: 700;
+            background: linear-gradient(135deg, #4f8ef7, #7b5cf0);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .tl-tool-btn {
+            background: var(--tl-bg3); border: 1px solid var(--tl-border); color: var(--tl-text);
+            border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px;
+            display: flex; align-items: center; gap: 4px; transition: all 0.15s;
+            min-width: 36px; justify-content: center;
+        }
+        .tl-tool-btn:hover { background: var(--tl-bg); border-color: var(--tl-accent); color: var(--tl-accent); }
+        .tl-scale-label {
+            font-size: 12px; color: var(--tl-text2); background: var(--tl-bg3);
+            padding: 4px 10px; border-radius: 6px; border: 1px solid var(--tl-border);
+        }
+        .tl-btn-primary {
+            background: linear-gradient(135deg, #4f8ef7, #7b5cf0); border: none; color: #fff;
+            border-radius: 8px; padding: 8px 18px; cursor: pointer; font-size: 14px; font-weight: 600;
+            transition: all 0.15s; box-shadow: 0 2px 12px rgba(79,142,247,0.35);
+        }
+        .tl-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(79,142,247,0.5); }
+        .tl-main-area { display: flex; flex: 1; overflow: hidden; }
+        .tl-timeline-container {
+            flex: 1; display: flex; flex-direction: column; overflow: hidden;
+            position: relative; background: var(--tl-bg);
+        }
+        .tl-ruler-wrapper {
+            height: 52px; flex-shrink: 0; background: var(--tl-bg2);
+            border-bottom: 1px solid var(--tl-border); overflow: hidden; position: relative;
+        }
+        .tl-ruler { height: 100%; position: absolute; left: 0; top: 0; width: 100%; }
+        .tl-ruler-tick {
+            position: absolute; bottom: 0; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; pointer-events: none;
+        }
+        .tl-ruler-tick.tl-major .tl-tick-line { width: 1px; background: var(--tl-border); height: 16px; }
+        .tl-ruler-tick.tl-minor .tl-tick-line { width: 1px; background: rgba(255,255,255,0.04); height: 8px; }
+        .tl-tick-label { font-size: 11px; color: var(--tl-text2); white-space: nowrap; margin-bottom: 4px; }
+        .tl-ruler-tick.tl-major .tl-tick-label { color: var(--tl-text); font-weight: 500; }
+        .tl-track-wrapper {
+            flex: 1; overflow: hidden; position: relative; cursor: grab; user-select: none;
+        }
+        .tl-track-wrapper:active { cursor: grabbing; }
+        .tl-track-inner {
+            height: 100%; display: flex; flex-direction: column;
+            position: absolute; left: 0; top: 0; right: 0;
+        }
+        .tl-events-top { flex: 1; position: relative; min-height: 100px; }
+        .tl-axis-line-wrapper {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--tl-accent), var(--tl-accent2), var(--tl-accent), transparent);
+            position: relative; flex-shrink: 0; box-shadow: 0 0 12px rgba(79,142,247,0.4);
+        }
+        .tl-axis-line { position: absolute; inset: 0; }
+        .tl-events-bottom { flex: 1; position: relative; min-height: 100px; }
+        .tl-today-marker {
+            position: absolute; top: -200px; bottom: -200px; width: 2px;
+            background: rgba(255,180,50,0.6); transform: translateX(-50%);
+            pointer-events: none; z-index: 5;
+        }
+        .tl-today-marker::before {
+            content: '今天'; position: absolute; top: 205px; left: 50%;
+            transform: translateX(-50%); font-size: 10px; color: #ffb432;
+            white-space: nowrap; background: var(--tl-bg2); padding: 2px 6px;
+            border-radius: 4px; border: 1px solid rgba(255,180,50,0.3);
+        }
+        .tl-event-marker {
+            position: absolute; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; z-index: 10; transition: transform 0.1s;
+        }
+        .tl-event-marker:hover { transform: translateX(-50%) scale(1.05); z-index: 20; }
+        .tl-event-marker.tl-top { bottom: 0; flex-direction: column-reverse; }
+        .tl-event-marker.tl-bottom { top: 0; flex-direction: column; }
+        .tl-event-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3); flex-shrink: 0;
+            box-shadow: 0 0 8px rgba(0,0,0,0.4); transition: transform 0.1s;
+        }
+        .tl-event-marker:hover .tl-event-dot { transform: scale(1.3); }
+        .tl-event-stem {
+            width: 1px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0.03));
+            flex-shrink: 0;
+        }
+        .tl-event-marker.tl-top .tl-event-stem {
+            background: linear-gradient(to top, rgba(255,255,255,0.15), rgba(255,255,255,0.03));
+        }
+        .tl-event-card {
+            max-width: 160px; padding: 8px 10px; border-radius: 8px;
+            background: var(--tl-bg2); border: 1px solid var(--tl-border);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4); transition: box-shadow 0.15s; min-width: 80px;
+        }
+        .tl-event-marker:hover .tl-event-card { box-shadow: 0 6px 24px rgba(0,0,0,0.6); }
+        .tl-event-card-title {
+            font-size: 12px; font-weight: 600; color: var(--tl-text);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;
+        }
+        .tl-event-card-date { font-size: 10px; color: var(--tl-text2); margin-top: 2px; }
+        .tl-event-range {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            height: 16px; border-radius: 8px; opacity: 0.85; cursor: pointer; z-index: 8;
+            display: flex; align-items: center; padding: 0 8px;
+            font-size: 11px; color: #fff; font-weight: 500;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            transition: opacity 0.15s, transform 0.1s; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .tl-event-range:hover { opacity: 1; transform: translateY(-50%) scaleY(1.1); z-index: 20; }
+        .tl-detail-panel {
+            width: 280px; background: var(--tl-bg2); border-left: 1px solid var(--tl-border);
+            display: none; flex-direction: column; position: relative;
+            overflow: hidden; animation: tlSlideIn 0.2s ease;
+        }
+        .tl-detail-panel.visible { display: flex; }
+        @keyframes tlSlideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .tl-panel-color-bar { height: 4px; flex-shrink: 0; }
+        .tl-panel-close {
+            position: absolute; top: 12px; right: 12px; background: none; border: none;
+            color: var(--tl-text2); cursor: pointer; font-size: 16px; padding: 4px;
+            border-radius: 4px; transition: all 0.1s; z-index: 10;
+        }
+        .tl-panel-close:hover { background: var(--tl-bg3); color: var(--tl-text); }
+        .tl-panel-body { padding: 20px 20px 16px; flex: 1; }
+        .tl-panel-date { font-size: 12px; color: var(--tl-text2); margin-bottom: 8px; }
+        .tl-panel-title { font-size: 18px; font-weight: 700; color: var(--tl-text); line-height: 1.3; margin-bottom: 12px; }
+        .tl-panel-desc { font-size: 13px; color: var(--tl-text2); line-height: 1.6; white-space: pre-wrap; }
+        .tl-panel-actions { padding: 16px 20px; display: flex; gap: 8px; border-top: 1px solid var(--tl-border); }
+        .tl-btn-sm {
+            flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--tl-border);
+            cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s;
+        }
+        .tl-btn-edit { background: var(--tl-bg3); color: var(--tl-text); }
+        .tl-btn-edit:hover { background: var(--tl-accent); border-color: var(--tl-accent); color: #fff; }
+        .tl-btn-delete { background: var(--tl-bg3); color: var(--tl-text2); }
+        .tl-btn-delete:hover { background: #c0392b; border-color: #c0392b; color: #fff; }
+        .tl-modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center; z-index: 2000;
+        }
+        .tl-modal-overlay.visible { display: flex; }
+        .tl-modal {
+            background: var(--tl-bg2); border: 1px solid var(--tl-border); border-radius: 16px;
+            width: 480px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            animation: tlModalIn 0.2s ease;
+        }
+        @keyframes tlModalIn { from { transform: translateY(20px) scale(0.97); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        .tl-modal-header { padding: 20px 20px 0; display: flex; align-items: center; justify-content: space-between; }
+        .tl-modal-title { font-size: 18px; font-weight: 700; color: var(--tl-text); }
+        .tl-modal-close {
+            background: none; border: none; color: var(--tl-text2); font-size: 18px;
+            cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: all 0.1s;
+        }
+        .tl-modal-close:hover { background: var(--tl-bg3); color: var(--tl-text); }
+        .tl-modal-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        .tl-form-row { display: flex; gap: 12px; }
+        .tl-form-row .tl-form-group { flex: 1; }
+        .tl-form-group { display: flex; flex-direction: column; gap: 6px; }
+        .tl-form-group label { font-size: 13px; font-weight: 500; color: var(--tl-text2); }
+        .tl-required { color: #f74f4f; }
+        .tl-optional { color: var(--tl-text2); font-weight: 400; }
+        .tl-form-group input, .tl-form-group textarea {
+            background: var(--tl-bg3); border: 1px solid var(--tl-border); border-radius: 8px;
+            color: var(--tl-text); padding: 10px 12px; font-size: 14px; font-family: inherit;
+            outline: none; transition: border-color 0.15s; width: 100%;
+        }
+        .tl-form-group input:focus, .tl-form-group textarea:focus {
+            border-color: var(--tl-accent); box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
+        }
+        .tl-form-group input::placeholder, .tl-form-group textarea::placeholder { color: rgba(255,255,255,0.2); }
+        .tl-color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tl-color-swatch {
+            width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+            border: 2px solid transparent; transition: all 0.15s; position: relative;
+        }
+        .tl-color-swatch:hover { transform: scale(1.2); }
+        .tl-color-swatch.selected { border-color: #fff; box-shadow: 0 0 0 2px rgba(255,255,255,0.3); transform: scale(1.1); }
+        .tl-modal-footer {
+            padding: 16px 20px; display: flex; gap: 8px; justify-content: flex-end;
+            border-top: 1px solid var(--tl-border);
+        }
+        .tl-btn-cancel {
+            background: var(--tl-bg3); border: 1px solid var(--tl-border); color: var(--tl-text);
+            border-radius: 8px; padding: 8px 18px; cursor: pointer; font-size: 14px; transition: all 0.15s;
+        }
+        .tl-btn-cancel:hover { background: var(--tl-bg); }
+        .tl-empty-hint {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            text-align: center; pointer-events: none; transition: opacity 0.3s;
+        }
+        .tl-empty-hint.hidden { opacity: 0; }
+        .tl-empty-icon { font-size: 36px; margin-bottom: 8px; }
+        .tl-empty-text { font-size: 14px; color: var(--tl-text2); }
+
+        /* ===== TODO ===== */
+        .todo-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .todo-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem;
+        }
+        .todo-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; }
+        .todo-stats { color: var(--text-secondary); font-size: 0.9rem; }
+        .todo-add-form {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        .todo-input-row { display: flex; gap: 0.75rem; }
+        .todo-input {
+            flex: 1; padding: 0.75rem 1rem; background: rgba(255,255,255,0.07);
+            border: 1px solid var(--border-color); border-radius: 10px;
+            color: var(--text-primary); font-size: 1rem; font-family: 'Inter', sans-serif;
+            outline: none; transition: all 0.3s;
+        }
+        .todo-input:focus { border-color: rgba(102,126,234,0.5); box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .todo-input::placeholder { color: var(--text-secondary); }
+        .todo-priority-select {
+            padding: 0.75rem; background: rgba(255,255,255,0.07);
+            border: 1px solid var(--border-color); border-radius: 10px;
+            color: var(--text-primary); font-size: 0.9rem; cursor: pointer; outline: none;
+        }
+        .todo-priority-select option { background: #1a1a3e; }
+        .todo-filters { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .todo-filter-btn {
+            padding: 0.5rem 1.25rem; background: var(--bg-card);
+            border: 1px solid var(--border-color); border-radius: 20px;
+            color: var(--text-secondary); cursor: pointer; font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+        .todo-filter-btn.active { background: var(--primary-gradient); border-color: transparent; color: white; }
+        .todo-filter-btn:hover:not(.active) { background: var(--card-hover); color: var(--text-primary); }
+        .todo-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .todo-item {
+            display: flex; align-items: center; gap: 1rem;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem 1.25rem;
+            transition: all 0.3s; backdrop-filter: blur(10px);
+        }
+        .todo-item:hover { background: var(--card-hover); }
+        .todo-item.completed { opacity: 0.5; }
+        .todo-checkbox {
+            width: 22px; height: 22px; border-radius: 50%;
+            border: 2px solid var(--border-color); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: all 0.3s; background: none;
+            font-size: 12px;
+        }
+        .todo-checkbox:hover { border-color: #667eea; }
+        .todo-item.completed .todo-checkbox { background: #667eea; border-color: #667eea; color: white; }
+        .todo-text {
+            flex: 1; font-size: 0.95rem; color: var(--text-primary); word-break: break-word;
+        }
+        .todo-item.completed .todo-text { text-decoration: line-through; color: var(--text-secondary); }
+        .todo-priority-badge {
+            font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 10px; flex-shrink: 0;
+        }
+        .todo-priority-badge.high { background: rgba(245,87,108,0.15); color: #f5576c; border: 1px solid rgba(245,87,108,0.3); }
+        .todo-priority-badge.low { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+        .todo-priority-badge.normal { display: none; }
+        .todo-delete-btn {
+            background: none; border: none; color: var(--text-secondary); cursor: pointer;
+            font-size: 1.1rem; padding: 0.25rem; border-radius: 6px; transition: all 0.2s;
+            opacity: 0; flex-shrink: 0;
+        }
+        .todo-item:hover .todo-delete-btn { opacity: 1; }
+        .todo-delete-btn:hover { color: #f5576c; background: rgba(245,87,108,0.1); }
+        .todo-footer { margin-top: 1.5rem; text-align: right; }
+        .todo-empty {
+            text-align: center; padding: 3rem; color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        .todo-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
     </style>
 </head>
 
@@ -1200,6 +1525,15 @@
             </div>
         </div>
 
+        <!-- Tab Navigation -->
+        <nav class="main-tabs">
+            <button class="main-tab active" data-tab="bookmarks">📚 书签导航</button>
+            <button class="main-tab" data-tab="timeline">⏱️ 时间轴</button>
+            <button class="main-tab" data-tab="todos">✅ 待办清单</button>
+        </nav>
+
+        <!-- Bookmarks Tab -->
+        <div class="tab-panel active" id="tab-bookmarks">
         <div class="container">
             <!-- Header -->
             <div class="header">
@@ -1292,6 +1626,146 @@
                 <div class="bookmarks-grid" id="bookmarksGrid">
                     <!-- Bookmarks will be rendered here -->
                 </div>
+            </div>
+        </div>
+        </div><!-- end tab-bookmarks -->
+
+        <!-- Timeline Tab -->
+        <div class="tab-panel" id="tab-timeline">
+            <header class="tl-toolbar">
+                <div class="tl-toolbar-left">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <circle cx="14" cy="14" r="13" stroke="#4f8ef7" stroke-width="2"/>
+                        <line x1="14" y1="6" x2="14" y2="14" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="14" y1="14" x2="20" y2="18" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span class="tl-app-title">时间轴</span>
+                </div>
+                <div class="tl-toolbar-center">
+                    <button class="tl-tool-btn" id="tl-btn-zoom-out">
+                        <svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="2" rx="1" fill="currentColor"/></svg>
+                    </button>
+                    <button class="tl-tool-btn" id="tl-btn-today">今天</button>
+                    <button class="tl-tool-btn" id="tl-btn-zoom-in">
+                        <svg width="16" height="16" viewBox="0 0 16 16"><rect x="7" y="3" width="2" height="10" rx="1" fill="currentColor"/><rect x="3" y="7" width="10" height="2" rx="1" fill="currentColor"/></svg>
+                    </button>
+                    <div class="tl-scale-label" id="tl-scale-label">年视图</div>
+                </div>
+                <div class="tl-toolbar-right">
+                    <button class="tl-btn-primary" id="tl-btn-add-event">+ 添加事件</button>
+                </div>
+            </header>
+            <main class="tl-main-area">
+                <div class="tl-timeline-container" id="tl-timeline-container">
+                    <div class="tl-ruler-wrapper">
+                        <div class="tl-ruler" id="tl-ruler"></div>
+                    </div>
+                    <div class="tl-track-wrapper" id="tl-track-wrapper">
+                        <div class="tl-track-inner" id="tl-track-inner">
+                            <div class="tl-events-top" id="tl-events-top"></div>
+                            <div class="tl-axis-line-wrapper">
+                                <div class="tl-axis-line"></div>
+                                <div class="tl-today-marker" id="tl-today-marker"></div>
+                            </div>
+                            <div class="tl-events-bottom" id="tl-events-bottom"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tl-detail-panel" id="tl-detail-panel">
+                    <button class="tl-panel-close" id="tl-panel-close">✕</button>
+                    <div class="tl-panel-color-bar" id="tl-panel-color-bar"></div>
+                    <div class="tl-panel-body">
+                        <div class="tl-panel-date" id="tl-panel-date"></div>
+                        <div class="tl-panel-title" id="tl-panel-title"></div>
+                        <div class="tl-panel-desc" id="tl-panel-desc"></div>
+                    </div>
+                    <div class="tl-panel-actions">
+                        <button class="tl-btn-sm tl-btn-edit" id="tl-panel-edit">编辑</button>
+                        <button class="tl-btn-sm tl-btn-delete" id="tl-panel-delete">删除</button>
+                    </div>
+                </div>
+            </main>
+            <div class="tl-empty-hint" id="tl-empty-hint">
+                <div class="tl-empty-icon">📅</div>
+                <div class="tl-empty-text">点击右上角「+ 添加事件」开始创建你的时间轴</div>
+            </div>
+        </div><!-- end tab-timeline -->
+
+        <!-- Todos Tab -->
+        <div class="tab-panel" id="tab-todos">
+            <div class="todo-container">
+                <div class="todo-header">
+                    <h2 class="todo-title">✅ 待办清单</h2>
+                    <div class="todo-stats" id="todoStats">0 项未完成</div>
+                </div>
+                <div class="todo-add-form">
+                    <div class="todo-input-row">
+                        <input type="text" class="todo-input" id="todoInput" placeholder="添加新的待办事项...">
+                        <select class="todo-priority-select" id="todoPriority">
+                            <option value="normal">普通</option>
+                            <option value="high">🔴 高优先级</option>
+                            <option value="low">🟢 低优先级</option>
+                        </select>
+                        <button class="btn primary" id="todoAddBtn">添加</button>
+                    </div>
+                </div>
+                <div class="todo-filters">
+                    <button class="todo-filter-btn active" data-filter="all">全部</button>
+                    <button class="todo-filter-btn" data-filter="active">未完成</button>
+                    <button class="todo-filter-btn" data-filter="completed">已完成</button>
+                </div>
+                <div class="todo-list" id="todoList"></div>
+                <div class="todo-footer" id="todoFooter" style="display:none;">
+                    <button class="btn" id="clearCompletedBtn">清除已完成</button>
+                </div>
+            </div>
+        </div><!-- end tab-todos -->
+
+    </div><!-- end mainApp -->
+
+    <!-- Timeline Modal -->
+    <div class="tl-modal-overlay" id="tl-modal-overlay">
+        <div class="tl-modal">
+            <div class="tl-modal-header">
+                <h2 class="tl-modal-title" id="tl-modal-title">添加事件</h2>
+                <button class="tl-modal-close" id="tl-modal-close">✕</button>
+            </div>
+            <div class="tl-modal-body">
+                <div class="tl-form-group">
+                    <label>标题 <span class="tl-required">*</span></label>
+                    <input type="text" id="tl-input-title" placeholder="事件标题" maxlength="100">
+                </div>
+                <div class="tl-form-row">
+                    <div class="tl-form-group">
+                        <label>开始日期 <span class="tl-required">*</span></label>
+                        <input type="date" id="tl-input-start">
+                    </div>
+                    <div class="tl-form-group">
+                        <label>结束日期 <span class="tl-optional">(可选)</span></label>
+                        <input type="date" id="tl-input-end">
+                    </div>
+                </div>
+                <div class="tl-form-group">
+                    <label>描述</label>
+                    <textarea id="tl-input-desc" placeholder="详细描述..." rows="3"></textarea>
+                </div>
+                <div class="tl-form-group">
+                    <label>颜色</label>
+                    <div class="tl-color-picker" id="tl-color-picker">
+                        <div class="tl-color-swatch selected" data-color="#4f8ef7" style="background:#4f8ef7"></div>
+                        <div class="tl-color-swatch" data-color="#f74f4f" style="background:#f74f4f"></div>
+                        <div class="tl-color-swatch" data-color="#f7a94f" style="background:#f7a94f"></div>
+                        <div class="tl-color-swatch" data-color="#4ff776" style="background:#4ff776"></div>
+                        <div class="tl-color-swatch" data-color="#b44ff7" style="background:#b44ff7"></div>
+                        <div class="tl-color-swatch" data-color="#f74fb3" style="background:#f74fb3"></div>
+                        <div class="tl-color-swatch" data-color="#4ff7e8" style="background:#4ff7e8"></div>
+                        <div class="tl-color-swatch" data-color="#f7f74f" style="background:#f7f74f"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="tl-modal-footer">
+                <button class="tl-btn-cancel" id="tl-btn-cancel">取消</button>
+                <button class="tl-btn-primary" id="tl-btn-save">保存</button>
             </div>
         </div>
     </div>
@@ -1427,6 +1901,20 @@
         let bookmarks = [];
         let quickLinks = [];
         let currentCategory = null;
+        let todos = [];
+        let todoFilter = 'all';
+
+        // Timeline state
+        const MS_DAY = 86400000;
+        const tlState = {
+            events: [], viewStart: null, viewEnd: null,
+            selectedId: null, editingId: null,
+            isDragging: false, dragStartX: 0, dragStartMs: 0,
+            selectedColor: '#4f8ef7'
+        };
+        let tlRuler, tlTrackWrapper, tlEventsTop, tlEventsBottom;
+        let tlTodayMarker, tlDetailPanel, tlModalOverlay, tlEmptyHint, tlScaleLabel;
+        let tlInitialized = false;
 
         // 立即绑定登录按钮 - 在页面加载时就绑定
         document.addEventListener('DOMContentLoaded', () => {
@@ -2569,16 +3057,23 @@
                 console.log('📡 正在从Firebase获取数据...');
                 const snapshot = await get(userRef);
 
+                function parseTlEvents(raw) {
+                    return (raw || []).map(e => ({
+                        ...e,
+                        start: new Date(e.start),
+                        end: e.end ? new Date(e.end) : null
+                    }));
+                }
+
                 if (snapshot.exists()) {
                     console.log('✅ 找到用户数据');
                     const data = snapshot.val();
                     bookmarks = data.bookmarks || defaultBookmarks;
                     quickLinks = data.quickLinks || defaultQuickLinks;
-                    console.log(`📚 加载了 ${bookmarks.length} 个分类`);
-                    console.log(`⚡ 加载了 ${quickLinks.length} 个快捷链接`);
+                    tlState.events = parseTlEvents(data.events);
+                    todos = data.todos || [];
                 } else {
                     console.log('ℹ️ 新用户，使用默认数据');
-                    // 新用户，使用默认数据
                     bookmarks = JSON.parse(JSON.stringify(defaultBookmarks));
                     quickLinks = JSON.parse(JSON.stringify(defaultQuickLinks));
                     await saveUserData();
@@ -2590,8 +3085,12 @@
                         const data = snapshot.val();
                         bookmarks = data.bookmarks || [];
                         quickLinks = data.quickLinks || [];
+                        tlState.events = parseTlEvents(data.events);
+                        todos = data.todos || [];
                         renderQuickLinks();
                         setupCategoryFilters();
+                        renderTimeline();
+                        renderTodos();
                     }
                 });
 
@@ -2613,6 +3112,12 @@
                 await set(userRef, {
                     bookmarks: bookmarks,
                     quickLinks: quickLinks,
+                    events: tlState.events.map(e => ({
+                        ...e,
+                        start: e.start instanceof Date ? e.start.toISOString() : e.start,
+                        end: e.end instanceof Date ? e.end.toISOString() : (e.end || null)
+                    })),
+                    todos: todos,
                     lastUpdated: new Date().toISOString()
                 });
                 updateSyncStatus('synced', '已同步');
@@ -2638,6 +3143,10 @@
             setupQuickLinks();
             setupCategoryFilters();
             renderQuickLinks();
+            setupMainTabs();
+            initTimeline();
+            renderTodos();
+            setupTodoHandlers();
         }
 
         // 搜索功能
@@ -3033,6 +3542,499 @@
 
         // 导出到全局
         window.saveUserData = saveUserData;
+
+        // ===== MAIN TABS =====
+        function setupMainTabs() {
+            document.querySelectorAll('.main-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tab = btn.dataset.tab;
+                    document.querySelectorAll('.main-tab').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById('tab-' + tab).classList.add('active');
+                    if (tab === 'timeline') renderTimeline();
+                    if (tab === 'todos') renderTodos();
+                });
+            });
+        }
+
+        // ===== TIMELINE =====
+        function initTimeline() {
+            if (tlInitialized) { renderTimeline(); return; }
+            tlInitialized = true;
+            tlRuler        = document.getElementById('tl-ruler');
+            tlTrackWrapper = document.getElementById('tl-track-wrapper');
+            tlEventsTop    = document.getElementById('tl-events-top');
+            tlEventsBottom = document.getElementById('tl-events-bottom');
+            tlTodayMarker  = document.getElementById('tl-today-marker');
+            tlDetailPanel  = document.getElementById('tl-detail-panel');
+            tlModalOverlay = document.getElementById('tl-modal-overlay');
+            tlEmptyHint    = document.getElementById('tl-empty-hint');
+            tlScaleLabel   = document.getElementById('tl-scale-label');
+
+            const today = new Date(); today.setHours(0,0,0,0);
+            tlState.viewStart = new Date(today.getFullYear() - 2, 0, 1);
+            tlState.viewEnd   = new Date(today.getFullYear() + 2, 11, 31);
+            renderTimeline();
+            bindTimelineEvents();
+        }
+
+        function tlGetContainerWidth() {
+            return (tlTrackWrapper && tlTrackWrapper.clientWidth) || window.innerWidth;
+        }
+
+        function tlDateToX(date) {
+            const total = tlState.viewEnd - tlState.viewStart;
+            return ((date - tlState.viewStart) / total) * tlGetContainerWidth();
+        }
+
+        function tlXToDate(x) {
+            const total = tlState.viewEnd - tlState.viewStart;
+            return new Date(tlState.viewStart.getTime() + (x / tlGetContainerWidth()) * total);
+        }
+
+        function tlVisibleRangeDays() {
+            return (tlState.viewEnd - tlState.viewStart) / MS_DAY;
+        }
+
+        function tlGetScaleConfig() {
+            const d = tlVisibleRangeDays();
+            if (d > 365*50) return { major:'decade', minor:'year',  label:'世纪视图' };
+            if (d > 365*10) return { major:'year',   minor:'month', label:'十年视图' };
+            if (d > 365*2)  return { major:'year',   minor:'month', label:'年视图'  };
+            if (d > 120)    return { major:'month',  minor:'week',  label:'月视图'  };
+            if (d > 30)     return { major:'week',   minor:'day',   label:'周视图'  };
+            return              { major:'day',    minor:'day',   label:'日视图'  };
+        }
+
+        function tlIterateTicks(cfg) {
+            const ticks = []; const W = tlGetContainerWidth();
+            const advance = (d, unit) => {
+                const n = new Date(d);
+                if (unit==='day')   n.setDate(n.getDate()+1);
+                if (unit==='week')  n.setDate(n.getDate()+7);
+                if (unit==='month') n.setMonth(n.getMonth()+1);
+                if (unit==='year')  n.setFullYear(n.getFullYear()+1);
+                if (unit==='decade')n.setFullYear(n.getFullYear()+10);
+                return n;
+            };
+            const snap = (d, unit) => {
+                const n = new Date(d); n.setHours(0,0,0,0);
+                if (unit==='week')  n.setDate(n.getDate()-n.getDay());
+                if (unit==='month') n.setDate(1);
+                if (unit==='year')  n.setMonth(0,1);
+                if (unit==='decade')n.setFullYear(Math.floor(n.getFullYear()/10)*10,0,1);
+                return n;
+            };
+            const add = (date, type) => {
+                const x = tlDateToX(date);
+                if (x < -20 || x > W+20) return;
+                ticks.push({ x, date: new Date(date), type });
+            };
+            let cur = snap(new Date(tlState.viewStart), cfg.major);
+            while (cur <= tlState.viewEnd) { add(cur,'major'); cur = advance(cur,cfg.major); }
+            if (cfg.minor !== cfg.major) {
+                cur = snap(new Date(tlState.viewStart), cfg.minor);
+                while (cur <= tlState.viewEnd) { add(cur,'minor'); cur = advance(cur,cfg.minor); }
+            }
+            return ticks;
+        }
+
+        function tlFormatTickLabel(date, unit) {
+            const y=date.getFullYear(), m=date.getMonth()+1, d=date.getDate();
+            if (unit==='decade') return `${Math.floor(y/10)*10}s`;
+            if (unit==='year')   return `${y}`;
+            if (unit==='month')  return `${y}/${String(m).padStart(2,'0')}`;
+            return `${m}/${d}`;
+        }
+
+        function renderTimeline() {
+            if (!tlRuler) return;
+            renderTlRuler(); renderTlEvents(); renderTlTodayMarker(); tlUpdateUI();
+        }
+
+        function renderTlRuler() {
+            tlRuler.innerHTML = '';
+            const cfg = tlGetScaleConfig();
+            tlScaleLabel.textContent = cfg.label;
+            const seen = new Set();
+            tlIterateTicks(cfg).forEach(t => {
+                const key = `${t.type}-${Math.round(t.x)}`;
+                if (seen.has(key)) return; seen.add(key);
+                const el = document.createElement('div');
+                el.className = `tl-ruler-tick ${t.type==='major'?'tl-major':'tl-minor'}`;
+                el.style.left = t.x + 'px';
+                if (t.type==='major') {
+                    const lbl = document.createElement('div');
+                    lbl.className = 'tl-tick-label';
+                    lbl.textContent = tlFormatTickLabel(t.date, cfg.major);
+                    el.appendChild(lbl);
+                }
+                const line = document.createElement('div');
+                line.className = 'tl-tick-line';
+                el.appendChild(line);
+                tlRuler.appendChild(el);
+            });
+        }
+
+        function renderTlTodayMarker() {
+            const today = new Date(); today.setHours(0,0,0,0);
+            const x = tlDateToX(today);
+            const W = tlGetContainerWidth();
+            if (x > 0 && x < W) {
+                tlTodayMarker.style.display = 'block';
+                tlTodayMarker.style.left = x + 'px';
+            } else { tlTodayMarker.style.display = 'none'; }
+        }
+
+        function renderTlEvents() {
+            tlEventsTop.innerHTML = ''; tlEventsBottom.innerHTML = '';
+            const W = tlGetContainerWidth();
+            const sorted = [...tlState.events].sort((a,b) => a.start - b.start);
+            let topCount=0, botCount=0;
+            sorted.forEach(ev => {
+                const x = tlDateToX(ev.start);
+                if (x < -200 || x > W+200) return;
+                if (ev.end && ev.end > ev.start) { renderTlRangeEvent(ev, x, W); return; }
+                const isTop = topCount <= botCount;
+                const container = isTop ? tlEventsTop : tlEventsBottom;
+                isTop ? topCount++ : botCount++;
+                const marker = document.createElement('div');
+                marker.className = `tl-event-marker ${isTop?'tl-top':'tl-bottom'}`;
+                marker.style.left = x + 'px';
+                marker.dataset.id = ev.id;
+                const stemH = Math.max(40, (container.clientHeight||120)*0.4);
+                const dot = document.createElement('div');
+                dot.className = 'tl-event-dot'; dot.style.background = ev.color;
+                const stem = document.createElement('div');
+                stem.className = 'tl-event-stem'; stem.style.height = stemH + 'px';
+                const card = document.createElement('div');
+                card.className = 'tl-event-card';
+                card.style.borderTopColor = ev.color;
+                card.style.borderTopWidth = '2px'; card.style.borderTopStyle = 'solid';
+                const titleEl = document.createElement('div');
+                titleEl.className = 'tl-event-card-title'; titleEl.textContent = ev.title;
+                const dateEl = document.createElement('div');
+                dateEl.className = 'tl-event-card-date'; dateEl.textContent = tlFormatDate(ev.start);
+                card.appendChild(titleEl); card.appendChild(dateEl);
+                if (isTop) { marker.appendChild(card); marker.appendChild(stem); marker.appendChild(dot); }
+                else       { marker.appendChild(dot);  marker.appendChild(stem); marker.appendChild(card); }
+                if (ev.id === tlState.selectedId)
+                    dot.style.boxShadow = `0 0 0 3px ${ev.color}, 0 0 12px ${ev.color}`;
+                marker.addEventListener('click', e => { e.stopPropagation(); tlSelectEvent(ev.id); });
+                container.appendChild(marker);
+            });
+        }
+
+        function renderTlRangeEvent(ev, x1, W) {
+            const x2 = tlDateToX(ev.end);
+            const left = Math.max(0,x1), right = Math.min(W,x2);
+            if (right <= left) return;
+            const el = document.createElement('div');
+            el.className = 'tl-event-range';
+            el.style.left  = left + 'px'; el.style.width = (right-left) + 'px';
+            el.style.background = ev.color; el.textContent = ev.title; el.dataset.id = ev.id;
+            if (ev.id === tlState.selectedId) el.style.outline = '2px solid white';
+            el.addEventListener('click', e => { e.stopPropagation(); tlSelectEvent(ev.id); });
+            tlEventsBottom.appendChild(el);
+        }
+
+        function tlSelectEvent(id) {
+            tlState.selectedId = id;
+            const ev = tlState.events.find(e => e.id === id);
+            if (!ev) return;
+            document.getElementById('tl-panel-color-bar').style.background = ev.color;
+            document.getElementById('tl-panel-date').textContent = ev.end
+                ? `${tlFormatDate(ev.start)} — ${tlFormatDate(ev.end)}`
+                : tlFormatDate(ev.start);
+            document.getElementById('tl-panel-title').textContent = ev.title;
+            document.getElementById('tl-panel-desc').textContent  = ev.desc || '（无描述）';
+            tlDetailPanel.classList.add('visible');
+            renderTimeline();
+        }
+
+        function tlClosePanel() {
+            tlState.selectedId = null;
+            tlDetailPanel.classList.remove('visible');
+            renderTimeline();
+        }
+
+        function tlFormatDate(d) {
+            if (!d) return '';
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        function tlOpenModal(editId=null) {
+            tlState.editingId = editId;
+            const ev = editId ? tlState.events.find(e => e.id===editId) : null;
+            document.getElementById('tl-modal-title').textContent = ev ? '编辑事件' : '添加事件';
+            document.getElementById('tl-input-title').value = ev ? ev.title : '';
+            document.getElementById('tl-input-start').value = ev ? tlFormatDate(ev.start) : tlFormatDate(new Date());
+            document.getElementById('tl-input-end').value   = ev && ev.end ? tlFormatDate(ev.end) : '';
+            document.getElementById('tl-input-desc').value  = ev ? (ev.desc||'') : '';
+            const color = ev ? ev.color : '#4f8ef7';
+            tlState.selectedColor = color;
+            document.querySelectorAll('.tl-color-swatch').forEach(sw => {
+                sw.classList.toggle('selected', sw.dataset.color === color);
+            });
+            tlModalOverlay.classList.add('visible');
+            document.getElementById('tl-input-title').focus();
+        }
+
+        function tlCloseModal() {
+            tlModalOverlay.classList.remove('visible');
+            tlState.editingId = null;
+        }
+
+        async function tlSaveModal() {
+            const title = document.getElementById('tl-input-title').value.trim();
+            const startVal = document.getElementById('tl-input-start').value;
+            if (!title) { tlShake(document.getElementById('tl-input-title')); return; }
+            if (!startVal) { tlShake(document.getElementById('tl-input-start')); return; }
+            const start = new Date(startVal + 'T00:00:00');
+            const endVal = document.getElementById('tl-input-end').value;
+            const end = endVal ? new Date(endVal + 'T00:00:00') : null;
+            const desc = document.getElementById('tl-input-desc').value.trim();
+            const color = tlState.selectedColor;
+            if (tlState.editingId) {
+                const idx = tlState.events.findIndex(e => e.id === tlState.editingId);
+                if (idx !== -1) {
+                    tlState.events[idx] = { ...tlState.events[idx], title, start, end, desc, color };
+                    if (tlState.selectedId === tlState.editingId) tlSelectEvent(tlState.editingId);
+                }
+            } else {
+                tlState.events.push({ id: Date.now()+Math.random(), title, start, end, desc, color });
+                tlCenterOnDate(start);
+            }
+            await saveUserData();
+            tlCloseModal();
+            renderTimeline();
+        }
+
+        function tlShake(el) {
+            el.style.animation = 'none'; el.offsetHeight;
+            el.style.animation = 'tlShakeAnim 0.3s ease';
+            setTimeout(() => { el.style.animation = ''; }, 400);
+        }
+
+        function tlZoom(factor) {
+            const center = new Date((tlState.viewStart.getTime()+tlState.viewEnd.getTime())/2);
+            const half = (tlState.viewEnd-tlState.viewStart)/2 * factor;
+            const clamped = Math.max(MS_DAY*7, Math.min(MS_DAY*365*100, half));
+            tlState.viewStart = new Date(center.getTime()-clamped);
+            tlState.viewEnd   = new Date(center.getTime()+clamped);
+            renderTimeline();
+        }
+
+        function tlPan(dx) {
+            const total = tlState.viewEnd - tlState.viewStart;
+            const dt = -(dx/tlGetContainerWidth())*total;
+            tlState.viewStart = new Date(tlState.viewStart.getTime()+dt);
+            tlState.viewEnd   = new Date(tlState.viewEnd.getTime()+dt);
+            renderTimeline();
+        }
+
+        function tlGoToToday() {
+            const t = new Date(); t.setHours(0,0,0,0); tlCenterOnDate(t);
+        }
+
+        function tlCenterOnDate(date) {
+            const half = (tlState.viewEnd-tlState.viewStart)/2;
+            tlState.viewStart = new Date(date.getTime()-half);
+            tlState.viewEnd   = new Date(date.getTime()+half);
+            renderTimeline();
+        }
+
+        function tlUpdateUI() {
+            if (tlEmptyHint)
+                tlEmptyHint.classList.toggle('hidden', tlState.events.length > 0);
+        }
+
+        function bindTimelineEvents() {
+            document.getElementById('tl-btn-zoom-in').addEventListener('click', () => tlZoom(0.5));
+            document.getElementById('tl-btn-zoom-out').addEventListener('click', () => tlZoom(2));
+            document.getElementById('tl-btn-today').addEventListener('click', tlGoToToday);
+            document.getElementById('tl-btn-add-event').addEventListener('click', () => tlOpenModal());
+            document.getElementById('tl-panel-close').addEventListener('click', tlClosePanel);
+            document.getElementById('tl-panel-edit').addEventListener('click', () => {
+                if (tlState.selectedId) tlOpenModal(tlState.selectedId);
+            });
+            document.getElementById('tl-panel-delete').addEventListener('click', async () => {
+                if (tlState.selectedId) {
+                    tlState.events = tlState.events.filter(e => e.id !== tlState.selectedId);
+                    await saveUserData(); tlClosePanel(); renderTimeline();
+                }
+            });
+            document.getElementById('tl-modal-close').addEventListener('click', tlCloseModal);
+            document.getElementById('tl-btn-cancel').addEventListener('click', tlCloseModal);
+            document.getElementById('tl-btn-save').addEventListener('click', tlSaveModal);
+            tlModalOverlay.addEventListener('click', e => { if (e.target===tlModalOverlay) tlCloseModal(); });
+            document.querySelectorAll('.tl-color-swatch').forEach(sw => {
+                sw.addEventListener('click', () => {
+                    document.querySelectorAll('.tl-color-swatch').forEach(s => s.classList.remove('selected'));
+                    sw.classList.add('selected');
+                    tlState.selectedColor = sw.dataset.color;
+                });
+            });
+            document.addEventListener('keydown', e => {
+                const inInput = ['INPUT','TEXTAREA'].includes(document.activeElement?.tagName);
+                if (e.key==='Escape') {
+                    if (tlModalOverlay.classList.contains('visible')) { tlCloseModal(); return; }
+                    if (tlState.selectedId) { tlClosePanel(); return; }
+                }
+                if (!inInput && (e.key==='+'||e.key==='=')) tlZoom(0.5);
+                if (!inInput && e.key==='-') tlZoom(2);
+                if (e.key==='Enter' && tlModalOverlay.classList.contains('visible')) tlSaveModal();
+            });
+            tlTrackWrapper.addEventListener('mousedown', e => {
+                if (e.button!==0) return;
+                tlState.isDragging = true; tlState.dragStartX = e.clientX;
+                tlState.dragStartMs = tlState.viewStart.getTime();
+                tlTrackWrapper.style.cursor = 'grabbing';
+            });
+            document.addEventListener('mousemove', e => {
+                if (!tlState.isDragging) return;
+                const dx = e.clientX - tlState.dragStartX;
+                const total = tlState.viewEnd - tlState.viewStart;
+                const dt = -(dx/tlGetContainerWidth())*total;
+                tlState.viewStart = new Date(tlState.dragStartMs+dt);
+                tlState.viewEnd   = new Date(tlState.dragStartMs+dt+total);
+                renderTimeline();
+            });
+            document.addEventListener('mouseup', () => {
+                tlState.isDragging = false;
+                tlTrackWrapper.style.cursor = 'grab';
+            });
+            tlTrackWrapper.addEventListener('click', e => {
+                if (e.target===tlTrackWrapper || e.target.classList.contains('tl-track-inner') ||
+                    e.target.classList.contains('tl-events-top') || e.target.classList.contains('tl-events-bottom') ||
+                    e.target.classList.contains('tl-axis-line-wrapper') || e.target.classList.contains('tl-axis-line')) {
+                    tlClosePanel();
+                }
+            });
+            tlRuler.parentElement.addEventListener('wheel', e => {
+                e.preventDefault(); tlZoom(e.deltaY>0?1.2:0.83);
+            }, { passive: false });
+            tlTrackWrapper.addEventListener('wheel', e => {
+                e.preventDefault();
+                if (e.ctrlKey||e.metaKey) tlZoom(e.deltaY>0?1.2:0.83);
+                else tlPan(e.deltaY*2);
+            }, { passive: false });
+            let touchStartX=0, touchStartMs=0, lastTouchDist=0;
+            tlTrackWrapper.addEventListener('touchstart', e => {
+                if (e.touches.length===1) { touchStartX=e.touches[0].clientX; touchStartMs=tlState.viewStart.getTime(); }
+                else if (e.touches.length===2) {
+                    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+                    lastTouchDist=Math.hypot(dx,dy);
+                }
+            }, { passive: true });
+            tlTrackWrapper.addEventListener('touchmove', e => {
+                if (e.touches.length===1) {
+                    const dx=e.touches[0].clientX-touchStartX, total=tlState.viewEnd-tlState.viewStart;
+                    const dt=-(dx/tlGetContainerWidth())*total;
+                    tlState.viewStart=new Date(touchStartMs+dt); tlState.viewEnd=new Date(touchStartMs+dt+total);
+                    renderTimeline();
+                } else if (e.touches.length===2) {
+                    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+                    const dist=Math.hypot(dx,dy);
+                    if (lastTouchDist>0) tlZoom(lastTouchDist/dist);
+                    lastTouchDist=dist;
+                }
+            }, { passive: true });
+            window.addEventListener('resize', renderTimeline);
+
+            // Inject shake keyframe
+            const sty = document.createElement('style');
+            sty.textContent = `@keyframes tlShakeAnim { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }`;
+            document.head.appendChild(sty);
+        }
+
+        // ===== TODOS =====
+        function renderTodos() {
+            const list = document.getElementById('todoList');
+            const stats = document.getElementById('todoStats');
+            const footer = document.getElementById('todoFooter');
+            if (!list) return;
+
+            const active = todos.filter(t => !t.completed).length;
+            const hasCompleted = todos.some(t => t.completed);
+            stats.textContent = `${active} 项未完成`;
+            footer.style.display = hasCompleted ? 'block' : 'none';
+
+            let filtered = todos;
+            if (todoFilter === 'active')    filtered = todos.filter(t => !t.completed);
+            if (todoFilter === 'completed') filtered = todos.filter(t => t.completed);
+
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="todo-empty"><div class="todo-empty-icon">🎉</div>${todoFilter==='completed'?'还没有完成的任务':todoFilter==='active'?'所有任务都完成了！':'点击上方添加你的第一个待办事项'}</div>`;
+                return;
+            }
+
+            list.innerHTML = '';
+            filtered.forEach(todo => {
+                const item = document.createElement('div');
+                item.className = 'todo-item' + (todo.completed ? ' completed' : '');
+                item.innerHTML = `
+                    <button class="todo-checkbox" data-id="${todo.id}" title="标记完成">${todo.completed?'✓':''}</button>
+                    <span class="todo-text">${escapeHtml(todo.text)}</span>
+                    <span class="todo-priority-badge ${todo.priority}">${todo.priority==='high'?'高优先级':todo.priority==='low'?'低优先级':''}</span>
+                    <button class="todo-delete-btn" data-id="${todo.id}" title="删除">🗑️</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function setupTodoHandlers() {
+            const addBtn = document.getElementById('todoAddBtn');
+            const input  = document.getElementById('todoInput');
+            if (!addBtn) return;
+
+            const addTodo = async () => {
+                const text = input.value.trim();
+                if (!text) { input.focus(); return; }
+                const priority = document.getElementById('todoPriority').value;
+                todos.unshift({ id: `${Date.now()}_${Math.random().toString(36).slice(2)}`, text, priority, completed: false, createdAt: new Date().toISOString() });
+                input.value = '';
+                await saveUserData();
+                renderTodos();
+            };
+
+            addBtn.addEventListener('click', addTodo);
+            input.addEventListener('keydown', e => { if (e.key==='Enter') addTodo(); });
+
+            document.getElementById('todoList').addEventListener('click', async e => {
+                const checkBtn = e.target.closest('.todo-checkbox');
+                const delBtn   = e.target.closest('.todo-delete-btn');
+                if (checkBtn) {
+                    const id = checkBtn.dataset.id;
+                    const t = todos.find(t => String(t.id) === id);
+                    if (t) { t.completed = !t.completed; await saveUserData(); renderTodos(); }
+                }
+                if (delBtn) {
+                    const id = delBtn.dataset.id;
+                    todos = todos.filter(t => String(t.id) !== id);
+                    await saveUserData(); renderTodos();
+                }
+            });
+
+            document.querySelectorAll('.todo-filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.todo-filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    todoFilter = btn.dataset.filter;
+                    renderTodos();
+                });
+            });
+
+            document.getElementById('clearCompletedBtn').addEventListener('click', async () => {
+                todos = todos.filter(t => !t.completed);
+                await saveUserData(); renderTodos();
+            });
+        }
     </script>
 </body>
 

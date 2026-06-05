@@ -1789,14 +1789,18 @@
                     <label>标题 <span class="tl-required">*</span></label>
                     <input type="text" id="tl-input-title" placeholder="事件标题" maxlength="100">
                 </div>
-                <div class="tl-form-row">
-                    <div class="tl-form-group">
-                        <label>开始日期 <span class="tl-required">*</span></label>
-                        <input type="date" id="tl-input-start">
+                <div class="tl-form-group">
+                    <label>开始 <span class="tl-required">*</span></label>
+                    <div style="display:flex;gap:8px;">
+                        <input type="date" id="tl-input-start" style="flex:3">
+                        <input type="time" id="tl-input-start-time" style="flex:2">
                     </div>
-                    <div class="tl-form-group">
-                        <label>结束日期 <span class="tl-optional">(可选)</span></label>
-                        <input type="date" id="tl-input-end">
+                </div>
+                <div class="tl-form-group">
+                    <label>结束 <span class="tl-optional">(可选)</span></label>
+                    <div style="display:flex;gap:8px;">
+                        <input type="date" id="tl-input-end" style="flex:3">
+                        <input type="time" id="tl-input-end-time" style="flex:2">
                     </div>
                 </div>
                 <div class="tl-form-group">
@@ -3768,7 +3772,8 @@
                     const el = document.createElement('div');
                     el.className = 'tlw-event' + (ev.id===tlState.selectedId ? ' tlw-sel' : '');
                     el.style.background = ev.color;
-                    el.textContent = ev.title;
+                    const hasTime = ev.start.getHours() !== 0 || ev.start.getMinutes() !== 0;
+                    el.textContent = hasTime ? `${tlFormatTime(ev.start)} ${ev.title}` : ev.title;
                     el.addEventListener('click', e => { e.stopPropagation(); tlSelectEvent(ev.id); });
                     col.appendChild(el);
                 });
@@ -3786,8 +3791,8 @@
             if (!ev) return;
             document.getElementById('tl-panel-color-bar').style.background = ev.color;
             document.getElementById('tl-panel-date').textContent = ev.end
-                ? `${tlFormatDate(ev.start)} — ${tlFormatDate(ev.end)}`
-                : tlFormatDate(ev.start);
+                ? `${tlFormatDateTime(ev.start)} — ${tlFormatDateTime(ev.end)}`
+                : tlFormatDateTime(ev.start);
             document.getElementById('tl-panel-title').textContent = ev.title;
             document.getElementById('tl-panel-desc').textContent  = ev.desc || '（无描述）';
             tlDetailPanel.classList.add('visible');
@@ -3808,13 +3813,27 @@
             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         }
 
+        function tlFormatTime(d) {
+            if (!d) return '';
+            return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        }
+
+        function tlFormatDateTime(d) {
+            if (!d) return '';
+            const h = d.getHours(), m = d.getMinutes();
+            if (h === 0 && m === 0) return tlFormatDate(d);
+            return `${tlFormatDate(d)} ${tlFormatTime(d)}`;
+        }
+
         function tlOpenModal(editId=null, defaultDate=null) {
             tlState.editingId = editId;
             const ev = editId ? tlState.events.find(e => e.id===editId) : null;
             document.getElementById('tl-modal-title').textContent = ev ? '编辑事件' : '添加事件';
             document.getElementById('tl-input-title').value = ev ? ev.title : '';
             document.getElementById('tl-input-start').value = ev ? tlFormatDate(ev.start) : (defaultDate || tlFormatDate(new Date()));
+            document.getElementById('tl-input-start-time').value = ev ? tlFormatTime(ev.start) : tlFormatTime(new Date());
             document.getElementById('tl-input-end').value   = ev && ev.end ? tlFormatDate(ev.end) : '';
+            document.getElementById('tl-input-end-time').value   = ev && ev.end ? tlFormatTime(ev.end) : '';
             document.getElementById('tl-input-desc').value  = ev ? (ev.desc||'') : '';
             const color = ev ? ev.color : '#4f8ef7';
             tlState.selectedColor = color;
@@ -3835,9 +3854,11 @@
             const startVal = document.getElementById('tl-input-start').value;
             if (!title) { tlShake(document.getElementById('tl-input-title')); return; }
             if (!startVal) { tlShake(document.getElementById('tl-input-start')); return; }
-            const start = new Date(startVal + 'T00:00:00');
+            const startTimeVal = document.getElementById('tl-input-start-time').value;
+            const start = new Date(startVal + 'T' + (startTimeVal || '00:00') + ':00');
             const endVal = document.getElementById('tl-input-end').value;
-            const end = endVal ? new Date(endVal + 'T00:00:00') : null;
+            const endTimeVal = document.getElementById('tl-input-end-time').value;
+            const end = endVal ? new Date(endVal + 'T' + (endTimeVal || '00:00') + ':00') : null;
             const desc = document.getElementById('tl-input-desc').value.trim();
             const color = tlState.selectedColor;
             if (tlState.editingId) {

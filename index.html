@@ -1266,14 +1266,14 @@
             height: 100%; display: flex; flex-direction: column;
             position: absolute; left: 0; top: 0; right: 0;
         }
-        .tl-events-top { flex: 1; position: relative; min-height: 100px; }
+        .tl-events-top { flex: 1; position: relative; min-height: 160px; }
         .tl-axis-line-wrapper {
             height: 2px;
             background: linear-gradient(90deg, transparent, var(--tl-accent), var(--tl-accent2), var(--tl-accent), transparent);
             position: relative; flex-shrink: 0; box-shadow: 0 0 12px rgba(79,142,247,0.4);
         }
         .tl-axis-line { position: absolute; inset: 0; }
-        .tl-events-bottom { flex: 1; position: relative; min-height: 100px; }
+        .tl-events-bottom { flex: 1; position: relative; min-height: 160px; }
         .tl-today-marker {
             position: absolute; top: -200px; bottom: -200px; width: 2px;
             background: rgba(255,180,50,0.6); transform: translateX(-50%);
@@ -1412,6 +1412,82 @@
         .tl-empty-icon { font-size: 36px; margin-bottom: 8px; }
         .tl-empty-text { font-size: 14px; color: var(--tl-text2); }
 
+        /* ===== JOURNAL ===== */
+        .journal-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .journal-today-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 1.75rem; margin-bottom: 2rem;
+            backdrop-filter: blur(10px); animation: fadeIn 0.4s ease;
+        }
+        .journal-date-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;
+        }
+        .journal-date-label {
+            font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700;
+            background: var(--primary-gradient); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .journal-mood-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+        .journal-mood-label { font-size: 0.82rem; color: var(--text-secondary); margin-right: 0.2rem; }
+        .journal-mood-btn {
+            font-size: 1.35rem; background: none; border: 2px solid transparent;
+            border-radius: 50%; width: 38px; height: 38px;
+            cursor: pointer; transition: all 0.2s; display: flex; align-items: center;
+            justify-content: center; padding: 0; line-height: 1;
+        }
+        .journal-mood-btn:hover { transform: scale(1.2); }
+        .journal-mood-btn.selected {
+            border-color: rgba(102,126,234,0.7);
+            background: rgba(102,126,234,0.15); transform: scale(1.15);
+        }
+        .journal-textarea {
+            width: 100%; min-height: 200px; background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color); border-radius: 12px;
+            color: var(--text-primary); font-size: 1rem; font-family: 'Inter', sans-serif;
+            padding: 1rem 1.1rem; resize: vertical; outline: none; line-height: 1.8;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .journal-textarea:focus {
+            border-color: rgba(102,126,234,0.45);
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.09);
+        }
+        .journal-textarea::placeholder { color: var(--text-secondary); opacity: 0.55; }
+        .journal-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 0.7rem; font-size: 0.8rem; color: var(--text-secondary);
+        }
+        .journal-save-status { transition: all 0.3s; }
+        .journal-save-status.saving { color: #f59e0b; }
+        .journal-save-status.saved  { color: #10b981; }
+        .journal-past-section { margin-top: 0.5rem; }
+        .journal-section-title {
+            font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700;
+            margin-bottom: 1rem; color: var(--text-primary);
+        }
+        .journal-past-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .journal-past-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 14px; overflow: hidden; transition: background 0.2s; backdrop-filter: blur(10px);
+        }
+        .journal-past-card:hover { background: var(--card-hover); }
+        .journal-past-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.85rem 1.2rem; cursor: pointer; gap: 0.75rem;
+        }
+        .journal-past-date { font-weight: 600; font-size: 0.92rem; flex-shrink: 0; }
+        .journal-past-right { display: flex; align-items: center; gap: 0.6rem; min-width: 0; flex: 1; justify-content: flex-end; }
+        .journal-past-mood { font-size: 1.15rem; flex-shrink: 0; }
+        .journal-past-preview {
+            font-size: 0.82rem; color: var(--text-secondary);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px;
+        }
+        .journal-past-toggle { color: var(--text-secondary); font-size: 0.75rem; flex-shrink: 0; }
+        .journal-past-body { display: none; padding: 0 1.2rem 1rem; border-top: 1px solid var(--border-color); }
+        .journal-past-body.open { display: block; }
+        .journal-past-text { font-size: 0.94rem; line-height: 1.75; color: var(--text-secondary); white-space: pre-wrap; padding-top: 0.8rem; }
+        .journal-empty { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 0.95rem; }
+
         /* ===== TODO ===== */
         .todo-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
         .todo-header {
@@ -1530,6 +1606,7 @@
             <button class="main-tab active" data-tab="bookmarks">📚 书签导航</button>
             <button class="main-tab" data-tab="timeline">⏱️ 时间轴</button>
             <button class="main-tab" data-tab="todos">✅ 待办清单</button>
+            <button class="main-tab" data-tab="journal">📖 日记</button>
         </nav>
 
         <!-- Bookmarks Tab -->
@@ -1721,6 +1798,36 @@
             </div>
         </div><!-- end tab-todos -->
 
+        <!-- Journal Tab -->
+        <div class="tab-panel" id="tab-journal">
+            <div class="journal-container">
+                <div class="journal-today-card">
+                    <div class="journal-date-row">
+                        <div class="journal-date-label" id="journal-today-label"></div>
+                        <div class="journal-mood-row">
+                            <span class="journal-mood-label">今日心情</span>
+                            <button class="journal-mood-btn" data-mood="😄" title="开心">😄</button>
+                            <button class="journal-mood-btn" data-mood="😊" title="还不错">😊</button>
+                            <button class="journal-mood-btn" data-mood="😐" title="一般">😐</button>
+                            <button class="journal-mood-btn" data-mood="😔" title="有点累">😔</button>
+                            <button class="journal-mood-btn" data-mood="😤" title="烦躁">😤</button>
+                        </div>
+                    </div>
+                    <textarea class="journal-textarea" id="journal-textarea" placeholder="记录今天的想法、感受、发生的事情..."></textarea>
+                    <div class="journal-meta">
+                        <span id="journal-wordcount">0 字</span>
+                        <span class="journal-save-status" id="journal-save-status"></span>
+                    </div>
+                </div>
+                <div class="journal-past-section">
+                    <div class="journal-section-title">往日记录</div>
+                    <div class="journal-past-list" id="journal-past-list">
+                        <div class="journal-empty">还没有往日记录</div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end tab-journal -->
+
     </div><!-- end mainApp -->
 
     <!-- Timeline Modal -->
@@ -1903,6 +2010,10 @@
         let currentCategory = null;
         let todos = [];
         let todoFilter = 'all';
+        let journal = {};
+        let journalSaveTimer = null;
+        let journalTodayKey = '';
+        let journalInitialized = false;
 
         // Timeline state
         const MS_DAY = 86400000;
@@ -3072,6 +3183,7 @@
                     quickLinks = data.quickLinks || defaultQuickLinks;
                     tlState.events = parseTlEvents(data.events);
                     todos = data.todos || [];
+                    journal = data.journal || {};
                 } else {
                     console.log('ℹ️ 新用户，使用默认数据');
                     bookmarks = JSON.parse(JSON.stringify(defaultBookmarks));
@@ -3087,10 +3199,14 @@
                         quickLinks = data.quickLinks || [];
                         tlState.events = parseTlEvents(data.events);
                         todos = data.todos || [];
+                        journal = data.journal || {};
                         renderQuickLinks();
                         setupCategoryFilters();
                         renderTimeline();
                         renderTodos();
+                        if (document.getElementById('tab-journal').classList.contains('active')) {
+                            renderJournalPastEntries();
+                        }
                     }
                 });
 
@@ -3118,6 +3234,7 @@
                         end: e.end instanceof Date ? e.end.toISOString() : (e.end || null)
                     })),
                     todos: todos,
+                    journal: journal,
                     lastUpdated: new Date().toISOString()
                 });
                 updateSyncStatus('synced', '已同步');
@@ -3554,6 +3671,10 @@
                     document.getElementById('tab-' + tab).classList.add('active');
                     if (tab === 'timeline') renderTimeline();
                     if (tab === 'todos') renderTodos();
+                    if (tab === 'journal') {
+                        if (!journalInitialized) { journalInitialized = true; setupJournal(); }
+                        else renderJournalPastEntries();
+                    }
                 });
             });
         }
@@ -3691,19 +3812,45 @@
             tlEventsTop.innerHTML = ''; tlEventsBottom.innerHTML = '';
             const W = tlGetContainerWidth();
             const sorted = [...tlState.events].sort((a,b) => a.start - b.start);
-            let topCount=0, botCount=0;
+
+            // Lane-based collision avoidance: cards within CARD_W pixels of each
+            // other get pushed to a deeper lane so they're visible and clickable.
+            const CARD_W = 155;   // approximate card width used as collision radius
+            const BASE_STEM = 32; // stem px for lane 0 (closest to axis)
+            const LANE_STEP = 58; // extra px per additional lane
+            const MAX_LANES = 5;
+            const occ = {
+                top:    Array.from({length: MAX_LANES}, () => []),
+                bottom: Array.from({length: MAX_LANES}, () => [])
+            };
+            function minFreeLane(side, x) {
+                for (let i = 0; i < MAX_LANES; i++) {
+                    if (!occ[side][i].some(ox => Math.abs(ox - x) < CARD_W)) return i;
+                }
+                return MAX_LANES - 1;
+            }
+
             sorted.forEach(ev => {
                 const x = tlDateToX(ev.start);
-                if (x < -200 || x > W+200) return;
+                if (x < -200 || x > W + 200) return;
                 if (ev.end && ev.end > ev.start) { renderTlRangeEvent(ev, x, W); return; }
-                const isTop = topCount <= botCount;
+
+                // Pick the side whose shallowest free lane is lower (closer to axis)
+                const tLane = minFreeLane('top', x);
+                const bLane = minFreeLane('bottom', x);
+                const isTop = tLane <= bLane;
+                const side  = isTop ? 'top' : 'bottom';
+                const lane  = isTop ? tLane : bLane;
+                occ[side][lane].push(x);
+
                 const container = isTop ? tlEventsTop : tlEventsBottom;
-                isTop ? topCount++ : botCount++;
+                const stemH = BASE_STEM + lane * LANE_STEP;
+
                 const marker = document.createElement('div');
-                marker.className = `tl-event-marker ${isTop?'tl-top':'tl-bottom'}`;
+                marker.className = `tl-event-marker ${isTop ? 'tl-top' : 'tl-bottom'}`;
                 marker.style.left = x + 'px';
                 marker.dataset.id = ev.id;
-                const stemH = Math.max(40, (container.clientHeight||120)*0.4);
+
                 const dot = document.createElement('div');
                 dot.className = 'tl-event-dot'; dot.style.background = ev.color;
                 const stem = document.createElement('div');
@@ -3717,8 +3864,10 @@
                 const dateEl = document.createElement('div');
                 dateEl.className = 'tl-event-card-date'; dateEl.textContent = tlFormatDate(ev.start);
                 card.appendChild(titleEl); card.appendChild(dateEl);
+
                 if (isTop) { marker.appendChild(card); marker.appendChild(stem); marker.appendChild(dot); }
                 else       { marker.appendChild(dot);  marker.appendChild(stem); marker.appendChild(card); }
+
                 if (ev.id === tlState.selectedId)
                     dot.style.boxShadow = `0 0 0 3px ${ev.color}, 0 0 12px ${ev.color}`;
                 marker.addEventListener('click', e => { e.stopPropagation(); tlSelectEvent(ev.id); });
@@ -3947,6 +4096,121 @@
             const sty = document.createElement('style');
             sty.textContent = `@keyframes tlShakeAnim { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }`;
             document.head.appendChild(sty);
+        }
+
+        // ===== JOURNAL =====
+        function journalTodayKeyFn() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        function formatJournalDate(key) {
+            const [y, m, d] = key.split('-').map(Number);
+            const date = new Date(y, m - 1, d);
+            const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
+            return `${y}年${m}月${d}日  ${weekdays[date.getDay()]}`;
+        }
+
+        function setupJournal() {
+            journalTodayKey = journalTodayKeyFn();
+            document.getElementById('journal-today-label').textContent = formatJournalDate(journalTodayKey);
+
+            const textarea = document.getElementById('journal-textarea');
+            const todayEntry = journal[journalTodayKey];
+            if (todayEntry) {
+                textarea.value = todayEntry.text || '';
+                journalUpdateWordCount(textarea.value);
+                if (todayEntry.mood) {
+                    document.querySelectorAll('.journal-mood-btn').forEach(btn => {
+                        btn.classList.toggle('selected', btn.dataset.mood === todayEntry.mood);
+                    });
+                }
+                if (todayEntry.text) {
+                    const s = document.getElementById('journal-save-status');
+                    s.textContent = '已同步 ✓'; s.className = 'journal-save-status saved';
+                }
+            }
+
+            textarea.addEventListener('input', () => {
+                journalUpdateWordCount(textarea.value);
+                const s = document.getElementById('journal-save-status');
+                s.textContent = '编辑中...'; s.className = 'journal-save-status';
+                clearTimeout(journalSaveTimer);
+                journalSaveTimer = setTimeout(journalSaveToday, 1500);
+            });
+
+            document.querySelectorAll('.journal-mood-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const wasSelected = btn.classList.contains('selected');
+                    document.querySelectorAll('.journal-mood-btn').forEach(b => b.classList.remove('selected'));
+                    if (!wasSelected) btn.classList.add('selected');
+                    clearTimeout(journalSaveTimer);
+                    journalSaveTimer = setTimeout(journalSaveToday, 600);
+                });
+            });
+
+            renderJournalPastEntries();
+        }
+
+        function journalUpdateWordCount(text) {
+            document.getElementById('journal-wordcount').textContent = (text.trim().length || 0) + ' 字';
+        }
+
+        async function journalSaveToday() {
+            const text = document.getElementById('journal-textarea').value;
+            const selectedMood = document.querySelector('.journal-mood-btn.selected');
+            const mood = selectedMood ? selectedMood.dataset.mood : '';
+            const s = document.getElementById('journal-save-status');
+            s.textContent = '保存中...'; s.className = 'journal-save-status saving';
+            journal[journalTodayKey] = { text, mood, updatedAt: new Date().toISOString() };
+            await saveUserData();
+            s.textContent = '已保存 ✓'; s.className = 'journal-save-status saved';
+            renderJournalPastEntries();
+        }
+
+        function renderJournalPastEntries() {
+            const list = document.getElementById('journal-past-list');
+            if (!list) return;
+            const today = journalTodayKey || journalTodayKeyFn();
+            const pastKeys = Object.keys(journal)
+                .filter(k => k !== today && journal[k] && journal[k].text)
+                .sort((a, b) => b.localeCompare(a));
+
+            if (pastKeys.length === 0) {
+                list.innerHTML = '<div class="journal-empty">还没有往日记录，坚持写下去吧 ✨</div>';
+                return;
+            }
+
+            list.innerHTML = '';
+            pastKeys.forEach(key => {
+                const entry = journal[key];
+                const preview = entry.text.replace(/\n/g,' ').slice(0,60) + (entry.text.length > 60 ? '...' : '');
+                const card = document.createElement('div');
+                card.className = 'journal-past-card';
+                card.innerHTML = `
+                    <div class="journal-past-header">
+                        <div class="journal-past-date">${formatJournalDate(key)}</div>
+                        <div class="journal-past-right">
+                            ${entry.mood ? `<span class="journal-past-mood">${entry.mood}</span>` : ''}
+                            <span class="journal-past-preview">${escapeHtml(preview)}</span>
+                            <span class="journal-past-toggle">▼</span>
+                        </div>
+                    </div>
+                    <div class="journal-past-body">
+                        <div class="journal-past-text">${escapeHtml(entry.text)}</div>
+                    </div>
+                `;
+                const header = card.querySelector('.journal-past-header');
+                const body   = card.querySelector('.journal-past-body');
+                const toggle = card.querySelector('.journal-past-toggle');
+                const previewEl = card.querySelector('.journal-past-preview');
+                header.addEventListener('click', () => {
+                    const open = body.classList.toggle('open');
+                    toggle.textContent = open ? '▲' : '▼';
+                    previewEl.style.display = open ? 'none' : '';
+                });
+                list.appendChild(card);
+            });
         }
 
         // ===== TODOS =====

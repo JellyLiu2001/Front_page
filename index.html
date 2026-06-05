@@ -1241,92 +1241,62 @@
         }
         .tl-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(79,142,247,0.5); }
         .tl-main-area { display: flex; flex: 1; overflow: hidden; }
-        .tl-timeline-container {
-            flex: 1; display: flex; flex-direction: column; overflow: hidden;
-            position: relative; background: var(--tl-bg);
+        .tl-list-area { flex: 1; overflow-y: auto; background: var(--tl-bg); }
+        .tl-list-container { max-width: 680px; margin: 0 auto; padding: 24px 20px 40px; }
+        .tl-list-year {
+            font-size: 20px; font-weight: 700; color: var(--tl-text);
+            margin: 36px 0 12px; padding-bottom: 10px;
+            border-bottom: 1px solid var(--tl-border);
         }
-        .tl-ruler-wrapper {
-            height: 52px; flex-shrink: 0; background: var(--tl-bg2);
-            border-bottom: 1px solid var(--tl-border); overflow: hidden; position: relative;
+        .tl-list-year:first-child { margin-top: 0; }
+        .tl-list-month {
+            font-size: 11px; font-weight: 600; color: var(--tl-text2);
+            letter-spacing: 0.06em; margin: 18px 0 8px 2px; text-transform: uppercase;
         }
-        .tl-ruler { height: 100%; position: absolute; left: 0; top: 0; width: 100%; }
-        .tl-ruler-tick {
-            position: absolute; bottom: 0; transform: translateX(-50%);
-            display: flex; flex-direction: column; align-items: center; pointer-events: none;
-        }
-        .tl-ruler-tick.tl-major .tl-tick-line { width: 1px; background: var(--tl-border); height: 16px; }
-        .tl-ruler-tick.tl-minor .tl-tick-line { width: 1px; background: rgba(255,255,255,0.04); height: 8px; }
-        .tl-tick-label { font-size: 11px; color: var(--tl-text2); white-space: nowrap; margin-bottom: 4px; }
-        .tl-ruler-tick.tl-major .tl-tick-label { color: var(--tl-text); font-weight: 500; }
-        .tl-track-wrapper {
-            flex: 1; overflow: hidden; position: relative; cursor: grab; user-select: none;
-        }
-        .tl-track-wrapper:active { cursor: grabbing; }
-        .tl-track-inner {
-            height: 100%; display: flex; flex-direction: column;
-            position: absolute; left: 0; top: 0; right: 0;
-        }
-        .tl-events-top { flex: 1; position: relative; min-height: 160px; }
-        .tl-axis-line-wrapper {
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--tl-accent), var(--tl-accent2), var(--tl-accent), transparent);
-            position: relative; flex-shrink: 0; box-shadow: 0 0 12px rgba(79,142,247,0.4);
-        }
-        .tl-axis-line { position: absolute; inset: 0; }
-        .tl-events-bottom { flex: 1; position: relative; min-height: 160px; }
-        .tl-today-marker {
-            position: absolute; top: -200px; bottom: -200px; width: 2px;
-            background: rgba(255,180,50,0.6); transform: translateX(-50%);
-            pointer-events: none; z-index: 5;
-        }
-        .tl-today-marker::before {
-            content: '今天'; position: absolute; top: 205px; left: 50%;
-            transform: translateX(-50%); font-size: 10px; color: #ffb432;
-            white-space: nowrap; background: var(--tl-bg2); padding: 2px 6px;
-            border-radius: 4px; border: 1px solid rgba(255,180,50,0.3);
-        }
-        .tl-event-marker {
-            position: absolute; transform: translateX(-50%);
-            display: flex; flex-direction: column; align-items: center;
-            cursor: pointer; z-index: 10; transition: transform 0.1s;
-        }
-        .tl-event-marker:hover { transform: translateX(-50%) scale(1.05); z-index: 20; }
-        .tl-event-marker.tl-top { bottom: 0; flex-direction: column-reverse; }
-        .tl-event-marker.tl-bottom { top: 0; flex-direction: column; }
-        .tl-event-dot {
-            width: 12px; height: 12px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.3); flex-shrink: 0;
-            box-shadow: 0 0 8px rgba(0,0,0,0.4); transition: transform 0.1s;
-        }
-        .tl-event-marker:hover .tl-event-dot { transform: scale(1.3); }
-        .tl-event-stem {
-            width: 1px;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0.03));
-            flex-shrink: 0;
-        }
-        .tl-event-marker.tl-top .tl-event-stem {
-            background: linear-gradient(to top, rgba(255,255,255,0.15), rgba(255,255,255,0.03));
-        }
-        .tl-event-card {
-            max-width: 160px; padding: 8px 10px; border-radius: 8px;
+        .tl-list-item {
+            display: flex; align-items: flex-start; gap: 11px;
+            padding: 12px 14px; border-radius: 10px;
             background: var(--tl-bg2); border: 1px solid var(--tl-border);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.4); transition: box-shadow 0.15s; min-width: 80px;
+            margin-bottom: 6px; transition: background 0.15s, border-color 0.15s;
         }
-        .tl-event-marker:hover .tl-event-card { box-shadow: 0 6px 24px rgba(0,0,0,0.6); }
-        .tl-event-card-title {
-            font-size: 12px; font-weight: 600; color: var(--tl-text);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;
+        .tl-list-item:hover { background: var(--tl-bg3); border-color: rgba(79,142,247,0.2); }
+        .tl-list-item.tl-selected { border-color: var(--tl-accent); background: rgba(79,142,247,0.07); }
+        .tl-list-dot {
+            width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
         }
-        .tl-event-card-date { font-size: 10px; color: var(--tl-text2); margin-top: 2px; }
-        .tl-event-range {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            height: 16px; border-radius: 8px; opacity: 0.85; cursor: pointer; z-index: 8;
-            display: flex; align-items: center; padding: 0 8px;
-            font-size: 11px; color: #fff; font-weight: 500;
+        .tl-list-date {
+            font-size: 12px; color: var(--tl-text2); flex-shrink: 0;
+            width: 32px; padding-top: 1px; font-variant-numeric: tabular-nums;
+        }
+        .tl-list-content { flex: 1; min-width: 0; }
+        .tl-list-title {
+            font-size: 14px; font-weight: 600; color: var(--tl-text);
+            line-height: 1.45; display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+        }
+        .tl-list-color-bar { width: 3px; height: 13px; border-radius: 2px; flex-shrink: 0; }
+        .tl-list-range-tag {
+            font-size: 11px; font-weight: 500; padding: 1px 7px; border-radius: 8px;
+            background: rgba(79,142,247,0.12); color: var(--tl-accent); flex-shrink: 0;
+        }
+        .tl-list-desc {
+            font-size: 12px; color: var(--tl-text2); line-height: 1.5; margin-top: 3px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            transition: opacity 0.15s, transform 0.1s; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
-        .tl-event-range:hover { opacity: 1; transform: translateY(-50%) scaleY(1.1); z-index: 20; }
+        .tl-list-actions {
+            display: flex; gap: 5px; flex-shrink: 0; opacity: 0;
+            transition: opacity 0.15s; align-items: center;
+        }
+        .tl-list-item:hover .tl-list-actions { opacity: 1; }
+        .tl-list-act {
+            background: var(--tl-bg); border: 1px solid var(--tl-border);
+            color: var(--tl-text2); border-radius: 6px; padding: 3px 9px;
+            font-size: 11px; cursor: pointer; transition: all 0.12s;
+        }
+        .tl-list-act:hover { background: var(--tl-accent); border-color: var(--tl-accent); color: #fff; }
+        .tl-list-act.del:hover { background: #c0392b; border-color: #c0392b; }
+        .tl-list-empty { text-align: center; padding: 80px 20px; color: var(--tl-text2); }
+        .tl-list-empty-icon { font-size: 44px; margin-bottom: 12px; }
+        .tl-list-empty-text { font-size: 14px; }
         .tl-detail-panel {
             width: 280px; background: var(--tl-bg2); border-left: 1px solid var(--tl-border);
             display: none; flex-direction: column; position: relative;
@@ -1404,13 +1374,6 @@
             border-radius: 8px; padding: 8px 18px; cursor: pointer; font-size: 14px; transition: all 0.15s;
         }
         .tl-btn-cancel:hover { background: var(--tl-bg); }
-        .tl-empty-hint {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            text-align: center; pointer-events: none; transition: opacity 0.3s;
-        }
-        .tl-empty-hint.hidden { opacity: 0; }
-        .tl-empty-icon { font-size: 36px; margin-bottom: 8px; }
-        .tl-empty-text { font-size: 14px; color: var(--tl-text2); }
 
         /* ===== JOURNAL ===== */
         .journal-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
@@ -1711,42 +1674,21 @@
         <div class="tab-panel" id="tab-timeline">
             <header class="tl-toolbar">
                 <div class="tl-toolbar-left">
-                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
                         <circle cx="14" cy="14" r="13" stroke="#4f8ef7" stroke-width="2"/>
                         <line x1="14" y1="6" x2="14" y2="14" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round"/>
                         <line x1="14" y1="14" x2="20" y2="18" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round"/>
                     </svg>
                     <span class="tl-app-title">时间轴</span>
                 </div>
-                <div class="tl-toolbar-center">
-                    <button class="tl-tool-btn" id="tl-btn-zoom-out">
-                        <svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="2" rx="1" fill="currentColor"/></svg>
-                    </button>
-                    <button class="tl-tool-btn" id="tl-btn-today">今天</button>
-                    <button class="tl-tool-btn" id="tl-btn-zoom-in">
-                        <svg width="16" height="16" viewBox="0 0 16 16"><rect x="7" y="3" width="2" height="10" rx="1" fill="currentColor"/><rect x="3" y="7" width="10" height="2" rx="1" fill="currentColor"/></svg>
-                    </button>
-                    <div class="tl-scale-label" id="tl-scale-label">年视图</div>
-                </div>
-                <div class="tl-toolbar-right">
+                <div class="tl-toolbar-right" style="display:flex;align-items:center;gap:10px;">
+                    <button class="tl-tool-btn" id="tl-btn-sort">最新优先 ↓</button>
                     <button class="tl-btn-primary" id="tl-btn-add-event">+ 添加事件</button>
                 </div>
             </header>
             <main class="tl-main-area">
-                <div class="tl-timeline-container" id="tl-timeline-container">
-                    <div class="tl-ruler-wrapper">
-                        <div class="tl-ruler" id="tl-ruler"></div>
-                    </div>
-                    <div class="tl-track-wrapper" id="tl-track-wrapper">
-                        <div class="tl-track-inner" id="tl-track-inner">
-                            <div class="tl-events-top" id="tl-events-top"></div>
-                            <div class="tl-axis-line-wrapper">
-                                <div class="tl-axis-line"></div>
-                                <div class="tl-today-marker" id="tl-today-marker"></div>
-                            </div>
-                            <div class="tl-events-bottom" id="tl-events-bottom"></div>
-                        </div>
-                    </div>
+                <div class="tl-list-area" id="tl-list-area">
+                    <div class="tl-list-container" id="tl-list-container"></div>
                 </div>
                 <div class="tl-detail-panel" id="tl-detail-panel">
                     <button class="tl-panel-close" id="tl-panel-close">✕</button>
@@ -1762,10 +1704,6 @@
                     </div>
                 </div>
             </main>
-            <div class="tl-empty-hint" id="tl-empty-hint">
-                <div class="tl-empty-icon">📅</div>
-                <div class="tl-empty-text">点击右上角「+ 添加事件」开始创建你的时间轴</div>
-            </div>
         </div><!-- end tab-timeline -->
 
         <!-- Todos Tab -->
@@ -2023,9 +1961,9 @@
             isDragging: false, dragStartX: 0, dragStartMs: 0,
             selectedColor: '#4f8ef7'
         };
-        let tlRuler, tlTrackWrapper, tlEventsTop, tlEventsBottom;
-        let tlTodayMarker, tlDetailPanel, tlModalOverlay, tlEmptyHint, tlScaleLabel;
+        let tlDetailPanel, tlModalOverlay;
         let tlInitialized = false;
+        let tlSortDesc = true; // true = newest first
 
         // 立即绑定登录按钮 - 在页面加载时就绑定
         document.addEventListener('DOMContentLoaded', () => {
@@ -3683,212 +3621,139 @@
         function initTimeline() {
             if (tlInitialized) { renderTimeline(); return; }
             tlInitialized = true;
-            tlRuler        = document.getElementById('tl-ruler');
-            tlTrackWrapper = document.getElementById('tl-track-wrapper');
-            tlEventsTop    = document.getElementById('tl-events-top');
-            tlEventsBottom = document.getElementById('tl-events-bottom');
-            tlTodayMarker  = document.getElementById('tl-today-marker');
             tlDetailPanel  = document.getElementById('tl-detail-panel');
             tlModalOverlay = document.getElementById('tl-modal-overlay');
-            tlEmptyHint    = document.getElementById('tl-empty-hint');
-            tlScaleLabel   = document.getElementById('tl-scale-label');
-
-            const today = new Date(); today.setHours(0,0,0,0);
-            tlState.viewStart = new Date(today.getFullYear() - 2, 0, 1);
-            tlState.viewEnd   = new Date(today.getFullYear() + 2, 11, 31);
             renderTimeline();
             bindTimelineEvents();
         }
 
-        function tlGetContainerWidth() {
-            return (tlTrackWrapper && tlTrackWrapper.clientWidth) || window.innerWidth;
-        }
-
-        function tlDateToX(date) {
-            const total = tlState.viewEnd - tlState.viewStart;
-            return ((date - tlState.viewStart) / total) * tlGetContainerWidth();
-        }
-
-        function tlXToDate(x) {
-            const total = tlState.viewEnd - tlState.viewStart;
-            return new Date(tlState.viewStart.getTime() + (x / tlGetContainerWidth()) * total);
-        }
-
-        function tlVisibleRangeDays() {
-            return (tlState.viewEnd - tlState.viewStart) / MS_DAY;
-        }
-
-        function tlGetScaleConfig() {
-            const d = tlVisibleRangeDays();
-            if (d > 365*50) return { major:'decade', minor:'year',  label:'世纪视图' };
-            if (d > 365*10) return { major:'year',   minor:'month', label:'十年视图' };
-            if (d > 365*2)  return { major:'year',   minor:'month', label:'年视图'  };
-            if (d > 120)    return { major:'month',  minor:'week',  label:'月视图'  };
-            if (d > 30)     return { major:'week',   minor:'day',   label:'周视图'  };
-            return              { major:'day',    minor:'day',   label:'日视图'  };
-        }
-
-        function tlIterateTicks(cfg) {
-            const ticks = []; const W = tlGetContainerWidth();
-            const advance = (d, unit) => {
-                const n = new Date(d);
-                if (unit==='day')   n.setDate(n.getDate()+1);
-                if (unit==='week')  n.setDate(n.getDate()+7);
-                if (unit==='month') n.setMonth(n.getMonth()+1);
-                if (unit==='year')  n.setFullYear(n.getFullYear()+1);
-                if (unit==='decade')n.setFullYear(n.getFullYear()+10);
-                return n;
-            };
-            const snap = (d, unit) => {
-                const n = new Date(d); n.setHours(0,0,0,0);
-                if (unit==='week')  n.setDate(n.getDate()-n.getDay());
-                if (unit==='month') n.setDate(1);
-                if (unit==='year')  n.setMonth(0,1);
-                if (unit==='decade')n.setFullYear(Math.floor(n.getFullYear()/10)*10,0,1);
-                return n;
-            };
-            const add = (date, type) => {
-                const x = tlDateToX(date);
-                if (x < -20 || x > W+20) return;
-                ticks.push({ x, date: new Date(date), type });
-            };
-            let cur = snap(new Date(tlState.viewStart), cfg.major);
-            while (cur <= tlState.viewEnd) { add(cur,'major'); cur = advance(cur,cfg.major); }
-            if (cfg.minor !== cfg.major) {
-                cur = snap(new Date(tlState.viewStart), cfg.minor);
-                while (cur <= tlState.viewEnd) { add(cur,'minor'); cur = advance(cur,cfg.minor); }
-            }
-            return ticks;
-        }
-
-        function tlFormatTickLabel(date, unit) {
-            const y=date.getFullYear(), m=date.getMonth()+1, d=date.getDate();
-            if (unit==='decade') return `${Math.floor(y/10)*10}s`;
-            if (unit==='year')   return `${y}`;
-            if (unit==='month')  return `${y}/${String(m).padStart(2,'0')}`;
-            return `${m}/${d}`;
-        }
-
         function renderTimeline() {
-            if (!tlRuler) return;
-            renderTlRuler(); renderTlEvents(); renderTlTodayMarker(); tlUpdateUI();
+            renderTlList();
         }
 
-        function renderTlRuler() {
-            tlRuler.innerHTML = '';
-            const cfg = tlGetScaleConfig();
-            tlScaleLabel.textContent = cfg.label;
-            const seen = new Set();
-            tlIterateTicks(cfg).forEach(t => {
-                const key = `${t.type}-${Math.round(t.x)}`;
-                if (seen.has(key)) return; seen.add(key);
-                const el = document.createElement('div');
-                el.className = `tl-ruler-tick ${t.type==='major'?'tl-major':'tl-minor'}`;
-                el.style.left = t.x + 'px';
-                if (t.type==='major') {
-                    const lbl = document.createElement('div');
-                    lbl.className = 'tl-tick-label';
-                    lbl.textContent = tlFormatTickLabel(t.date, cfg.major);
-                    el.appendChild(lbl);
-                }
-                const line = document.createElement('div');
-                line.className = 'tl-tick-line';
-                el.appendChild(line);
-                tlRuler.appendChild(el);
-            });
-        }
+        function renderTlList() {
+            const container = document.getElementById('tl-list-container');
+            if (!container) return;
 
-        function renderTlTodayMarker() {
-            const today = new Date(); today.setHours(0,0,0,0);
-            const x = tlDateToX(today);
-            const W = tlGetContainerWidth();
-            if (x > 0 && x < W) {
-                tlTodayMarker.style.display = 'block';
-                tlTodayMarker.style.left = x + 'px';
-            } else { tlTodayMarker.style.display = 'none'; }
-        }
-
-        function renderTlEvents() {
-            tlEventsTop.innerHTML = ''; tlEventsBottom.innerHTML = '';
-            const W = tlGetContainerWidth();
-            const sorted = [...tlState.events].sort((a,b) => a.start - b.start);
-
-            // Lane-based collision avoidance: cards within CARD_W pixels of each
-            // other get pushed to a deeper lane so they're visible and clickable.
-            const CARD_W = 155;   // approximate card width used as collision radius
-            const BASE_STEM = 32; // stem px for lane 0 (closest to axis)
-            const LANE_STEP = 58; // extra px per additional lane
-            const MAX_LANES = 5;
-            const occ = {
-                top:    Array.from({length: MAX_LANES}, () => []),
-                bottom: Array.from({length: MAX_LANES}, () => [])
-            };
-            function minFreeLane(side, x) {
-                for (let i = 0; i < MAX_LANES; i++) {
-                    if (!occ[side][i].some(ox => Math.abs(ox - x) < CARD_W)) return i;
-                }
-                return MAX_LANES - 1;
+            if (tlState.events.length === 0) {
+                container.innerHTML = `<div class="tl-list-empty"><div class="tl-list-empty-icon">📅</div><div class="tl-list-empty-text">点击右上角「+ 添加事件」开始创建你的时间轴</div></div>`;
+                return;
             }
+
+            const sorted = [...tlState.events].sort((a, b) =>
+                tlSortDesc ? b.start - a.start : a.start - b.start
+            );
+
+            container.innerHTML = '';
+            let curYear = null, curMonth = null;
+            const MONTHS = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
 
             sorted.forEach(ev => {
-                const x = tlDateToX(ev.start);
-                if (x < -200 || x > W + 200) return;
-                if (ev.end && ev.end > ev.start) { renderTlRangeEvent(ev, x, W); return; }
+                const y = ev.start.getFullYear();
+                const mo = ev.start.getMonth();
+                const d = ev.start.getDate();
 
-                // Pick the side whose shallowest free lane is lower (closer to axis)
-                const tLane = minFreeLane('top', x);
-                const bLane = minFreeLane('bottom', x);
-                const isTop = tLane <= bLane;
-                const side  = isTop ? 'top' : 'bottom';
-                const lane  = isTop ? tLane : bLane;
-                occ[side][lane].push(x);
+                if (y !== curYear) {
+                    curYear = y; curMonth = null;
+                    const yEl = document.createElement('div');
+                    yEl.className = 'tl-list-year';
+                    yEl.textContent = y + ' 年';
+                    container.appendChild(yEl);
+                }
+                if (mo !== curMonth) {
+                    curMonth = mo;
+                    const mEl = document.createElement('div');
+                    mEl.className = 'tl-list-month';
+                    mEl.textContent = MONTHS[mo];
+                    container.appendChild(mEl);
+                }
 
-                const container = isTop ? tlEventsTop : tlEventsBottom;
-                const stemH = BASE_STEM + lane * LANE_STEP;
+                const item = document.createElement('div');
+                item.className = 'tl-list-item' + (ev.id === tlState.selectedId ? ' tl-selected' : '');
+                item.dataset.id = ev.id;
 
-                const marker = document.createElement('div');
-                marker.className = `tl-event-marker ${isTop ? 'tl-top' : 'tl-bottom'}`;
-                marker.style.left = x + 'px';
-                marker.dataset.id = ev.id;
-
+                // 色块
                 const dot = document.createElement('div');
-                dot.className = 'tl-event-dot'; dot.style.background = ev.color;
-                const stem = document.createElement('div');
-                stem.className = 'tl-event-stem'; stem.style.height = stemH + 'px';
-                const card = document.createElement('div');
-                card.className = 'tl-event-card';
-                card.style.borderTopColor = ev.color;
-                card.style.borderTopWidth = '2px'; card.style.borderTopStyle = 'solid';
-                const titleEl = document.createElement('div');
-                titleEl.className = 'tl-event-card-title'; titleEl.textContent = ev.title;
+                dot.className = 'tl-list-dot';
+                dot.style.background = ev.color;
+
+                // 日期
                 const dateEl = document.createElement('div');
-                dateEl.className = 'tl-event-card-date'; dateEl.textContent = tlFormatDate(ev.start);
-                card.appendChild(titleEl); card.appendChild(dateEl);
+                dateEl.className = 'tl-list-date';
+                dateEl.textContent = String(mo + 1).padStart(2, '0') + '/' + String(d).padStart(2, '0');
 
-                if (isTop) { marker.appendChild(card); marker.appendChild(stem); marker.appendChild(dot); }
-                else       { marker.appendChild(dot);  marker.appendChild(stem); marker.appendChild(card); }
+                // 内容区
+                const content = document.createElement('div');
+                content.className = 'tl-list-content';
 
-                if (ev.id === tlState.selectedId)
-                    dot.style.boxShadow = `0 0 0 3px ${ev.color}, 0 0 12px ${ev.color}`;
-                marker.addEventListener('click', e => { e.stopPropagation(); tlSelectEvent(ev.id); });
-                container.appendChild(marker);
+                const titleRow = document.createElement('div');
+                titleRow.className = 'tl-list-title';
+
+                const bar = document.createElement('div');
+                bar.className = 'tl-list-color-bar';
+                bar.style.background = ev.color;
+
+                const titleText = document.createElement('span');
+                titleText.textContent = ev.title;
+
+                titleRow.appendChild(bar);
+                titleRow.appendChild(titleText);
+
+                if (ev.end && ev.end > ev.start) {
+                    const tag = document.createElement('span');
+                    tag.className = 'tl-list-range-tag';
+                    const days = Math.round((ev.end - ev.start) / 86400000);
+                    tag.textContent = `持续 ${days} 天`;
+                    titleRow.appendChild(tag);
+                }
+
+                content.appendChild(titleRow);
+
+                if (ev.desc) {
+                    const desc = document.createElement('div');
+                    desc.className = 'tl-list-desc';
+                    desc.textContent = ev.desc;
+                    content.appendChild(desc);
+                }
+
+                // 操作按钮
+                const actions = document.createElement('div');
+                actions.className = 'tl-list-actions';
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'tl-list-act';
+                editBtn.textContent = '编辑';
+                editBtn.addEventListener('click', e => { e.stopPropagation(); tlOpenModal(ev.id); });
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'tl-list-act del';
+                delBtn.textContent = '删除';
+                delBtn.addEventListener('click', async e => {
+                    e.stopPropagation();
+                    if (confirm(`确定删除「${ev.title}」？`)) {
+                        tlState.events = tlState.events.filter(x => x.id !== ev.id);
+                        if (tlState.selectedId === ev.id) { tlState.selectedId = null; tlDetailPanel.classList.remove('visible'); }
+                        await saveUserData();
+                        renderTlList();
+                    }
+                });
+
+                actions.appendChild(editBtn);
+                actions.appendChild(delBtn);
+
+                item.appendChild(dot);
+                item.appendChild(dateEl);
+                item.appendChild(content);
+                item.appendChild(actions);
+
+                item.addEventListener('click', () => tlSelectEvent(ev.id));
+                container.appendChild(item);
             });
-        }
-
-        function renderTlRangeEvent(ev, x1, W) {
-            const x2 = tlDateToX(ev.end);
-            const left = Math.max(0,x1), right = Math.min(W,x2);
-            if (right <= left) return;
-            const el = document.createElement('div');
-            el.className = 'tl-event-range';
-            el.style.left  = left + 'px'; el.style.width = (right-left) + 'px';
-            el.style.background = ev.color; el.textContent = ev.title; el.dataset.id = ev.id;
-            if (ev.id === tlState.selectedId) el.style.outline = '2px solid white';
-            el.addEventListener('click', e => { e.stopPropagation(); tlSelectEvent(ev.id); });
-            tlEventsBottom.appendChild(el);
         }
 
         function tlSelectEvent(id) {
+            // 如果再次点击同一项则关闭面板
+            if (tlState.selectedId === id) { tlClosePanel(); return; }
             tlState.selectedId = id;
             const ev = tlState.events.find(e => e.id === id);
             if (!ev) return;
@@ -3899,13 +3764,16 @@
             document.getElementById('tl-panel-title').textContent = ev.title;
             document.getElementById('tl-panel-desc').textContent  = ev.desc || '（无描述）';
             tlDetailPanel.classList.add('visible');
-            renderTimeline();
+            // 更新列表高亮
+            document.querySelectorAll('.tl-list-item').forEach(el => {
+                el.classList.toggle('tl-selected', el.dataset.id === id);
+            });
         }
 
         function tlClosePanel() {
             tlState.selectedId = null;
             tlDetailPanel.classList.remove('visible');
-            renderTimeline();
+            document.querySelectorAll('.tl-list-item').forEach(el => el.classList.remove('tl-selected'));
         }
 
         function tlFormatDate(d) {
@@ -3966,44 +3834,13 @@
             setTimeout(() => { el.style.animation = ''; }, 400);
         }
 
-        function tlZoom(factor) {
-            const center = new Date((tlState.viewStart.getTime()+tlState.viewEnd.getTime())/2);
-            const half = (tlState.viewEnd-tlState.viewStart)/2 * factor;
-            const clamped = Math.max(MS_DAY*7, Math.min(MS_DAY*365*100, half));
-            tlState.viewStart = new Date(center.getTime()-clamped);
-            tlState.viewEnd   = new Date(center.getTime()+clamped);
-            renderTimeline();
-        }
-
-        function tlPan(dx) {
-            const total = tlState.viewEnd - tlState.viewStart;
-            const dt = -(dx/tlGetContainerWidth())*total;
-            tlState.viewStart = new Date(tlState.viewStart.getTime()+dt);
-            tlState.viewEnd   = new Date(tlState.viewEnd.getTime()+dt);
-            renderTimeline();
-        }
-
-        function tlGoToToday() {
-            const t = new Date(); t.setHours(0,0,0,0); tlCenterOnDate(t);
-        }
-
-        function tlCenterOnDate(date) {
-            const half = (tlState.viewEnd-tlState.viewStart)/2;
-            tlState.viewStart = new Date(date.getTime()-half);
-            tlState.viewEnd   = new Date(date.getTime()+half);
-            renderTimeline();
-        }
-
-        function tlUpdateUI() {
-            if (tlEmptyHint)
-                tlEmptyHint.classList.toggle('hidden', tlState.events.length > 0);
-        }
-
         function bindTimelineEvents() {
-            document.getElementById('tl-btn-zoom-in').addEventListener('click', () => tlZoom(0.5));
-            document.getElementById('tl-btn-zoom-out').addEventListener('click', () => tlZoom(2));
-            document.getElementById('tl-btn-today').addEventListener('click', tlGoToToday);
             document.getElementById('tl-btn-add-event').addEventListener('click', () => tlOpenModal());
+            document.getElementById('tl-btn-sort').addEventListener('click', () => {
+                tlSortDesc = !tlSortDesc;
+                document.getElementById('tl-btn-sort').textContent = tlSortDesc ? '最新优先 ↓' : '最旧优先 ↑';
+                renderTlList();
+            });
             document.getElementById('tl-panel-close').addEventListener('click', tlClosePanel);
             document.getElementById('tl-panel-edit').addEventListener('click', () => {
                 if (tlState.selectedId) tlOpenModal(tlState.selectedId);
@@ -4011,13 +3848,13 @@
             document.getElementById('tl-panel-delete').addEventListener('click', async () => {
                 if (tlState.selectedId) {
                     tlState.events = tlState.events.filter(e => e.id !== tlState.selectedId);
-                    await saveUserData(); tlClosePanel(); renderTimeline();
+                    await saveUserData(); tlClosePanel(); renderTlList();
                 }
             });
             document.getElementById('tl-modal-close').addEventListener('click', tlCloseModal);
             document.getElementById('tl-btn-cancel').addEventListener('click', tlCloseModal);
             document.getElementById('tl-btn-save').addEventListener('click', tlSaveModal);
-            tlModalOverlay.addEventListener('click', e => { if (e.target===tlModalOverlay) tlCloseModal(); });
+            tlModalOverlay.addEventListener('click', e => { if (e.target === tlModalOverlay) tlCloseModal(); });
             document.querySelectorAll('.tl-color-swatch').forEach(sw => {
                 sw.addEventListener('click', () => {
                     document.querySelectorAll('.tl-color-swatch').forEach(s => s.classList.remove('selected'));
@@ -4026,71 +3863,12 @@
                 });
             });
             document.addEventListener('keydown', e => {
-                const inInput = ['INPUT','TEXTAREA'].includes(document.activeElement?.tagName);
-                if (e.key==='Escape') {
+                if (e.key === 'Escape') {
                     if (tlModalOverlay.classList.contains('visible')) { tlCloseModal(); return; }
                     if (tlState.selectedId) { tlClosePanel(); return; }
                 }
-                if (!inInput && (e.key==='+'||e.key==='=')) tlZoom(0.5);
-                if (!inInput && e.key==='-') tlZoom(2);
-                if (e.key==='Enter' && tlModalOverlay.classList.contains('visible')) tlSaveModal();
+                if (e.key === 'Enter' && tlModalOverlay.classList.contains('visible')) tlSaveModal();
             });
-            tlTrackWrapper.addEventListener('mousedown', e => {
-                if (e.button!==0) return;
-                tlState.isDragging = true; tlState.dragStartX = e.clientX;
-                tlState.dragStartMs = tlState.viewStart.getTime();
-                tlTrackWrapper.style.cursor = 'grabbing';
-            });
-            document.addEventListener('mousemove', e => {
-                if (!tlState.isDragging) return;
-                const dx = e.clientX - tlState.dragStartX;
-                const total = tlState.viewEnd - tlState.viewStart;
-                const dt = -(dx/tlGetContainerWidth())*total;
-                tlState.viewStart = new Date(tlState.dragStartMs+dt);
-                tlState.viewEnd   = new Date(tlState.dragStartMs+dt+total);
-                renderTimeline();
-            });
-            document.addEventListener('mouseup', () => {
-                tlState.isDragging = false;
-                tlTrackWrapper.style.cursor = 'grab';
-            });
-            tlTrackWrapper.addEventListener('click', e => {
-                if (e.target===tlTrackWrapper || e.target.classList.contains('tl-track-inner') ||
-                    e.target.classList.contains('tl-events-top') || e.target.classList.contains('tl-events-bottom') ||
-                    e.target.classList.contains('tl-axis-line-wrapper') || e.target.classList.contains('tl-axis-line')) {
-                    tlClosePanel();
-                }
-            });
-            tlRuler.parentElement.addEventListener('wheel', e => {
-                e.preventDefault(); tlZoom(e.deltaY>0?1.2:0.83);
-            }, { passive: false });
-            tlTrackWrapper.addEventListener('wheel', e => {
-                e.preventDefault();
-                if (e.ctrlKey||e.metaKey) tlZoom(e.deltaY>0?1.2:0.83);
-                else tlPan(e.deltaY*2);
-            }, { passive: false });
-            let touchStartX=0, touchStartMs=0, lastTouchDist=0;
-            tlTrackWrapper.addEventListener('touchstart', e => {
-                if (e.touches.length===1) { touchStartX=e.touches[0].clientX; touchStartMs=tlState.viewStart.getTime(); }
-                else if (e.touches.length===2) {
-                    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
-                    lastTouchDist=Math.hypot(dx,dy);
-                }
-            }, { passive: true });
-            tlTrackWrapper.addEventListener('touchmove', e => {
-                if (e.touches.length===1) {
-                    const dx=e.touches[0].clientX-touchStartX, total=tlState.viewEnd-tlState.viewStart;
-                    const dt=-(dx/tlGetContainerWidth())*total;
-                    tlState.viewStart=new Date(touchStartMs+dt); tlState.viewEnd=new Date(touchStartMs+dt+total);
-                    renderTimeline();
-                } else if (e.touches.length===2) {
-                    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
-                    const dist=Math.hypot(dx,dy);
-                    if (lastTouchDist>0) tlZoom(lastTouchDist/dist);
-                    lastTouchDist=dist;
-                }
-            }, { passive: true });
-            window.addEventListener('resize', renderTimeline);
 
             // Inject shake keyframe
             const sty = document.createElement('style');

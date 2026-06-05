@@ -1241,62 +1241,68 @@
         }
         .tl-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(79,142,247,0.5); }
         .tl-main-area { display: flex; flex: 1; overflow: hidden; }
-        .tl-list-area { flex: 1; overflow-y: auto; background: var(--tl-bg); }
-        .tl-list-container { max-width: 680px; margin: 0 auto; padding: 24px 20px 40px; }
-        .tl-list-year {
-            font-size: 20px; font-weight: 700; color: var(--tl-text);
-            margin: 36px 0 12px; padding-bottom: 10px;
-            border-bottom: 1px solid var(--tl-border);
+        /* === WEEK CALENDAR === */
+        .tlw-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--tl-bg); }
+        .tlw-range-label { font-size: 14px; font-weight: 600; color: var(--tl-text); }
+        .tlw-head {
+            display: grid; grid-template-columns: repeat(7,1fr);
+            border-bottom: 1px solid var(--tl-border); flex-shrink: 0; background: var(--tl-bg2);
         }
-        .tl-list-year:first-child { margin-top: 0; }
-        .tl-list-month {
-            font-size: 11px; font-weight: 600; color: var(--tl-text2);
-            letter-spacing: 0.06em; margin: 18px 0 8px 2px; text-transform: uppercase;
+        .tlw-dhead {
+            padding: 10px 4px 8px; text-align: center;
+            border-right: 1px solid var(--tl-border); cursor: pointer; transition: background 0.12s;
         }
-        .tl-list-item {
-            display: flex; align-items: flex-start; gap: 11px;
-            padding: 12px 14px; border-radius: 10px;
-            background: var(--tl-bg2); border: 1px solid var(--tl-border);
-            margin-bottom: 6px; transition: background 0.15s, border-color 0.15s;
+        .tlw-dhead:last-child { border-right: none; }
+        .tlw-dhead:hover { background: rgba(79,142,247,0.07); }
+        .tlw-dhead.tlw-today { background: rgba(79,142,247,0.09); }
+        .tlw-dname { font-size: 11px; font-weight: 600; color: var(--tl-text2); letter-spacing: 0.04em; }
+        .tlw-dnum {
+            font-size: 18px; font-weight: 700; color: var(--tl-text);
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin: 4px auto 0;
         }
-        .tl-list-item:hover { background: var(--tl-bg3); border-color: rgba(79,142,247,0.2); }
-        .tl-list-item.tl-selected { border-color: var(--tl-accent); background: rgba(79,142,247,0.07); }
-        .tl-list-dot {
-            width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
+        .tlw-dhead.tlw-today .tlw-dnum { background: var(--tl-accent); color: #fff; }
+        .tlw-multiday {
+            flex-shrink: 0; position: relative; overflow: hidden;
+            border-bottom: 1px solid var(--tl-border); background: var(--tl-bg);
+            min-height: 4px;
         }
-        .tl-list-date {
-            font-size: 12px; color: var(--tl-text2); flex-shrink: 0;
-            width: 32px; padding-top: 1px; font-variant-numeric: tabular-nums;
+        .tlw-md-col-line {
+            position: absolute; top: 0; bottom: 0; width: 1px;
+            background: var(--tl-border); pointer-events: none;
         }
-        .tl-list-content { flex: 1; min-width: 0; }
-        .tl-list-title {
-            font-size: 14px; font-weight: 600; color: var(--tl-text);
-            line-height: 1.45; display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+        .tlw-md-event {
+            position: absolute; height: 20px; border-radius: 4px;
+            font-size: 11px; font-weight: 600; color: #fff;
+            display: flex; align-items: center; padding: 0 7px;
+            cursor: pointer; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+            transition: opacity 0.1s; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
         }
-        .tl-list-color-bar { width: 3px; height: 13px; border-radius: 2px; flex-shrink: 0; }
-        .tl-list-range-tag {
-            font-size: 11px; font-weight: 500; padding: 1px 7px; border-radius: 8px;
-            background: rgba(79,142,247,0.12); color: var(--tl-accent); flex-shrink: 0;
+        .tlw-md-event:hover { opacity: 0.82; }
+        .tlw-md-event.tlw-sel { outline: 2px solid rgba(255,255,255,0.7); outline-offset: 0px; }
+        .tlw-cols { flex: 1; display: grid; grid-template-columns: repeat(7,1fr); overflow-y: auto; }
+        .tlw-dcol {
+            border-right: 1px solid var(--tl-border); padding: 6px 5px;
+            cursor: pointer; min-height: 120px; transition: background 0.1s;
         }
-        .tl-list-desc {
-            font-size: 12px; color: var(--tl-text2); line-height: 1.5; margin-top: 3px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        .tlw-dcol:last-child { border-right: none; }
+        .tlw-dcol:hover { background: rgba(255,255,255,0.015); }
+        .tlw-dcol.tlw-today { background: rgba(79,142,247,0.035); }
+        .tlw-event {
+            border-radius: 5px; padding: 3px 7px; margin-bottom: 3px;
+            font-size: 12px; font-weight: 500; color: #fff; cursor: pointer;
+            overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+            transition: opacity 0.1s, transform 0.1s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25); line-height: 1.5;
         }
-        .tl-list-actions {
-            display: flex; gap: 5px; flex-shrink: 0; opacity: 0;
-            transition: opacity 0.15s; align-items: center;
+        .tlw-event:hover { opacity: 0.82; transform: translateX(1px); }
+        .tlw-event.tlw-sel { outline: 2px solid rgba(255,255,255,0.7); }
+        .tlw-empty {
+            grid-column: 1/8; text-align: center;
+            padding: 60px 20px; color: var(--tl-text2);
         }
-        .tl-list-item:hover .tl-list-actions { opacity: 1; }
-        .tl-list-act {
-            background: var(--tl-bg); border: 1px solid var(--tl-border);
-            color: var(--tl-text2); border-radius: 6px; padding: 3px 9px;
-            font-size: 11px; cursor: pointer; transition: all 0.12s;
-        }
-        .tl-list-act:hover { background: var(--tl-accent); border-color: var(--tl-accent); color: #fff; }
-        .tl-list-act.del:hover { background: #c0392b; border-color: #c0392b; }
-        .tl-list-empty { text-align: center; padding: 80px 20px; color: var(--tl-text2); }
-        .tl-list-empty-icon { font-size: 44px; margin-bottom: 12px; }
-        .tl-list-empty-text { font-size: 14px; }
+        .tlw-empty-icon { font-size: 40px; margin-bottom: 10px; }
+        .tlw-empty-text { font-size: 14px; }
         .tl-detail-panel {
             width: 280px; background: var(--tl-bg2); border-left: 1px solid var(--tl-border);
             display: none; flex-direction: column; position: relative;
@@ -1681,15 +1687,18 @@
                     </svg>
                     <span class="tl-app-title">时间轴</span>
                 </div>
-                <div class="tl-toolbar-right" style="display:flex;align-items:center;gap:10px;">
-                    <button class="tl-tool-btn" id="tl-btn-sort">最新优先 ↓</button>
+                <div class="tl-toolbar-center" style="display:flex;align-items:center;gap:8px;flex:1;justify-content:center;">
+                    <button class="tl-tool-btn" id="tlw-prev">◀</button>
+                    <button class="tl-tool-btn" id="tlw-today">今天</button>
+                    <button class="tl-tool-btn" id="tlw-next">▶</button>
+                    <span class="tlw-range-label" id="tlw-range"></span>
+                </div>
+                <div class="tl-toolbar-right">
                     <button class="tl-btn-primary" id="tl-btn-add-event">+ 添加事件</button>
                 </div>
             </header>
             <main class="tl-main-area">
-                <div class="tl-list-area" id="tl-list-area">
-                    <div class="tl-list-container" id="tl-list-container"></div>
-                </div>
+                <div class="tlw-body" id="tlw-body"></div>
                 <div class="tl-detail-panel" id="tl-detail-panel">
                     <button class="tl-panel-close" id="tl-panel-close">✕</button>
                     <div class="tl-panel-color-bar" id="tl-panel-color-bar"></div>
@@ -1963,7 +1972,7 @@
         };
         let tlDetailPanel, tlModalOverlay;
         let tlInitialized = false;
-        let tlSortDesc = true; // true = newest first
+        let tlWeekStart = null; // Monday of displayed week
 
         // 立即绑定登录按钮 - 在页面加载时就绑定
         document.addEventListener('DOMContentLoaded', () => {
@@ -3623,132 +3632,150 @@
             tlInitialized = true;
             tlDetailPanel  = document.getElementById('tl-detail-panel');
             tlModalOverlay = document.getElementById('tl-modal-overlay');
+            const today = new Date(); today.setHours(0,0,0,0);
+            tlWeekStart = tlGetWeekStart(today);
             renderTimeline();
             bindTimelineEvents();
         }
 
-        function renderTimeline() {
-            renderTlList();
+        // ── Week calendar helpers ──────────────────────────────
+        function tlGetWeekStart(date) {
+            const d = new Date(date); d.setHours(0,0,0,0);
+            const day = d.getDay(); // 0=Sun
+            d.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
+            return d;
+        }
+        function tlDateOnly(d) { const n = new Date(d); n.setHours(0,0,0,0); return n; }
+        function tlSameDay(a, b) {
+            return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+        }
+        function tlDayStr(d) {
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         }
 
-        function renderTlList() {
-            const container = document.getElementById('tl-list-container');
-            if (!container) return;
+        function renderTimeline() { renderTlWeek(); }
 
-            if (tlState.events.length === 0) {
-                container.innerHTML = `<div class="tl-list-empty"><div class="tl-list-empty-icon">📅</div><div class="tl-list-empty-text">点击右上角「+ 添加事件」开始创建你的时间轴</div></div>`;
-                return;
+        function renderTlWeek() {
+            const body = document.getElementById('tlw-body');
+            if (!body || !tlWeekStart) return;
+
+            const today = new Date(); today.setHours(0,0,0,0);
+
+            // 本周7天 (周一 ~ 周日)
+            const days = Array.from({length:7}, (_,i) => {
+                const d = new Date(tlWeekStart); d.setDate(d.getDate()+i); return d;
+            });
+            const weekEnd = new Date(days[6]); weekEnd.setHours(23,59,59,999);
+
+            // 更新周范围标签
+            const m1=days[0].getMonth()+1, d1=days[0].getDate();
+            const m2=days[6].getMonth()+1, d2=days[6].getDate();
+            const rangeEl = document.getElementById('tlw-range');
+            if (rangeEl) rangeEl.textContent = m1===m2
+                ? `${days[0].getFullYear()}年 ${m1}月 ${d1} — ${d2}日`
+                : `${days[0].getFullYear()}年 ${m1}月${d1}日 — ${m2}月${d2}日`;
+
+            // 筛选本周事件
+            const weekEvents = tlState.events.filter(ev => {
+                const evEnd = ev.end && ev.end > ev.start ? tlDateOnly(ev.end) : tlDateOnly(ev.start);
+                return tlDateOnly(ev.start) <= weekEnd && evEnd >= tlWeekStart;
+            });
+
+            // 跨天事件 vs 单天事件
+            const isMulti = ev => ev.end && ev.end > ev.start && !tlSameDay(ev.start, ev.end);
+            const multiDay  = weekEvents.filter(isMulti);
+            const singleDay = weekEvents.filter(ev => !isMulti(ev));
+
+            // 为跨天事件分配泳道
+            const mdClipped = multiDay.map(ev => ({
+                ...ev,
+                c0: Math.max(0, Math.floor((tlDateOnly(ev.start) - tlWeekStart) / 86400000)),
+                c1: Math.min(6, Math.floor((tlDateOnly(ev.end)   - tlWeekStart) / 86400000)),
+            })).sort((a,b) => a.c0-b.c0 || b.c1-a.c1);
+
+            const lanes = [];
+            mdClipped.forEach(ev => {
+                let placed = false;
+                for (let i=0; i<lanes.length; i++) {
+                    if (lanes[i][lanes[i].length-1].c1 < ev.c0) {
+                        lanes[i].push(ev); ev._lane=i; placed=true; break;
+                    }
+                }
+                if (!placed) { ev._lane=lanes.length; lanes.push([ev]); }
+            });
+            const numLanes = lanes.length;
+
+            // ── 构建 DOM ───────────────────────────────────────
+            body.innerHTML = '';
+
+            // 1. 日期标题行
+            const head = document.createElement('div');
+            head.className = 'tlw-head';
+            const DAY_NAMES = ['周一','周二','周三','周四','周五','周六','周日'];
+            days.forEach((day, i) => {
+                const dh = document.createElement('div');
+                dh.className = 'tlw-dhead' + (tlSameDay(day,today) ? ' tlw-today' : '');
+                dh.innerHTML = `<div class="tlw-dname">${DAY_NAMES[i]}</div><div class="tlw-dnum">${day.getDate()}</div>`;
+                dh.addEventListener('click', () => tlOpenModal(null, tlDayStr(day)));
+                head.appendChild(dh);
+            });
+            body.appendChild(head);
+
+            // 2. 跨天事件条带
+            if (numLanes > 0) {
+                const strip = document.createElement('div');
+                strip.className = 'tlw-multiday';
+                strip.style.height = (numLanes * 24 + 6) + 'px';
+                // 列分割线
+                for (let i=1; i<7; i++) {
+                    const line = document.createElement('div');
+                    line.className = 'tlw-md-col-line';
+                    line.style.left = (i/7*100)+'%';
+                    strip.appendChild(line);
+                }
+                mdClipped.forEach(ev => {
+                    const el = document.createElement('div');
+                    el.className = 'tlw-md-event' + (ev.id===tlState.selectedId ? ' tlw-sel' : '');
+                    el.style.cssText = `background:${ev.color};left:calc(${ev.c0/7*100}% + 2px);width:calc(${(ev.c1-ev.c0+1)/7*100}% - 4px);top:${ev._lane*24+3}px`;
+                    el.textContent = ev.title;
+                    el.addEventListener('click', () => tlSelectEvent(ev.id));
+                    strip.appendChild(el);
+                });
+                body.appendChild(strip);
             }
 
-            const sorted = [...tlState.events].sort((a, b) =>
-                tlSortDesc ? b.start - a.start : a.start - b.start
-            );
+            // 3. 单天事件列区域
+            const cols = document.createElement('div');
+            cols.className = 'tlw-cols';
 
-            container.innerHTML = '';
-            let curYear = null, curMonth = null;
-            const MONTHS = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+            if (tlState.events.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'tlw-empty';
+                empty.innerHTML = '<div class="tlw-empty-icon">📅</div><div class="tlw-empty-text">点击任意日期格子添加事件</div>';
+                cols.appendChild(empty);
+            }
 
-            sorted.forEach(ev => {
-                const y = ev.start.getFullYear();
-                const mo = ev.start.getMonth();
-                const d = ev.start.getDate();
+            days.forEach(day => {
+                const col = document.createElement('div');
+                col.className = 'tlw-dcol' + (tlSameDay(day,today) ? ' tlw-today' : '');
+                col.addEventListener('click', () => tlOpenModal(null, tlDayStr(day)));
 
-                if (y !== curYear) {
-                    curYear = y; curMonth = null;
-                    const yEl = document.createElement('div');
-                    yEl.className = 'tl-list-year';
-                    yEl.textContent = y + ' 年';
-                    container.appendChild(yEl);
-                }
-                if (mo !== curMonth) {
-                    curMonth = mo;
-                    const mEl = document.createElement('div');
-                    mEl.className = 'tl-list-month';
-                    mEl.textContent = MONTHS[mo];
-                    container.appendChild(mEl);
-                }
+                const dayEvs = singleDay
+                    .filter(ev => tlSameDay(tlDateOnly(ev.start), day))
+                    .sort((a,b) => a.start-b.start);
 
-                const item = document.createElement('div');
-                item.className = 'tl-list-item' + (ev.id === tlState.selectedId ? ' tl-selected' : '');
-                item.dataset.id = ev.id;
-
-                // 色块
-                const dot = document.createElement('div');
-                dot.className = 'tl-list-dot';
-                dot.style.background = ev.color;
-
-                // 日期
-                const dateEl = document.createElement('div');
-                dateEl.className = 'tl-list-date';
-                dateEl.textContent = String(mo + 1).padStart(2, '0') + '/' + String(d).padStart(2, '0');
-
-                // 内容区
-                const content = document.createElement('div');
-                content.className = 'tl-list-content';
-
-                const titleRow = document.createElement('div');
-                titleRow.className = 'tl-list-title';
-
-                const bar = document.createElement('div');
-                bar.className = 'tl-list-color-bar';
-                bar.style.background = ev.color;
-
-                const titleText = document.createElement('span');
-                titleText.textContent = ev.title;
-
-                titleRow.appendChild(bar);
-                titleRow.appendChild(titleText);
-
-                if (ev.end && ev.end > ev.start) {
-                    const tag = document.createElement('span');
-                    tag.className = 'tl-list-range-tag';
-                    const days = Math.round((ev.end - ev.start) / 86400000);
-                    tag.textContent = `持续 ${days} 天`;
-                    titleRow.appendChild(tag);
-                }
-
-                content.appendChild(titleRow);
-
-                if (ev.desc) {
-                    const desc = document.createElement('div');
-                    desc.className = 'tl-list-desc';
-                    desc.textContent = ev.desc;
-                    content.appendChild(desc);
-                }
-
-                // 操作按钮
-                const actions = document.createElement('div');
-                actions.className = 'tl-list-actions';
-
-                const editBtn = document.createElement('button');
-                editBtn.className = 'tl-list-act';
-                editBtn.textContent = '编辑';
-                editBtn.addEventListener('click', e => { e.stopPropagation(); tlOpenModal(ev.id); });
-
-                const delBtn = document.createElement('button');
-                delBtn.className = 'tl-list-act del';
-                delBtn.textContent = '删除';
-                delBtn.addEventListener('click', async e => {
-                    e.stopPropagation();
-                    if (confirm(`确定删除「${ev.title}」？`)) {
-                        tlState.events = tlState.events.filter(x => x.id !== ev.id);
-                        if (tlState.selectedId === ev.id) { tlState.selectedId = null; tlDetailPanel.classList.remove('visible'); }
-                        await saveUserData();
-                        renderTlList();
-                    }
+                dayEvs.forEach(ev => {
+                    const el = document.createElement('div');
+                    el.className = 'tlw-event' + (ev.id===tlState.selectedId ? ' tlw-sel' : '');
+                    el.style.background = ev.color;
+                    el.textContent = ev.title;
+                    el.addEventListener('click', e => { e.stopPropagation(); tlSelectEvent(ev.id); });
+                    col.appendChild(el);
                 });
 
-                actions.appendChild(editBtn);
-                actions.appendChild(delBtn);
-
-                item.appendChild(dot);
-                item.appendChild(dateEl);
-                item.appendChild(content);
-                item.appendChild(actions);
-
-                item.addEventListener('click', () => tlSelectEvent(ev.id));
-                container.appendChild(item);
+                cols.appendChild(col);
             });
+            body.appendChild(cols);
         }
 
         function tlSelectEvent(id) {
@@ -3764,16 +3791,16 @@
             document.getElementById('tl-panel-title').textContent = ev.title;
             document.getElementById('tl-panel-desc').textContent  = ev.desc || '（无描述）';
             tlDetailPanel.classList.add('visible');
-            // 更新列表高亮
-            document.querySelectorAll('.tl-list-item').forEach(el => {
-                el.classList.toggle('tl-selected', el.dataset.id === id);
+            // 更新日历高亮
+            document.querySelectorAll('.tlw-event, .tlw-md-event').forEach(el => {
+                el.classList.toggle('tlw-sel', el.closest('[data-id]')?.dataset.id === id || el.dataset?.id === id);
             });
         }
 
         function tlClosePanel() {
             tlState.selectedId = null;
             tlDetailPanel.classList.remove('visible');
-            document.querySelectorAll('.tl-list-item').forEach(el => el.classList.remove('tl-selected'));
+            document.querySelectorAll('.tlw-event, .tlw-md-event').forEach(el => el.classList.remove('tlw-sel'));
         }
 
         function tlFormatDate(d) {
@@ -3781,12 +3808,12 @@
             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         }
 
-        function tlOpenModal(editId=null) {
+        function tlOpenModal(editId=null, defaultDate=null) {
             tlState.editingId = editId;
             const ev = editId ? tlState.events.find(e => e.id===editId) : null;
             document.getElementById('tl-modal-title').textContent = ev ? '编辑事件' : '添加事件';
             document.getElementById('tl-input-title').value = ev ? ev.title : '';
-            document.getElementById('tl-input-start').value = ev ? tlFormatDate(ev.start) : tlFormatDate(new Date());
+            document.getElementById('tl-input-start').value = ev ? tlFormatDate(ev.start) : (defaultDate || tlFormatDate(new Date()));
             document.getElementById('tl-input-end').value   = ev && ev.end ? tlFormatDate(ev.end) : '';
             document.getElementById('tl-input-desc').value  = ev ? (ev.desc||'') : '';
             const color = ev ? ev.color : '#4f8ef7';
@@ -3821,7 +3848,8 @@
                 }
             } else {
                 tlState.events.push({ id: Date.now()+Math.random(), title, start, end, desc, color });
-                tlCenterOnDate(start);
+                // 跳转到事件所在周
+                tlWeekStart = tlGetWeekStart(start);
             }
             await saveUserData();
             tlCloseModal();
@@ -3836,10 +3864,14 @@
 
         function bindTimelineEvents() {
             document.getElementById('tl-btn-add-event').addEventListener('click', () => tlOpenModal());
-            document.getElementById('tl-btn-sort').addEventListener('click', () => {
-                tlSortDesc = !tlSortDesc;
-                document.getElementById('tl-btn-sort').textContent = tlSortDesc ? '最新优先 ↓' : '最旧优先 ↑';
-                renderTlList();
+            document.getElementById('tlw-prev').addEventListener('click', () => {
+                tlWeekStart = new Date(tlWeekStart); tlWeekStart.setDate(tlWeekStart.getDate()-7); renderTlWeek();
+            });
+            document.getElementById('tlw-next').addEventListener('click', () => {
+                tlWeekStart = new Date(tlWeekStart); tlWeekStart.setDate(tlWeekStart.getDate()+7); renderTlWeek();
+            });
+            document.getElementById('tlw-today').addEventListener('click', () => {
+                const t = new Date(); t.setHours(0,0,0,0); tlWeekStart = tlGetWeekStart(t); renderTlWeek();
             });
             document.getElementById('tl-panel-close').addEventListener('click', tlClosePanel);
             document.getElementById('tl-panel-edit').addEventListener('click', () => {
@@ -3848,7 +3880,7 @@
             document.getElementById('tl-panel-delete').addEventListener('click', async () => {
                 if (tlState.selectedId) {
                     tlState.events = tlState.events.filter(e => e.id !== tlState.selectedId);
-                    await saveUserData(); tlClosePanel(); renderTlList();
+                    await saveUserData(); tlClosePanel(); renderTlWeek();
                 }
             });
             document.getElementById('tl-modal-close').addEventListener('click', tlCloseModal);

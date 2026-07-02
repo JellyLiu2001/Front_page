@@ -570,58 +570,45 @@
         }
 
         .bookmarks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         .bookmark-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 0.75rem 1.1rem;
+            transition: all 0.2s ease;
             backdrop-filter: blur(10px);
             position: relative;
-        }
-
-        .bookmark-card:hover {
-            transform: translateY(-4px);
-            background: var(--card-hover);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
-        }
-
-        .bookmark-header {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1rem;
         }
 
-        .bookmark-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--primary-gradient);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
+        .bookmark-card:hover {
+            background: var(--card-hover);
+            border-color: rgba(102, 126, 234, 0.4);
         }
 
         .bookmark-info {
             flex: 1;
             min-width: 0;
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
         }
 
         .bookmark-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 0.25rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            flex-shrink: 0;
+            max-width: 40%;
         }
 
         .bookmark-url {
@@ -632,21 +619,14 @@
             text-overflow: ellipsis;
         }
 
-        .bookmark-desc {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 1rem;
-        }
-
         .bookmark-footer {
             display: flex;
             gap: 0.5rem;
+            flex-shrink: 0;
         }
 
         .bookmark-link {
-            flex: 1;
-            padding: 0.5rem;
+            padding: 0.4rem 0.9rem;
             background: rgba(102, 126, 234, 0.1);
             border: 1px solid rgba(102, 126, 234, 0.2);
             border-radius: 8px;
@@ -654,7 +634,7 @@
             text-decoration: none;
             text-align: center;
             transition: all 0.3s ease;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .bookmark-link:hover {
@@ -663,14 +643,14 @@
         }
 
         .bookmark-delete {
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             background: rgba(245, 87, 108, 0.1);
             border: 1px solid rgba(245, 87, 108, 0.2);
             border-radius: 8px;
             color: #f5576c;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .bookmark-delete:hover {
@@ -1007,28 +987,21 @@
                 font-size: 0.85rem;
             }
 
-            /* 书签网格 */
-            .bookmarks-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
+            /* 书签列表 */
             .bookmark-card {
-                padding: 1.25rem;
+                flex-wrap: wrap;
+                padding: 0.75rem 1rem;
             }
 
-            .bookmark-header {
-                gap: 0.75rem;
-            }
-
-            .bookmark-icon {
-                width: 42px;
-                height: 42px;
-                font-size: 1.3rem;
+            .bookmark-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.15rem;
             }
 
             .bookmark-title {
                 font-size: 1rem;
+                max-width: 100%;
             }
 
             .bookmark-url {
@@ -1098,12 +1071,6 @@
             .category-btn {
                 padding: 0.5rem 1rem;
                 font-size: 0.8rem;
-            }
-
-            .bookmark-icon {
-                width: 38px;
-                height: 38px;
-                font-size: 1.2rem;
             }
         }
 
@@ -1240,6 +1207,28 @@
             transition: all 0.15s; box-shadow: 0 2px 12px rgba(79,142,247,0.35);
         }
         .tl-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(79,142,247,0.5); }
+        .tl-project-bar {
+            display: flex; align-items: center; gap: 8px; padding: 10px 20px;
+            background: var(--tl-bg); border-bottom: 1px solid var(--tl-border);
+            flex-shrink: 0; overflow-x: auto;
+        }
+        .tl-project-tab {
+            display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+            border-radius: 20px; border: 1px solid var(--tl-border); background: var(--tl-bg3);
+            color: var(--tl-text2); font-size: 13px; font-weight: 500; cursor: pointer;
+            transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
+        }
+        .tl-project-tab:hover { color: var(--tl-text); border-color: var(--tl-accent); }
+        .tl-project-tab.active {
+            background: linear-gradient(135deg, #4f8ef7, #7b5cf0); color: #fff; border-color: transparent;
+        }
+        .tl-project-tab-del {
+            margin-left: 2px; opacity: 0.6; border-radius: 50%; width: 16px; height: 16px;
+            display: flex; align-items: center; justify-content: center; font-size: 12px;
+        }
+        .tl-project-tab-del:hover { opacity: 1; background: rgba(0,0,0,0.25); }
+        .tl-project-tab-add { background: none; border-style: dashed; color: var(--tl-text2); }
+        .tl-project-tab-add:hover { color: var(--tl-accent); border-color: var(--tl-accent); }
         .tl-main-area { display: flex; flex: 1; overflow: hidden; }
         /* === WEEK CALENDAR === */
         .tlw-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--tl-bg); }
@@ -1624,6 +1613,9 @@
                                     style="color:#ea4335">o</span><span style="color:#fbbc05">o</span><span
                                     style="color:#4285f4">g</span><span style="color:#34a853">l</span><span
                                     style="color:#ea4335">e</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-gmaps"
+                                value="https://www.google.com/maps/search/" data-placeholder="搜索地点、地址 🗺️"><label
+                                for="type-gmaps"><span style="color:#34a853">谷歌地图</span></label></li>
                         <li><input hidden="" type="radio" name="type" id="type-github" value="https://github.com/search?q="
                                 data-placeholder="How people build software"><label for="type-github"><span
                                     style="color:#00bbff">GitHub</span></label></li>
@@ -1697,6 +1689,7 @@
                     <button class="tl-btn-primary" id="tl-btn-add-event">+ 添加事件</button>
                 </div>
             </header>
+            <div class="tl-project-bar" id="tl-project-bar"></div>
             <main class="tl-main-area">
                 <div class="tlw-body" id="tlw-body"></div>
                 <div class="tl-detail-panel" id="tl-detail-panel">
@@ -1828,6 +1821,30 @@
         </div>
     </div>
 
+    <!-- Timeline: New Project/Chart Modal -->
+    <div class="tl-modal-overlay" id="tl-project-modal-overlay">
+        <div class="tl-modal" style="max-width:320px;">
+            <div class="tl-modal-header">
+                <h2 class="tl-modal-title">新建图表</h2>
+                <button class="tl-modal-close" id="tl-project-modal-close">✕</button>
+            </div>
+            <div class="tl-modal-body">
+                <div class="tl-form-group">
+                    <label>图标 (emoji)</label>
+                    <input type="text" id="tl-project-input-icon" placeholder="🚀" maxlength="4" style="width:64px;text-align:center;font-size:20px;">
+                </div>
+                <div class="tl-form-group">
+                    <label>项目名称 <span class="tl-required">*</span></label>
+                    <input type="text" id="tl-project-input-name" placeholder="例如：巡检机器人" maxlength="30">
+                </div>
+            </div>
+            <div class="tl-modal-footer">
+                <button class="tl-btn-cancel" id="tl-project-btn-cancel">取消</button>
+                <button class="tl-btn-primary" id="tl-project-btn-save">创建</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Add Bookmark Modal -->
     <div class="modal" id="addBookmarkModal">
         <div class="modal-content">
@@ -1847,10 +1864,6 @@
                 <div class="form-group">
                     <label class="form-label">描述（可选）</label>
                     <textarea class="form-textarea" id="bookmarkDesc"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">图标（emoji）</label>
-                    <input type="text" class="form-input" id="bookmarkIcon" placeholder="📌">
                 </div>
                 <div class="form-group">
                     <label class="form-label">分类</label>
@@ -1968,13 +1981,15 @@
 
         // Timeline state
         const MS_DAY = 86400000;
+        const TL_DEFAULT_PROJECT = { id: 'default', name: '弹簧无人机', icon: '🚁' };
         const tlState = {
             events: [], viewStart: null, viewEnd: null,
             selectedId: null, editingId: null,
             isDragging: false, dragStartX: 0, dragStartMs: 0,
-            selectedColor: '#4f8ef7'
+            selectedColor: '#4f8ef7',
+            projects: [TL_DEFAULT_PROJECT], currentProject: TL_DEFAULT_PROJECT.id
         };
-        let tlDetailPanel, tlModalOverlay;
+        let tlDetailPanel, tlModalOverlay, tlProjectModalOverlay;
         let tlInitialized = false;
         let tlWeekStart = null; // Monday of displayed week
 
@@ -3133,6 +3148,8 @@
                     bookmarks = data.bookmarks || defaultBookmarks;
                     quickLinks = data.quickLinks || defaultQuickLinks;
                     tlState.events = parseTlEvents(data.events);
+                    tlState.projects = (data.tlProjects && data.tlProjects.length) ? data.tlProjects : [TL_DEFAULT_PROJECT];
+                    if (!tlState.projects.some(p => p.id === tlState.currentProject)) tlState.currentProject = tlState.projects[0].id;
                     todos = data.todos || [];
                     journal = data.journal || {};
                 } else {
@@ -3149,6 +3166,8 @@
                         bookmarks = data.bookmarks || [];
                         quickLinks = data.quickLinks || [];
                         tlState.events = parseTlEvents(data.events);
+                        tlState.projects = (data.tlProjects && data.tlProjects.length) ? data.tlProjects : [TL_DEFAULT_PROJECT];
+                        if (!tlState.projects.some(p => p.id === tlState.currentProject)) tlState.currentProject = tlState.projects[0].id;
                         todos = data.todos || [];
                         journal = data.journal || {};
                         renderQuickLinks();
@@ -3184,6 +3203,7 @@
                         start: e.start instanceof Date ? e.start.toISOString() : e.start,
                         end: e.end instanceof Date ? e.end.toISOString() : (e.end || null)
                     })),
+                    tlProjects: tlState.projects,
                     todos: todos,
                     journal: journal,
                     lastUpdated: new Date().toISOString()
@@ -3456,15 +3476,12 @@
                 const card = document.createElement('div');
                 card.className = 'bookmark-card';
 
+                const titleAttr = link.description ? ` title="${link.description.replace(/"/g, '&quot;')}"` : '';
                 card.innerHTML = `
-                    <div class="bookmark-header">
-                        <div class="bookmark-icon">${link.icon || '📌'}</div>
-                        <div class="bookmark-info">
-                            <div class="bookmark-title">${link.name}</div>
-                            <div class="bookmark-url">${link.url}</div>
-                        </div>
+                    <div class="bookmark-info"${titleAttr}>
+                        <div class="bookmark-title">${link.name}</div>
+                        <div class="bookmark-url">${link.url}</div>
                     </div>
-                    ${link.description ? `<div class="bookmark-desc">${link.description}</div>` : ''}
                     <div class="bookmark-footer">
                         <a href="${link.url}" target="_blank" class="bookmark-link">访问</a>
                         <button class="bookmark-delete" onclick="deleteBookmark(${index})">删除</button>
@@ -3502,8 +3519,7 @@
             const newBookmark = {
                 name: document.getElementById('bookmarkName').value,
                 url: document.getElementById('bookmarkUrl').value,
-                description: document.getElementById('bookmarkDesc').value,
-                icon: document.getElementById('bookmarkIcon').value || '📌'
+                description: document.getElementById('bookmarkDesc').value
             };
 
             const category = document.getElementById('bookmarkCategory').value;
@@ -3636,6 +3652,7 @@
             tlInitialized = true;
             tlDetailPanel  = document.getElementById('tl-detail-panel');
             tlModalOverlay = document.getElementById('tl-modal-overlay');
+            tlProjectModalOverlay = document.getElementById('tl-project-modal-overlay');
             const today = new Date(); today.setHours(0,0,0,0);
             tlWeekStart = tlGetWeekStart(today);
             renderTimeline();
@@ -3657,7 +3674,76 @@
             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         }
 
-        function renderTimeline() { renderTlWeek(); }
+        function renderTimeline() { renderTlProjectBar(); renderTlWeek(); }
+
+        function tlProjectOf(ev) { return ev.project || TL_DEFAULT_PROJECT.id; }
+
+        function renderTlProjectBar() {
+            const bar = document.getElementById('tl-project-bar');
+            if (!bar) return;
+            bar.innerHTML = '';
+            tlState.projects.forEach(p => {
+                const tab = document.createElement('div');
+                tab.className = 'tl-project-tab' + (p.id === tlState.currentProject ? ' active' : '');
+                tab.innerHTML = `<span>${p.icon || '📌'}</span><span>${p.name}</span>` +
+                    (p.id !== TL_DEFAULT_PROJECT.id ? `<span class="tl-project-tab-del" title="删除图表">✕</span>` : '');
+                tab.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('tl-project-tab-del')) {
+                        e.stopPropagation();
+                        tlDeleteProject(p.id);
+                        return;
+                    }
+                    if (tlState.currentProject === p.id) return;
+                    tlState.currentProject = p.id;
+                    tlState.selectedId = null;
+                    tlClosePanel();
+                    renderTlProjectBar();
+                    renderTlWeek();
+                });
+                bar.appendChild(tab);
+            });
+            const addTab = document.createElement('div');
+            addTab.className = 'tl-project-tab tl-project-tab-add';
+            addTab.textContent = '+ 新图表';
+            addTab.addEventListener('click', tlOpenProjectModal);
+            bar.appendChild(addTab);
+        }
+
+        async function tlDeleteProject(id) {
+            const p = tlState.projects.find(x => x.id === id);
+            if (!p) return;
+            if (!confirm(`确定要删除图表"${p.name}"吗？其中的事件将转移到"${TL_DEFAULT_PROJECT.name}"图表下。`)) return;
+            tlState.events.forEach(ev => { if (tlProjectOf(ev) === id) ev.project = TL_DEFAULT_PROJECT.id; });
+            tlState.projects = tlState.projects.filter(x => x.id !== id);
+            if (tlState.currentProject === id) tlState.currentProject = TL_DEFAULT_PROJECT.id;
+            await saveUserData();
+            renderTimeline();
+        }
+
+        function tlOpenProjectModal() {
+            document.getElementById('tl-project-input-icon').value = '';
+            document.getElementById('tl-project-input-name').value = '';
+            tlProjectModalOverlay.classList.add('visible');
+            document.getElementById('tl-project-input-name').focus();
+        }
+
+        function tlCloseProjectModal() {
+            tlProjectModalOverlay.classList.remove('visible');
+        }
+
+        async function tlSaveProjectModal() {
+            const nameInput = document.getElementById('tl-project-input-name');
+            const name = nameInput.value.trim();
+            if (!name) { tlShake(nameInput); return; }
+            const icon = document.getElementById('tl-project-input-icon').value.trim() || '🚀';
+            const newProject = { id: 'p' + Date.now() + Math.floor(Math.random()*1000), name, icon };
+            tlState.projects.push(newProject);
+            tlState.currentProject = newProject.id;
+            tlState.selectedId = null;
+            await saveUserData();
+            tlCloseProjectModal();
+            renderTimeline();
+        }
 
         function renderTlWeek() {
             const body = document.getElementById('tlw-body');
@@ -3679,8 +3765,11 @@
                 ? `${days[0].getFullYear()}年 ${m1}月 ${d1} — ${d2}日`
                 : `${days[0].getFullYear()}年 ${m1}月${d1}日 — ${m2}月${d2}日`;
 
+            // 当前图表(项目)的事件
+            const projectEvents = tlState.events.filter(ev => tlProjectOf(ev) === tlState.currentProject);
+
             // 筛选本周事件
-            const weekEvents = tlState.events.filter(ev => {
+            const weekEvents = projectEvents.filter(ev => {
                 const evEnd = ev.end && ev.end > ev.start ? tlDateOnly(ev.end) : tlDateOnly(ev.start);
                 return tlDateOnly(ev.start) <= weekEnd && evEnd >= tlWeekStart;
             });
@@ -3752,7 +3841,7 @@
             const cols = document.createElement('div');
             cols.className = 'tlw-cols';
 
-            if (tlState.events.length === 0) {
+            if (projectEvents.length === 0) {
                 const empty = document.createElement('div');
                 empty.className = 'tlw-empty';
                 empty.innerHTML = '<div class="tlw-empty-icon">📅</div><div class="tlw-empty-text">点击任意日期格子添加事件</div>';
@@ -3868,7 +3957,7 @@
                     if (tlState.selectedId === tlState.editingId) tlSelectEvent(tlState.editingId);
                 }
             } else {
-                tlState.events.push({ id: Date.now()+Math.random(), title, start, end, desc, color });
+                tlState.events.push({ id: Date.now()+Math.random(), title, start, end, desc, color, project: tlState.currentProject });
                 // 跳转到事件所在周
                 tlWeekStart = tlGetWeekStart(start);
             }
@@ -3908,6 +3997,10 @@
             document.getElementById('tl-btn-cancel').addEventListener('click', tlCloseModal);
             document.getElementById('tl-btn-save').addEventListener('click', tlSaveModal);
             tlModalOverlay.addEventListener('click', e => { if (e.target === tlModalOverlay) tlCloseModal(); });
+            document.getElementById('tl-project-modal-close').addEventListener('click', tlCloseProjectModal);
+            document.getElementById('tl-project-btn-cancel').addEventListener('click', tlCloseProjectModal);
+            document.getElementById('tl-project-btn-save').addEventListener('click', tlSaveProjectModal);
+            tlProjectModalOverlay.addEventListener('click', e => { if (e.target === tlProjectModalOverlay) tlCloseProjectModal(); });
             document.querySelectorAll('.tl-color-swatch').forEach(sw => {
                 sw.addEventListener('click', () => {
                     document.querySelectorAll('.tl-color-swatch').forEach(s => s.classList.remove('selected'));
@@ -3918,9 +4011,11 @@
             document.addEventListener('keydown', e => {
                 if (e.key === 'Escape') {
                     if (tlModalOverlay.classList.contains('visible')) { tlCloseModal(); return; }
+                    if (tlProjectModalOverlay.classList.contains('visible')) { tlCloseProjectModal(); return; }
                     if (tlState.selectedId) { tlClosePanel(); return; }
                 }
                 if (e.key === 'Enter' && tlModalOverlay.classList.contains('visible')) tlSaveModal();
+                if (e.key === 'Enter' && tlProjectModalOverlay.classList.contains('visible')) tlSaveProjectModal();
             });
 
             // Inject shake keyframe

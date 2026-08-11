@@ -16,6 +16,39 @@
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.7);
             --border-color: rgba(255, 255, 255, 0.1);
+            --glow-one: rgba(102, 126, 234, 0.18);
+            --glow-two: rgba(118, 75, 162, 0.18);
+        }
+
+        body[data-theme="ocean"] {
+            --primary-gradient: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%);
+            --bg-dark: #071827;
+            --glow-one: rgba(6, 182, 212, 0.2);
+            --glow-two: rgba(37, 99, 235, 0.2);
+        }
+
+        body[data-theme="sunset"] {
+            --primary-gradient: linear-gradient(135deg, #fb7185 0%, #f59e0b 100%);
+            --bg-dark: #241019;
+            --glow-one: rgba(251, 113, 133, 0.2);
+            --glow-two: rgba(245, 158, 11, 0.18);
+        }
+
+        body[data-theme="forest"] {
+            --primary-gradient: linear-gradient(135deg, #34d399 0%, #15803d 100%);
+            --bg-dark: #071b16;
+            --glow-one: rgba(52, 211, 153, 0.18);
+            --glow-two: rgba(21, 128, 61, 0.2);
+        }
+
+        body[data-glass="clear"] {
+            --bg-card: rgba(255, 255, 255, 0.025);
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body[data-glass="solid"] {
+            --bg-card: rgba(255, 255, 255, 0.11);
+            --border-color: rgba(255, 255, 255, 0.16);
         }
 
         * {
@@ -30,8 +63,29 @@
             color: var(--text-primary);
             min-height: 100vh;
             background-image:
-                radial-gradient(at 20% 30%, rgba(102, 126, 234, 0.15) 0px, transparent 50%),
-                radial-gradient(at 80% 70%, rgba(118, 75, 162, 0.15) 0px, transparent 50%);
+                radial-gradient(at 20% 30%, var(--glow-one) 0px, transparent 50%),
+                radial-gradient(at 80% 70%, var(--glow-two) 0px, transparent 50%);
+        }
+
+        body[data-motion="on"] {
+            background-size: 140% 140%;
+            animation: ambientBackground 14s ease-in-out infinite alternate;
+        }
+
+        body[data-motion="off"] { background-image: none; }
+
+        @keyframes ambientBackground {
+            from { background-position: 0% 20%; }
+            to { background-position: 100% 80%; }
+        }
+
+        body[data-density="compact"] .container { padding-top: 1rem; padding-bottom: 1rem; }
+        body[data-density="compact"] .header { margin-bottom: 1.5rem; }
+        body[data-density="compact"] .bookmarks-grid { gap: 1rem; }
+        body[data-density="compact"] .bookmark-card { padding: 1rem; }
+
+        @media (prefers-reduced-motion: reduce) {
+            body[data-motion="on"] { animation: none; }
         }
 
         /* Login Screen */
@@ -175,6 +229,34 @@
         .data-action-btn:hover {
             background: rgba(255, 255, 255, 0.1);
             color: var(--text-primary);
+        }
+
+        .settings-grid { display: grid; gap: 1.25rem; }
+        .settings-section { display: grid; gap: 0.65rem; }
+        .settings-label { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+        .theme-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.65rem; }
+        .theme-option {
+            border: 2px solid transparent; border-radius: 12px; padding: 0.65rem 0.35rem;
+            background: var(--bg-card); color: var(--text-secondary); cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, color 0.2s;
+        }
+        .theme-option:hover { transform: translateY(-2px); color: var(--text-primary); }
+        .theme-option.active { border-color: #818cf8; color: var(--text-primary); }
+        .theme-swatch { display: block; width: 100%; height: 22px; border-radius: 7px; margin-bottom: 0.4rem; }
+        .setting-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 0.8rem 1rem;
+        }
+        .setting-row small { display: block; color: var(--text-secondary); margin-top: 0.2rem; }
+        .setting-select {
+            background: #1a1a3e; color: var(--text-primary); border: 1px solid var(--border-color);
+            border-radius: 8px; padding: 0.5rem; outline: none;
+        }
+        .setting-switch { width: 42px; height: 24px; accent-color: #818cf8; cursor: pointer; }
+
+        @media (max-width: 520px) {
+            .theme-options { grid-template-columns: repeat(2, 1fr); }
         }
 
         .container {
@@ -1560,6 +1642,7 @@
                 <button class="data-action-btn" id="exportDataBtn" title="下载全部数据的 JSON 备份">导出</button>
                 <button class="data-action-btn" id="importDataBtn" title="从 JSON 备份恢复数据">导入</button>
                 <input type="file" id="importDataInput" accept="application/json,.json" hidden>
+                <button class="data-action-btn" id="settingsBtn" title="外观设置">⚙️ 设置</button>
                 <button class="logout-btn" id="logoutBtn">登出</button>
             </div>
         </div>
@@ -1935,6 +2018,47 @@
         </div>
     </div>
 
+    <!-- Appearance Settings Modal -->
+    <div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="settingsTitle">✨ 外观设置</h3>
+                <button class="modal-close" id="closeSettingsBtn" aria-label="关闭设置">×</button>
+            </div>
+            <div class="settings-grid">
+                <div class="settings-section">
+                    <div class="settings-label">主题配色</div>
+                    <div class="theme-options" id="themeOptions">
+                        <button class="theme-option" data-theme-value="purple"><span class="theme-swatch" style="background:linear-gradient(135deg,#667eea,#764ba2)"></span>星云紫</button>
+                        <button class="theme-option" data-theme-value="ocean"><span class="theme-swatch" style="background:linear-gradient(135deg,#06b6d4,#2563eb)"></span>深海蓝</button>
+                        <button class="theme-option" data-theme-value="sunset"><span class="theme-swatch" style="background:linear-gradient(135deg,#fb7185,#f59e0b)"></span>落日橙</button>
+                        <button class="theme-option" data-theme-value="forest"><span class="theme-swatch" style="background:linear-gradient(135deg,#34d399,#15803d)"></span>森林绿</button>
+                    </div>
+                </div>
+                <label class="setting-row">
+                    <span>背景氛围<small>开启缓慢流动的渐变光影</small></span>
+                    <input class="setting-switch" type="checkbox" id="motionSetting">
+                </label>
+                <label class="setting-row">
+                    <span>卡片质感<small>调整卡片的通透程度</small></span>
+                    <select class="setting-select" id="glassSetting">
+                        <option value="clear">轻盈通透</option>
+                        <option value="balanced">平衡</option>
+                        <option value="solid">清晰厚实</option>
+                    </select>
+                </label>
+                <label class="setting-row">
+                    <span>界面密度<small>紧凑模式可显示更多内容</small></span>
+                    <select class="setting-select" id="densitySetting">
+                        <option value="comfortable">舒适</option>
+                        <option value="compact">紧凑</option>
+                    </select>
+                </label>
+                <button class="btn" id="resetAppearanceBtn" type="button">恢复默认外观</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script type="module">
         // Firebase配置说明将在设置指南中提供
@@ -1983,6 +2107,10 @@
         let journalSaveTimer = null;
         let journalTodayKey = '';
         let journalInitialized = false;
+        let uiInitialized = false;
+        const APPEARANCE_KEY = 'front-page-appearance';
+        const DEFAULT_APPEARANCE = { theme: 'purple', motion: true, glass: 'balanced', density: 'comfortable' };
+        let appearanceSettings = { ...DEFAULT_APPEARANCE };
 
         // Timeline state
         const MS_DAY = 86400000;
@@ -3116,10 +3244,21 @@
                     };
                 }
 
+                // 回访用户优先使用本机缓存渲染，云端数据随后静默更新。
+                const restoredFromCache = loadCachedUserData(user.uid);
+                if (restoredFromCache) {
+                    console.log('⚡ 已从本机缓存恢复界面');
+                    if (uiInitialized) refreshUserInterface();
+                    else init();
+                }
+
                 console.log('📥 开始加载用户数据...');
                 await loadUserData();
-                console.log('🎬 开始初始化界面...');
-                init();
+                if (!restoredFromCache) {
+                    console.log('🎬 开始初始化界面...');
+                    if (uiInitialized) refreshUserInterface();
+                    else init();
+                }
                 console.log('✅ 初始化完成！');
             } else {
                 currentUser = null;
@@ -3127,6 +3266,62 @@
                 document.getElementById('mainApp').style.display = 'none';
             }
         });
+
+        function userCacheKey(uid) {
+            return `front-page-user-data:${uid}`;
+        }
+
+        function parseTlEvents(raw) {
+            return (raw || []).map(event => ({
+                ...event,
+                start: new Date(event.start),
+                end: event.end ? new Date(event.end) : null
+            }));
+        }
+
+        function applyUserData(data) {
+            bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : JSON.parse(JSON.stringify(defaultBookmarks));
+            quickLinks = Array.isArray(data.quickLinks) ? data.quickLinks : JSON.parse(JSON.stringify(defaultQuickLinks));
+            tlState.events = parseTlEvents(data.events);
+            tlState.projects = (Array.isArray(data.tlProjects) && data.tlProjects.length) ? data.tlProjects : [TL_DEFAULT_PROJECT];
+            if (!tlState.projects.some(project => project.id === tlState.currentProject)) {
+                tlState.currentProject = tlState.projects[0].id;
+            }
+            todos = Array.isArray(data.todos) ? data.todos : [];
+            journal = data.journal && typeof data.journal === 'object' ? data.journal : {};
+        }
+
+        function cacheUserData(uid, data) {
+            try {
+                localStorage.setItem(userCacheKey(uid), JSON.stringify(data));
+            } catch (error) {
+                console.warn('本机缓存写入失败:', error);
+            }
+        }
+
+        function loadCachedUserData(uid) {
+            try {
+                const cached = localStorage.getItem(userCacheKey(uid));
+                if (!cached) return false;
+                applyUserData(JSON.parse(cached));
+                return true;
+            } catch (error) {
+                console.warn('本机缓存读取失败:', error);
+                localStorage.removeItem(userCacheKey(uid));
+                return false;
+            }
+        }
+
+        function refreshUserInterface() {
+            if (!uiInitialized) return;
+            renderQuickLinks();
+            setupCategoryFilters();
+            renderTimeline();
+            renderTodos();
+            if (document.getElementById('tab-journal').classList.contains('active')) {
+                renderJournalPastEntries();
+            }
+        }
 
         // 加载用户数据
         async function loadUserData() {
@@ -3139,24 +3334,12 @@
                 console.log('📡 正在从Firebase获取数据...');
                 const snapshot = await get(userRef);
 
-                function parseTlEvents(raw) {
-                    return (raw || []).map(e => ({
-                        ...e,
-                        start: new Date(e.start),
-                        end: e.end ? new Date(e.end) : null
-                    }));
-                }
-
                 if (snapshot.exists()) {
                     console.log('✅ 找到用户数据');
                     const data = snapshot.val();
-                    bookmarks = data.bookmarks || defaultBookmarks;
-                    quickLinks = data.quickLinks || defaultQuickLinks;
-                    tlState.events = parseTlEvents(data.events);
-                    tlState.projects = (data.tlProjects && data.tlProjects.length) ? data.tlProjects : [TL_DEFAULT_PROJECT];
-                    if (!tlState.projects.some(p => p.id === tlState.currentProject)) tlState.currentProject = tlState.projects[0].id;
-                    todos = data.todos || [];
-                    journal = data.journal || {};
+                    applyUserData(data);
+                    cacheUserData(currentUser.uid, data);
+                    refreshUserInterface();
                 } else {
                     console.log('ℹ️ 新用户，使用默认数据');
                     bookmarks = JSON.parse(JSON.stringify(defaultBookmarks));
@@ -3168,20 +3351,9 @@
                 onValue(userRef, (snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.val();
-                        bookmarks = data.bookmarks || [];
-                        quickLinks = data.quickLinks || [];
-                        tlState.events = parseTlEvents(data.events);
-                        tlState.projects = (data.tlProjects && data.tlProjects.length) ? data.tlProjects : [TL_DEFAULT_PROJECT];
-                        if (!tlState.projects.some(p => p.id === tlState.currentProject)) tlState.currentProject = tlState.projects[0].id;
-                        todos = data.todos || [];
-                        journal = data.journal || {};
-                        renderQuickLinks();
-                        setupCategoryFilters();
-                        renderTimeline();
-                        renderTodos();
-                        if (document.getElementById('tab-journal').classList.contains('active')) {
-                            renderJournalPastEntries();
-                        }
+                        applyUserData(data);
+                        if (currentUser) cacheUserData(currentUser.uid, data);
+                        refreshUserInterface();
                     }
                 });
 
@@ -3200,7 +3372,7 @@
 
             try {
                 const userRef = ref(database, `users/${currentUser.uid}`);
-                await set(userRef, {
+                const dataToSave = {
                     bookmarks: bookmarks,
                     quickLinks: quickLinks,
                     events: tlState.events.map(e => ({
@@ -3212,7 +3384,9 @@
                     todos: todos,
                     journal: journal,
                     lastUpdated: new Date().toISOString()
-                });
+                };
+                cacheUserData(currentUser.uid, dataToSave);
+                await set(userRef, dataToSave);
                 updateSyncStatus('synced', '已同步');
             } catch (error) {
                 console.error('保存数据错误:', error);
@@ -3241,7 +3415,90 @@
             renderTodos();
             setupTodoHandlers();
             setupImportExport();
+            setupAppearanceSettings();
+            uiInitialized = true;
         }
+
+        function applyAppearanceSettings() {
+            document.body.dataset.theme = appearanceSettings.theme;
+            document.body.dataset.motion = appearanceSettings.motion ? 'on' : 'off';
+            document.body.dataset.glass = appearanceSettings.glass;
+            document.body.dataset.density = appearanceSettings.density;
+
+            document.querySelectorAll('[data-theme-value]').forEach(button => {
+                button.classList.toggle('active', button.dataset.themeValue === appearanceSettings.theme);
+            });
+            const motionInput = document.getElementById('motionSetting');
+            const glassInput = document.getElementById('glassSetting');
+            const densityInput = document.getElementById('densitySetting');
+            if (motionInput) motionInput.checked = appearanceSettings.motion;
+            if (glassInput) glassInput.value = appearanceSettings.glass;
+            if (densityInput) densityInput.value = appearanceSettings.density;
+        }
+
+        function saveAppearanceSettings() {
+            localStorage.setItem(APPEARANCE_KEY, JSON.stringify(appearanceSettings));
+            applyAppearanceSettings();
+        }
+
+        function loadAppearanceSettings() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(APPEARANCE_KEY) || 'null');
+                if (saved && typeof saved === 'object') {
+                    appearanceSettings = {
+                        theme: ['purple', 'ocean', 'sunset', 'forest'].includes(saved.theme) ? saved.theme : DEFAULT_APPEARANCE.theme,
+                        motion: typeof saved.motion === 'boolean' ? saved.motion : DEFAULT_APPEARANCE.motion,
+                        glass: ['clear', 'balanced', 'solid'].includes(saved.glass) ? saved.glass : DEFAULT_APPEARANCE.glass,
+                        density: ['comfortable', 'compact'].includes(saved.density) ? saved.density : DEFAULT_APPEARANCE.density
+                    };
+                }
+            } catch (error) {
+                console.warn('外观设置读取失败:', error);
+            }
+            applyAppearanceSettings();
+        }
+
+        function setupAppearanceSettings() {
+            const settingsBtn = document.getElementById('settingsBtn');
+            const modal = document.getElementById('settingsModal');
+            if (settingsBtn.dataset.ready) return;
+            settingsBtn.dataset.ready = 'true';
+
+            const closeModal = () => modal.classList.remove('active');
+            settingsBtn.addEventListener('click', () => {
+                applyAppearanceSettings();
+                modal.classList.add('active');
+            });
+            document.getElementById('closeSettingsBtn').addEventListener('click', closeModal);
+            modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape' && modal.classList.contains('active')) closeModal();
+            });
+            document.querySelectorAll('[data-theme-value]').forEach(button => {
+                button.addEventListener('click', () => {
+                    appearanceSettings.theme = button.dataset.themeValue;
+                    saveAppearanceSettings();
+                });
+            });
+            document.getElementById('motionSetting').addEventListener('change', event => {
+                appearanceSettings.motion = event.target.checked;
+                saveAppearanceSettings();
+            });
+            document.getElementById('glassSetting').addEventListener('change', event => {
+                appearanceSettings.glass = event.target.value;
+                saveAppearanceSettings();
+            });
+            document.getElementById('densitySetting').addEventListener('change', event => {
+                appearanceSettings.density = event.target.value;
+                saveAppearanceSettings();
+            });
+            document.getElementById('resetAppearanceBtn').addEventListener('click', () => {
+                appearanceSettings = { ...DEFAULT_APPEARANCE };
+                saveAppearanceSettings();
+            });
+        }
+
+        loadAppearanceSettings();
 
         // 导入 / 导出完整用户数据
         function serializeUserData() {

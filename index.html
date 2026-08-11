@@ -1269,6 +1269,16 @@
         .tl-toolbar-left { display: flex; align-items: center; gap: 10px; flex: 1; }
         .tl-toolbar-center { display: flex; align-items: center; gap: 8px; }
         .tl-toolbar-right { flex: 1; display: flex; justify-content: flex-end; }
+        .tl-view-switch {
+            display: flex; padding: 3px; gap: 2px; background: var(--tl-bg3);
+            border: 1px solid var(--tl-border); border-radius: 9px;
+        }
+        .tl-view-btn {
+            border: none; background: transparent; color: var(--tl-text2); cursor: pointer;
+            padding: 5px 10px; border-radius: 6px; font-size: 12px; transition: all 0.15s;
+        }
+        .tl-view-btn:hover { color: var(--tl-text); }
+        .tl-view-btn.active { background: var(--tl-accent); color: #fff; box-shadow: 0 2px 8px rgba(79,142,247,0.3); }
         .tl-app-title {
             font-size: 18px; font-weight: 700;
             background: linear-gradient(135deg, #4f8ef7, #7b5cf0);
@@ -1376,6 +1386,47 @@
         }
         .tlw-empty-icon { font-size: 40px; margin-bottom: 10px; }
         .tlw-empty-text { font-size: 14px; }
+        /* === MONTH VIEW === */
+        .tlm-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--tl-bg); }
+        .tlm-weekdays, .tlm-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+        .tlm-weekdays { flex-shrink: 0; background: var(--tl-bg2); border-bottom: 1px solid var(--tl-border); }
+        .tlm-weekday { padding: 9px; text-align: center; color: var(--tl-text2); font-size: 11px; font-weight: 600; }
+        .tlm-grid { flex: 1; grid-template-rows: repeat(6, minmax(82px, 1fr)); overflow: auto; }
+        .tlm-day { min-width: 0; padding: 6px; border-right: 1px solid var(--tl-border); border-bottom: 1px solid var(--tl-border); cursor: pointer; }
+        .tlm-day:hover { background: rgba(79,142,247,0.045); }
+        .tlm-day.outside { opacity: 0.38; }
+        .tlm-day.today { background: rgba(79,142,247,0.07); }
+        .tlm-day-number { width: 25px; height: 25px; display: grid; place-items: center; border-radius: 50%; color: var(--tl-text); font-size: 12px; margin-bottom: 3px; }
+        .tlm-day.today .tlm-day-number { background: var(--tl-accent); color: #fff; font-weight: 700; }
+        .tlm-event { padding: 2px 5px; margin-top: 2px; border-radius: 4px; color: #fff; font-size: 10px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .tlm-more { color: var(--tl-text2); font-size: 10px; padding: 3px 4px; }
+        /* === LIST VIEW === */
+        .tll-body { flex: 1; overflow-y: auto; background: var(--tl-bg); padding: 18px clamp(14px, 4vw, 48px); }
+        .tll-date-group { display: grid; grid-template-columns: 86px 1fr; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--tl-border); }
+        .tll-date { color: var(--tl-text2); font-size: 12px; padding-top: 8px; }
+        .tll-date strong { display: block; color: var(--tl-text); font-size: 20px; }
+        .tll-events { display: grid; gap: 8px; }
+        .tll-event { display: flex; align-items: center; gap: 10px; background: var(--tl-bg2); border: 1px solid var(--tl-border); border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+        .tll-event:hover { border-color: var(--tl-accent); transform: translateX(2px); }
+        .tll-color { width: 4px; align-self: stretch; border-radius: 4px; }
+        .tll-info { min-width: 0; flex: 1; }
+        .tll-title { color: var(--tl-text); font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tll-time { color: var(--tl-text2); font-size: 11px; margin-top: 3px; }
+        .tll-empty { text-align: center; color: var(--tl-text2); padding: 80px 20px; }
+        @media (max-width: 760px) {
+            .tl-toolbar { height: auto; min-height: 56px; padding: 8px 10px; gap: 8px; flex-wrap: wrap; }
+            .tl-toolbar-left { order: 1; }
+            .tl-toolbar-right { order: 2; flex: 0; }
+            .tl-toolbar-center { order: 3; flex-basis: 100% !important; padding-top: 2px; }
+            .tl-app-title { display: none; }
+            .tl-view-btn { padding: 5px 8px; }
+            .tl-btn-primary { padding: 7px 10px; white-space: nowrap; }
+            .tlm-grid { grid-template-rows: repeat(6, minmax(68px, 1fr)); }
+            .tlm-day { padding: 3px; }
+            .tlm-event { padding: 2px 3px; }
+            .tll-date-group { grid-template-columns: 58px 1fr; gap: 8px; }
+            .tl-detail-panel.visible { position: absolute; inset: 0 0 0 auto; z-index: 5; max-width: 88vw; }
+        }
         .tl-detail-panel {
             width: 280px; background: var(--tl-bg2); border-left: 1px solid var(--tl-border);
             display: none; flex-direction: column; position: relative;
@@ -1766,6 +1817,11 @@
                         <line x1="14" y1="14" x2="20" y2="18" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round"/>
                     </svg>
                     <span class="tl-app-title">时间轴</span>
+                    <div class="tl-view-switch" aria-label="时间轴视图">
+                        <button class="tl-view-btn active" data-tl-view="week">周</button>
+                        <button class="tl-view-btn" data-tl-view="month">月</button>
+                        <button class="tl-view-btn" data-tl-view="list">列表</button>
+                    </div>
                 </div>
                 <div class="tl-toolbar-center" style="display:flex;align-items:center;gap:8px;flex:1;justify-content:center;">
                     <button class="tl-tool-btn" id="tlw-prev">◀</button>
@@ -2125,6 +2181,8 @@
         let tlDetailPanel, tlModalOverlay, tlProjectModalOverlay;
         let tlInitialized = false;
         let tlWeekStart = null; // Monday of displayed week
+        let tlCurrentView = ['week', 'month', 'list'].includes(localStorage.getItem('front-page-timeline-view'))
+            ? localStorage.getItem('front-page-timeline-view') : 'week';
 
         // 立即绑定登录按钮 - 在页面加载时就绑定
         document.addEventListener('DOMContentLoaded', () => {
@@ -4046,7 +4104,16 @@
             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         }
 
-        function renderTimeline() { renderTlProjectBar(); renderTlWeek(); }
+        function renderTimeline() { renderTlProjectBar(); renderTlCurrentView(); }
+
+        function renderTlCurrentView() {
+            document.querySelectorAll('[data-tl-view]').forEach(button => {
+                button.classList.toggle('active', button.dataset.tlView === tlCurrentView);
+            });
+            if (tlCurrentView === 'month') renderTlMonth();
+            else if (tlCurrentView === 'list') renderTlList();
+            else renderTlWeek();
+        }
 
         function tlProjectOf(ev) { return ev.project || TL_DEFAULT_PROJECT.id; }
 
@@ -4070,7 +4137,7 @@
                     tlState.selectedId = null;
                     tlClosePanel();
                     renderTlProjectBar();
-                    renderTlWeek();
+                    renderTlCurrentView();
                 });
                 bar.appendChild(tab);
             });
@@ -4120,6 +4187,7 @@
         function renderTlWeek() {
             const body = document.getElementById('tlw-body');
             if (!body || !tlWeekStart) return;
+            body.className = 'tlw-body';
 
             const today = new Date(); today.setHours(0,0,0,0);
 
@@ -4244,6 +4312,127 @@
             body.appendChild(cols);
         }
 
+        function tlEventsForCurrentProject() {
+            return tlState.events.filter(event => tlProjectOf(event) === tlState.currentProject);
+        }
+
+        function tlEventTouchesDay(event, day) {
+            const start = tlDateOnly(event.start);
+            const end = tlDateOnly(event.end && event.end > event.start ? event.end : event.start);
+            return start <= day && end >= day;
+        }
+
+        function renderTlMonth() {
+            const body = document.getElementById('tlw-body');
+            if (!body || !tlWeekStart) return;
+            body.className = 'tlm-body';
+            body.innerHTML = '';
+
+            const focusedDate = new Date(tlWeekStart); focusedDate.setDate(focusedDate.getDate() + 3);
+            const monthDate = new Date(focusedDate.getFullYear(), focusedDate.getMonth(), 1);
+            const gridStart = tlGetWeekStart(monthDate);
+            const today = tlDateOnly(new Date());
+            const month = monthDate.getMonth();
+            document.getElementById('tlw-range').textContent = `${monthDate.getFullYear()}年 ${month + 1}月`;
+
+            const weekdays = document.createElement('div');
+            weekdays.className = 'tlm-weekdays';
+            ['周一','周二','周三','周四','周五','周六','周日'].forEach(name => {
+                const cell = document.createElement('div');
+                cell.className = 'tlm-weekday';
+                cell.textContent = name;
+                weekdays.appendChild(cell);
+            });
+            body.appendChild(weekdays);
+
+            const grid = document.createElement('div');
+            grid.className = 'tlm-grid';
+            const events = tlEventsForCurrentProject();
+            for (let index = 0; index < 42; index++) {
+                const day = new Date(gridStart); day.setDate(day.getDate() + index);
+                const cell = document.createElement('div');
+                cell.className = 'tlm-day' + (day.getMonth() !== month ? ' outside' : '') + (tlSameDay(day, today) ? ' today' : '');
+                cell.addEventListener('click', () => tlOpenModal(null, tlDayStr(day)));
+
+                const number = document.createElement('div');
+                number.className = 'tlm-day-number';
+                number.textContent = day.getDate();
+                cell.appendChild(number);
+
+                const dayEvents = events.filter(event => tlEventTouchesDay(event, day)).sort((a, b) => a.start - b.start);
+                dayEvents.slice(0, 3).forEach(event => {
+                    const item = document.createElement('div');
+                    item.className = 'tlm-event';
+                    item.style.background = event.color;
+                    item.textContent = event.title;
+                    item.addEventListener('click', clickEvent => {
+                        clickEvent.stopPropagation();
+                        tlSelectEvent(event.id);
+                    });
+                    cell.appendChild(item);
+                });
+                if (dayEvents.length > 3) {
+                    const more = document.createElement('div');
+                    more.className = 'tlm-more';
+                    more.textContent = `还有 ${dayEvents.length - 3} 项`;
+                    cell.appendChild(more);
+                }
+                grid.appendChild(cell);
+            }
+            body.appendChild(grid);
+        }
+
+        function renderTlList() {
+            const body = document.getElementById('tlw-body');
+            if (!body || !tlWeekStart) return;
+            body.className = 'tll-body';
+            body.innerHTML = '';
+
+            const focusedDate = new Date(tlWeekStart); focusedDate.setDate(focusedDate.getDate() + 3);
+            const start = new Date(focusedDate.getFullYear(), focusedDate.getMonth(), 1);
+            const end = new Date(start.getFullYear(), start.getMonth() + 1, 1);
+            document.getElementById('tlw-range').textContent = `${start.getFullYear()}年 ${start.getMonth() + 1}月 · 列表`;
+            const events = tlEventsForCurrentProject()
+                .filter(event => event.start < end && (event.end || event.start) >= start)
+                .sort((a, b) => a.start - b.start);
+
+            if (!events.length) {
+                body.innerHTML = '<div class="tll-empty"><div class="tlw-empty-icon">🗓️</div><div>这个月还没有事件</div></div>';
+                return;
+            }
+
+            const groups = new Map();
+            events.forEach(event => {
+                const key = tlDayStr(event.start);
+                if (!groups.has(key)) groups.set(key, []);
+                groups.get(key).push(event);
+            });
+
+            groups.forEach((groupEvents, key) => {
+                const day = new Date(`${key}T00:00:00`);
+                const group = document.createElement('section');
+                group.className = 'tll-date-group';
+                const date = document.createElement('div');
+                date.className = 'tll-date';
+                date.innerHTML = `<strong>${day.getDate()}日</strong>${day.toLocaleDateString('zh-CN', { weekday: 'short' })}`;
+                const eventList = document.createElement('div');
+                eventList.className = 'tll-events';
+                groupEvents.forEach(event => {
+                    const item = document.createElement('div');
+                    item.className = 'tll-event';
+                    const color = document.createElement('span'); color.className = 'tll-color'; color.style.background = event.color;
+                    const info = document.createElement('div'); info.className = 'tll-info';
+                    const title = document.createElement('div'); title.className = 'tll-title'; title.textContent = event.title;
+                    const time = document.createElement('div'); time.className = 'tll-time';
+                    time.textContent = event.end ? `${tlFormatDateTime(event.start)} — ${tlFormatDateTime(event.end)}` : tlFormatDateTime(event.start);
+                    info.append(title, time); item.append(color, info);
+                    item.addEventListener('click', () => tlSelectEvent(event.id));
+                    eventList.appendChild(item);
+                });
+                group.append(date, eventList); body.appendChild(group);
+            });
+        }
+
         function tlSelectEvent(id) {
             // 如果再次点击同一项则关闭面板
             if (tlState.selectedId === id) { tlClosePanel(); return; }
@@ -4346,14 +4535,34 @@
 
         function bindTimelineEvents() {
             document.getElementById('tl-btn-add-event').addEventListener('click', () => tlOpenModal());
+            document.querySelectorAll('[data-tl-view]').forEach(button => {
+                button.addEventListener('click', () => {
+                    tlCurrentView = button.dataset.tlView;
+                    localStorage.setItem('front-page-timeline-view', tlCurrentView);
+                    tlClosePanel();
+                    renderTlCurrentView();
+                });
+            });
             document.getElementById('tlw-prev').addEventListener('click', () => {
-                tlWeekStart = new Date(tlWeekStart); tlWeekStart.setDate(tlWeekStart.getDate()-7); renderTlWeek();
+                if (tlCurrentView === 'week') {
+                    tlWeekStart = new Date(tlWeekStart); tlWeekStart.setDate(tlWeekStart.getDate() - 7);
+                } else {
+                    const focused = new Date(tlWeekStart); focused.setDate(focused.getDate() + 3);
+                    tlWeekStart = new Date(focused.getFullYear(), focused.getMonth() - 1, 1);
+                }
+                renderTlCurrentView();
             });
             document.getElementById('tlw-next').addEventListener('click', () => {
-                tlWeekStart = new Date(tlWeekStart); tlWeekStart.setDate(tlWeekStart.getDate()+7); renderTlWeek();
+                if (tlCurrentView === 'week') {
+                    tlWeekStart = new Date(tlWeekStart); tlWeekStart.setDate(tlWeekStart.getDate() + 7);
+                } else {
+                    const focused = new Date(tlWeekStart); focused.setDate(focused.getDate() + 3);
+                    tlWeekStart = new Date(focused.getFullYear(), focused.getMonth() + 1, 1);
+                }
+                renderTlCurrentView();
             });
             document.getElementById('tlw-today').addEventListener('click', () => {
-                const t = new Date(); t.setHours(0,0,0,0); tlWeekStart = tlGetWeekStart(t); renderTlWeek();
+                const t = new Date(); t.setHours(0,0,0,0); tlWeekStart = tlGetWeekStart(t); renderTlCurrentView();
             });
             document.getElementById('tl-panel-close').addEventListener('click', tlClosePanel);
             document.getElementById('tl-panel-edit').addEventListener('click', () => {
@@ -4362,7 +4571,7 @@
             document.getElementById('tl-panel-delete').addEventListener('click', async () => {
                 if (tlState.selectedId) {
                     tlState.events = tlState.events.filter(e => e.id !== tlState.selectedId);
-                    await saveUserData(); tlClosePanel(); renderTlWeek();
+                    await saveUserData(); tlClosePanel(); renderTlCurrentView();
                 }
             });
             document.getElementById('tl-modal-close').addEventListener('click', tlCloseModal);

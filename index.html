@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-
-<head>
+<!DOCTYPE html><html lang="zh-CN"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的书签导航 - 云同步版</title>
@@ -570,45 +567,58 @@
         }
 
         .bookmarks-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
         }
 
         .bookmark-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 0.75rem 1.1rem;
-            transition: all 0.2s ease;
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             position: relative;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
         }
 
         .bookmark-card:hover {
+            transform: translateY(-4px);
             background: var(--card-hover);
-            border-color: rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+        }
+
+        .bookmark-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .bookmark-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
         }
 
         .bookmark-info {
             flex: 1;
             min-width: 0;
-            display: flex;
-            align-items: baseline;
-            gap: 0.75rem;
         }
 
         .bookmark-title {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
+            margin-bottom: 0.25rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            flex-shrink: 0;
-            max-width: 40%;
         }
 
         .bookmark-url {
@@ -619,14 +629,21 @@
             text-overflow: ellipsis;
         }
 
+        .bookmark-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
         .bookmark-footer {
             display: flex;
             gap: 0.5rem;
-            flex-shrink: 0;
         }
 
         .bookmark-link {
-            padding: 0.4rem 0.9rem;
+            flex: 1;
+            padding: 0.5rem;
             background: rgba(102, 126, 234, 0.1);
             border: 1px solid rgba(102, 126, 234, 0.2);
             border-radius: 8px;
@@ -634,7 +651,7 @@
             text-decoration: none;
             text-align: center;
             transition: all 0.3s ease;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .bookmark-link:hover {
@@ -643,14 +660,14 @@
         }
 
         .bookmark-delete {
-            padding: 0.4rem 0.8rem;
+            padding: 0.5rem 1rem;
             background: rgba(245, 87, 108, 0.1);
             border: 1px solid rgba(245, 87, 108, 0.2);
             border-radius: 8px;
             color: #f5576c;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .bookmark-delete:hover {
@@ -987,21 +1004,28 @@
                 font-size: 0.85rem;
             }
 
-            /* 书签列表 */
-            .bookmark-card {
-                flex-wrap: wrap;
-                padding: 0.75rem 1rem;
+            /* 书签网格 */
+            .bookmarks-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
-            .bookmark-info {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.15rem;
+            .bookmark-card {
+                padding: 1.25rem;
+            }
+
+            .bookmark-header {
+                gap: 0.75rem;
+            }
+
+            .bookmark-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 1.3rem;
             }
 
             .bookmark-title {
                 font-size: 1rem;
-                max-width: 100%;
             }
 
             .bookmark-url {
@@ -1071,6 +1095,12 @@
             .category-btn {
                 padding: 0.5rem 1rem;
                 font-size: 0.8rem;
+            }
+
+            .bookmark-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
             }
         }
 
@@ -1207,91 +1237,93 @@
             transition: all 0.15s; box-shadow: 0 2px 12px rgba(79,142,247,0.35);
         }
         .tl-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(79,142,247,0.5); }
-        .tl-project-bar {
-            display: flex; align-items: center; gap: 8px; padding: 10px 20px;
-            background: var(--tl-bg); border-bottom: 1px solid var(--tl-border);
-            flex-shrink: 0; overflow-x: auto;
-        }
-        .tl-project-tab {
-            display: flex; align-items: center; gap: 6px; padding: 6px 12px;
-            border-radius: 20px; border: 1px solid var(--tl-border); background: var(--tl-bg3);
-            color: var(--tl-text2); font-size: 13px; font-weight: 500; cursor: pointer;
-            transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
-        }
-        .tl-project-tab:hover { color: var(--tl-text); border-color: var(--tl-accent); }
-        .tl-project-tab.active {
-            background: linear-gradient(135deg, #4f8ef7, #7b5cf0); color: #fff; border-color: transparent;
-        }
-        .tl-project-tab-del {
-            margin-left: 2px; opacity: 0.6; border-radius: 50%; width: 16px; height: 16px;
-            display: flex; align-items: center; justify-content: center; font-size: 12px;
-        }
-        .tl-project-tab-del:hover { opacity: 1; background: rgba(0,0,0,0.25); }
-        .tl-project-tab-add { background: none; border-style: dashed; color: var(--tl-text2); }
-        .tl-project-tab-add:hover { color: var(--tl-accent); border-color: var(--tl-accent); }
         .tl-main-area { display: flex; flex: 1; overflow: hidden; }
-        /* === WEEK CALENDAR === */
-        .tlw-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--tl-bg); }
-        .tlw-range-label { font-size: 14px; font-weight: 600; color: var(--tl-text); }
-        .tlw-head {
-            display: grid; grid-template-columns: repeat(7,1fr);
-            border-bottom: 1px solid var(--tl-border); flex-shrink: 0; background: var(--tl-bg2);
+        .tl-timeline-container {
+            flex: 1; display: flex; flex-direction: column; overflow: hidden;
+            position: relative; background: var(--tl-bg);
         }
-        .tlw-dhead {
-            padding: 10px 4px 8px; text-align: center;
-            border-right: 1px solid var(--tl-border); cursor: pointer; transition: background 0.12s;
+        .tl-ruler-wrapper {
+            height: 52px; flex-shrink: 0; background: var(--tl-bg2);
+            border-bottom: 1px solid var(--tl-border); overflow: hidden; position: relative;
         }
-        .tlw-dhead:last-child { border-right: none; }
-        .tlw-dhead:hover { background: rgba(79,142,247,0.07); }
-        .tlw-dhead.tlw-today { background: rgba(79,142,247,0.09); }
-        .tlw-dname { font-size: 11px; font-weight: 600; color: var(--tl-text2); letter-spacing: 0.04em; }
-        .tlw-dnum {
-            font-size: 18px; font-weight: 700; color: var(--tl-text);
-            width: 34px; height: 34px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; margin: 4px auto 0;
+        .tl-ruler { height: 100%; position: absolute; left: 0; top: 0; width: 100%; }
+        .tl-ruler-tick {
+            position: absolute; bottom: 0; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; pointer-events: none;
         }
-        .tlw-dhead.tlw-today .tlw-dnum { background: var(--tl-accent); color: #fff; }
-        .tlw-multiday {
-            flex-shrink: 0; position: relative; overflow: hidden;
-            border-bottom: 1px solid var(--tl-border); background: var(--tl-bg);
-            min-height: 4px;
+        .tl-ruler-tick.tl-major .tl-tick-line { width: 1px; background: var(--tl-border); height: 16px; }
+        .tl-ruler-tick.tl-minor .tl-tick-line { width: 1px; background: rgba(255,255,255,0.04); height: 8px; }
+        .tl-tick-label { font-size: 11px; color: var(--tl-text2); white-space: nowrap; margin-bottom: 4px; }
+        .tl-ruler-tick.tl-major .tl-tick-label { color: var(--tl-text); font-weight: 500; }
+        .tl-track-wrapper {
+            flex: 1; overflow: hidden; position: relative; cursor: grab; user-select: none;
         }
-        .tlw-md-col-line {
-            position: absolute; top: 0; bottom: 0; width: 1px;
-            background: var(--tl-border); pointer-events: none;
+        .tl-track-wrapper:active { cursor: grabbing; }
+        .tl-track-inner {
+            height: 100%; display: flex; flex-direction: column;
+            position: absolute; left: 0; top: 0; right: 0;
         }
-        .tlw-md-event {
-            position: absolute; height: 20px; border-radius: 4px;
-            font-size: 11px; font-weight: 600; color: #fff;
-            display: flex; align-items: center; padding: 0 7px;
-            cursor: pointer; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-            transition: opacity 0.1s; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        .tl-events-top { flex: 1; position: relative; min-height: 100px; }
+        .tl-axis-line-wrapper {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--tl-accent), var(--tl-accent2), var(--tl-accent), transparent);
+            position: relative; flex-shrink: 0; box-shadow: 0 0 12px rgba(79,142,247,0.4);
         }
-        .tlw-md-event:hover { opacity: 0.82; }
-        .tlw-md-event.tlw-sel { outline: 2px solid rgba(255,255,255,0.7); outline-offset: 0px; }
-        .tlw-cols { flex: 1; display: grid; grid-template-columns: repeat(7,1fr); overflow-y: auto; }
-        .tlw-dcol {
-            border-right: 1px solid var(--tl-border); padding: 6px 5px;
-            cursor: pointer; min-height: 120px; transition: background 0.1s;
+        .tl-axis-line { position: absolute; inset: 0; }
+        .tl-events-bottom { flex: 1; position: relative; min-height: 100px; }
+        .tl-today-marker {
+            position: absolute; top: -200px; bottom: -200px; width: 2px;
+            background: rgba(255,180,50,0.6); transform: translateX(-50%);
+            pointer-events: none; z-index: 5;
         }
-        .tlw-dcol:last-child { border-right: none; }
-        .tlw-dcol:hover { background: rgba(255,255,255,0.015); }
-        .tlw-dcol.tlw-today { background: rgba(79,142,247,0.035); }
-        .tlw-event {
-            border-radius: 5px; padding: 3px 7px; margin-bottom: 3px;
-            font-size: 12px; font-weight: 500; color: #fff; cursor: pointer;
-            overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-            transition: opacity 0.1s, transform 0.1s;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.25); line-height: 1.5;
+        .tl-today-marker::before {
+            content: '今天'; position: absolute; top: 205px; left: 50%;
+            transform: translateX(-50%); font-size: 10px; color: #ffb432;
+            white-space: nowrap; background: var(--tl-bg2); padding: 2px 6px;
+            border-radius: 4px; border: 1px solid rgba(255,180,50,0.3);
         }
-        .tlw-event:hover { opacity: 0.82; transform: translateX(1px); }
-        .tlw-event.tlw-sel { outline: 2px solid rgba(255,255,255,0.7); }
-        .tlw-empty {
-            grid-column: 1/8; text-align: center;
-            padding: 60px 20px; color: var(--tl-text2);
+        .tl-event-marker {
+            position: absolute; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; z-index: 10; transition: transform 0.1s;
         }
-        .tlw-empty-icon { font-size: 40px; margin-bottom: 10px; }
-        .tlw-empty-text { font-size: 14px; }
+        .tl-event-marker:hover { transform: translateX(-50%) scale(1.05); z-index: 20; }
+        .tl-event-marker.tl-top { bottom: 0; flex-direction: column-reverse; }
+        .tl-event-marker.tl-bottom { top: 0; flex-direction: column; }
+        .tl-event-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3); flex-shrink: 0;
+            box-shadow: 0 0 8px rgba(0,0,0,0.4); transition: transform 0.1s;
+        }
+        .tl-event-marker:hover .tl-event-dot { transform: scale(1.3); }
+        .tl-event-stem {
+            width: 1px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0.03));
+            flex-shrink: 0;
+        }
+        .tl-event-marker.tl-top .tl-event-stem {
+            background: linear-gradient(to top, rgba(255,255,255,0.15), rgba(255,255,255,0.03));
+        }
+        .tl-event-card {
+            max-width: 160px; padding: 8px 10px; border-radius: 8px;
+            background: var(--tl-bg2); border: 1px solid var(--tl-border);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4); transition: box-shadow 0.15s; min-width: 80px;
+        }
+        .tl-event-marker:hover .tl-event-card { box-shadow: 0 6px 24px rgba(0,0,0,0.6); }
+        .tl-event-card-title {
+            font-size: 12px; font-weight: 600; color: var(--tl-text);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;
+        }
+        .tl-event-card-date { font-size: 10px; color: var(--tl-text2); margin-top: 2px; }
+        .tl-event-range {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            height: 16px; border-radius: 8px; opacity: 0.85; cursor: pointer; z-index: 8;
+            display: flex; align-items: center; padding: 0 8px;
+            font-size: 11px; color: #fff; font-weight: 500;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            transition: opacity 0.15s, transform 0.1s; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .tl-event-range:hover { opacity: 1; transform: translateY(-50%) scaleY(1.1); z-index: 20; }
         .tl-detail-panel {
             width: 280px; background: var(--tl-bg2); border-left: 1px solid var(--tl-border);
             display: none; flex-direction: column; position: relative;
@@ -1369,82 +1401,13 @@
             border-radius: 8px; padding: 8px 18px; cursor: pointer; font-size: 14px; transition: all 0.15s;
         }
         .tl-btn-cancel:hover { background: var(--tl-bg); }
-
-        /* ===== JOURNAL ===== */
-        .journal-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
-        .journal-today-card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 20px; padding: 1.75rem; margin-bottom: 2rem;
-            backdrop-filter: blur(10px); animation: fadeIn 0.4s ease;
+        .tl-empty-hint {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            text-align: center; pointer-events: none; transition: opacity 0.3s;
         }
-        .journal-date-row {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;
-        }
-        .journal-date-label {
-            font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700;
-            background: var(--primary-gradient); -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; background-clip: text;
-        }
-        .journal-mood-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
-        .journal-mood-label { font-size: 0.82rem; color: var(--text-secondary); margin-right: 0.2rem; }
-        .journal-mood-btn {
-            font-size: 1.35rem; background: none; border: 2px solid transparent;
-            border-radius: 50%; width: 38px; height: 38px;
-            cursor: pointer; transition: all 0.2s; display: flex; align-items: center;
-            justify-content: center; padding: 0; line-height: 1;
-        }
-        .journal-mood-btn:hover { transform: scale(1.2); }
-        .journal-mood-btn.selected {
-            border-color: rgba(102,126,234,0.7);
-            background: rgba(102,126,234,0.15); transform: scale(1.15);
-        }
-        .journal-textarea {
-            width: 100%; min-height: 200px; background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border-color); border-radius: 12px;
-            color: var(--text-primary); font-size: 1rem; font-family: 'Inter', sans-serif;
-            padding: 1rem 1.1rem; resize: vertical; outline: none; line-height: 1.8;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .journal-textarea:focus {
-            border-color: rgba(102,126,234,0.45);
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.09);
-        }
-        .journal-textarea::placeholder { color: var(--text-secondary); opacity: 0.55; }
-        .journal-meta {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-top: 0.7rem; font-size: 0.8rem; color: var(--text-secondary);
-        }
-        .journal-save-status { transition: all 0.3s; }
-        .journal-save-status.saving { color: #f59e0b; }
-        .journal-save-status.saved  { color: #10b981; }
-        .journal-past-section { margin-top: 0.5rem; }
-        .journal-section-title {
-            font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700;
-            margin-bottom: 1rem; color: var(--text-primary);
-        }
-        .journal-past-list { display: flex; flex-direction: column; gap: 0.75rem; }
-        .journal-past-card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 14px; overflow: hidden; transition: background 0.2s; backdrop-filter: blur(10px);
-        }
-        .journal-past-card:hover { background: var(--card-hover); }
-        .journal-past-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0.85rem 1.2rem; cursor: pointer; gap: 0.75rem;
-        }
-        .journal-past-date { font-weight: 600; font-size: 0.92rem; flex-shrink: 0; }
-        .journal-past-right { display: flex; align-items: center; gap: 0.6rem; min-width: 0; flex: 1; justify-content: flex-end; }
-        .journal-past-mood { font-size: 1.15rem; flex-shrink: 0; }
-        .journal-past-preview {
-            font-size: 0.82rem; color: var(--text-secondary);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px;
-        }
-        .journal-past-toggle { color: var(--text-secondary); font-size: 0.75rem; flex-shrink: 0; }
-        .journal-past-body { display: none; padding: 0 1.2rem 1rem; border-top: 1px solid var(--border-color); }
-        .journal-past-body.open { display: block; }
-        .journal-past-text { font-size: 0.94rem; line-height: 1.75; color: var(--text-secondary); white-space: pre-wrap; padding-top: 0.8rem; }
-        .journal-empty { text-align: center; padding: 2rem; color: var(--text-secondary); font-size: 0.95rem; }
+        .tl-empty-hint.hidden { opacity: 0; }
+        .tl-empty-icon { font-size: 36px; margin-bottom: 8px; }
+        .tl-empty-text { font-size: 14px; color: var(--tl-text2); }
 
         /* ===== TODO ===== */
         .todo-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
@@ -1529,7 +1492,7 @@
 
 <body>
     <!-- Login Screen -->
-    <div id="loginScreen" class="login-screen">
+    <div id="loginScreen" class="login-screen" style="display: flex;">
         <div class="login-card">
             <h1>📚 我的书签导航</h1>
             <p>云端同步，随时随地访问你的书签</p>
@@ -1564,7 +1527,6 @@
             <button class="main-tab active" data-tab="bookmarks">📚 书签导航</button>
             <button class="main-tab" data-tab="timeline">⏱️ 时间轴</button>
             <button class="main-tab" data-tab="todos">✅ 待办清单</button>
-            <button class="main-tab" data-tab="journal">📖 日记</button>
         </nav>
 
         <!-- Bookmarks Tab -->
@@ -1604,44 +1566,18 @@
                 <div class="search-group">
                     <span class="type-text">搜索引擎</span>
                     <ul class="search-type">
-                        <li><input checked="" hidden="" type="radio" name="type" id="type-baidu"
-                                value="https://www.baidu.com/s?wd=" data-placeholder="百度一下，你就知道"><label
-                                for="type-baidu"><span style="color:#2529d8">百度</span></label></li>
-                        <li><input hidden="" type="radio" name="type" id="type-google"
-                                value="https://www.google.com/search?q=" data-placeholder="Don't be evil 👾"><label
-                                for="type-google"><span style="color:#4285f4">G</span><span
-                                    style="color:#ea4335">o</span><span style="color:#fbbc05">o</span><span
-                                    style="color:#4285f4">g</span><span style="color:#34a853">l</span><span
-                                    style="color:#ea4335">e</span></label></li>
-                        <li><input hidden="" type="radio" name="type" id="type-gmaps"
-                                value="https://www.google.com/maps/search/" data-placeholder="搜索地点、地址 🗺️"><label
-                                for="type-gmaps"><span style="color:#34a853">谷歌地图</span></label></li>
-                        <li><input hidden="" type="radio" name="type" id="type-github" value="https://github.com/search?q="
-                                data-placeholder="How people build software"><label for="type-github"><span
-                                    style="color:#00bbff">GitHub</span></label></li>
-                        <li><input hidden="" type="radio" name="type" id="type-bristol"
-                                value="https://www.bristol.ac.uk/cgi-bin/search?words="
-                                data-placeholder="轻轻松松, 布里一下 👾"><label for="type-bristol"><span
-                                    style="color:#DE5833">布里一下</span></label></li>
-                        <li><input hidden="" type="radio" name="type" id="type-bing" value="https://cn.bing.com/search?q="
-                                data-placeholder="Bing is for doing"><label for="type-bing"><span
-                                    style="color:#0C8484">Bing</span></label></li>
-                        <li><input hidden="" type="radio" name="type" id="type-mj" value="https://mijisou.com/?q="
-                                data-placeholder="不追踪你的搜索引擎"><label for="type-mj"><span
-                                    style="color:#ffee00">秘迹</span></label></li>
-                        <li><input hidden="" type="radio" name="type" id="type-ddg" value="https://duckduckgo.com/?q="
-                                data-placeholder="隐私保护，化繁为简 👾"><label for="type-ddg"><span
-                                    style="color:#DE5833">Duck</span></label></li>
-                        <li><input hidden="" type="radio" name="type" id="type-gpt" value="https://chat.openai.com/?q="
-                                data-placeholder="和 AI 对话，直接给答案 🤖"><label for="type-gpt"><span
-                                    style="color:#10A37F">GPT</span></label></li>
-                        <li><input hidden type="radio" name="type" id="type-ieee"
-                                value="https://ieeexplore.ieee.org/search/searchresult.jsp?queryText="
-                                data-placeholder="搜索 IEEE 论文"><label for="type-ieee"><span
-                                    style="color:#00629B">IEEE</span></label></li>
+                        <li><input checked="" hidden="" type="radio" name="type" id="type-baidu" value="https://www.baidu.com/s?wd=" data-placeholder="百度一下，你就知道" style=""><label for="type-baidu"><span style="color:#2529d8">百度</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-google" value="https://www.google.com/search?q=" data-placeholder="Don't be evil 👾" style=""><label for="type-google"><span style="color:#4285f4">G</span><span style="color:#ea4335">o</span><span style="color:#fbbc05">o</span><span style="color:#4285f4">g</span><span style="color:#34a853">l</span><span style="color:#ea4335">e</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-github" value="https://github.com/search?q=" data-placeholder="How people build software" style=""><label for="type-github"><span style="color:#00bbff">GitHub</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-bristol" value="https://www.bristol.ac.uk/cgi-bin/search?words=" data-placeholder="轻轻松松, 布里一下 👾" style=""><label for="type-bristol"><span style="color:#DE5833">布里一下</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-bing" value="https://cn.bing.com/search?q=" data-placeholder="Bing is for doing" style=""><label for="type-bing"><span style="color:#0C8484">Bing</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-mj" value="https://mijisou.com/?q=" data-placeholder="不追踪你的搜索引擎" style=""><label for="type-mj"><span style="color:#ffee00">秘迹</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-ddg" value="https://duckduckgo.com/?q=" data-placeholder="隐私保护，化繁为简 👾" style=""><label for="type-ddg"><span style="color:#DE5833">Duck</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-gpt" value="https://chat.openai.com/?q=" data-placeholder="和 AI 对话，直接给答案 🤖" style=""><label for="type-gpt"><span style="color:#10A37F">GPT</span></label></li>
+                        <li><input hidden="" type="radio" name="type" id="type-ieee" value="https://ieeexplore.ieee.org/search/searchresult.jsp?queryText=" data-placeholder="搜索 IEEE 论文" style=""><label for="type-ieee"><span style="color:#00629B">IEEE</span></label></li>
                     </ul>
                     <div class="search-wrapper">
-                        <input type="text" class="search-box" id="searchInput" placeholder="百度一下，你就知道">
+                        <input type="text" class="search-box" id="searchInput" placeholder="百度一下，你就知道" style="">
                         <button class="search-btn" id="searchBtn">🔍</button>
                     </div>
                 </div>
@@ -1653,6 +1589,9 @@
                     <h2 class="section-title">我的书签</h2>
                     <div class="action-buttons">
                         <button class="btn" onclick="openManageCategoriesModal()">📁 管理分类</button>
+                        <button class="btn" onclick="exportAllData()">⬇️ 导出数据</button>
+                        <button class="btn" onclick="document.getElementById('importFileInput').click()">⬆️ 导入数据</button>
+                        <input type="file" id="importFileInput" accept="application/json,.json" style="display:none" onchange="importAllData(event)">
                         <button class="btn primary" onclick="openAddBookmarkModal()">➕ 添加书签</button>
                     </div>
                 </div>
@@ -1672,26 +1611,43 @@
         <div class="tab-panel" id="tab-timeline">
             <header class="tl-toolbar">
                 <div class="tl-toolbar-left">
-                    <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
-                        <circle cx="14" cy="14" r="13" stroke="#4f8ef7" stroke-width="2"/>
-                        <line x1="14" y1="6" x2="14" y2="14" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round"/>
-                        <line x1="14" y1="14" x2="20" y2="18" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round"/>
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <circle cx="14" cy="14" r="13" stroke="#4f8ef7" stroke-width="2"></circle>
+                        <line x1="14" y1="6" x2="14" y2="14" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round"></line>
+                        <line x1="14" y1="14" x2="20" y2="18" stroke="#4f8ef7" stroke-width="2" stroke-linecap="round"></line>
                     </svg>
                     <span class="tl-app-title">时间轴</span>
                 </div>
-                <div class="tl-toolbar-center" style="display:flex;align-items:center;gap:8px;flex:1;justify-content:center;">
-                    <button class="tl-tool-btn" id="tlw-prev">◀</button>
-                    <button class="tl-tool-btn" id="tlw-today">今天</button>
-                    <button class="tl-tool-btn" id="tlw-next">▶</button>
-                    <span class="tlw-range-label" id="tlw-range"></span>
+                <div class="tl-toolbar-center">
+                    <button class="tl-tool-btn" id="tl-btn-zoom-out">
+                        <svg width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="2" rx="1" fill="currentColor"></rect></svg>
+                    </button>
+                    <button class="tl-tool-btn" id="tl-btn-today">今天</button>
+                    <button class="tl-tool-btn" id="tl-btn-zoom-in">
+                        <svg width="16" height="16" viewBox="0 0 16 16"><rect x="7" y="3" width="2" height="10" rx="1" fill="currentColor"></rect><rect x="3" y="7" width="10" height="2" rx="1" fill="currentColor"></rect></svg>
+                    </button>
+                    <div class="tl-scale-label" id="tl-scale-label">年视图</div>
                 </div>
                 <div class="tl-toolbar-right">
                     <button class="tl-btn-primary" id="tl-btn-add-event">+ 添加事件</button>
                 </div>
             </header>
-            <div class="tl-project-bar" id="tl-project-bar"></div>
             <main class="tl-main-area">
-                <div class="tlw-body" id="tlw-body"></div>
+                <div class="tl-timeline-container" id="tl-timeline-container">
+                    <div class="tl-ruler-wrapper">
+                        <div class="tl-ruler" id="tl-ruler"></div>
+                    </div>
+                    <div class="tl-track-wrapper" id="tl-track-wrapper">
+                        <div class="tl-track-inner" id="tl-track-inner">
+                            <div class="tl-events-top" id="tl-events-top"></div>
+                            <div class="tl-axis-line-wrapper">
+                                <div class="tl-axis-line"></div>
+                                <div class="tl-today-marker" id="tl-today-marker"></div>
+                            </div>
+                            <div class="tl-events-bottom" id="tl-events-bottom"></div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tl-detail-panel" id="tl-detail-panel">
                     <button class="tl-panel-close" id="tl-panel-close">✕</button>
                     <div class="tl-panel-color-bar" id="tl-panel-color-bar"></div>
@@ -1706,6 +1662,10 @@
                     </div>
                 </div>
             </main>
+            <div class="tl-empty-hint" id="tl-empty-hint">
+                <div class="tl-empty-icon">📅</div>
+                <div class="tl-empty-text">点击右上角「+ 添加事件」开始创建你的时间轴</div>
+            </div>
         </div><!-- end tab-timeline -->
 
         <!-- Todos Tab -->
@@ -1717,7 +1677,7 @@
                 </div>
                 <div class="todo-add-form">
                     <div class="todo-input-row">
-                        <input type="text" class="todo-input" id="todoInput" placeholder="添加新的待办事项...">
+                        <input type="text" class="todo-input" id="todoInput" placeholder="添加新的待办事项..." style="">
                         <select class="todo-priority-select" id="todoPriority">
                             <option value="normal">普通</option>
                             <option value="high">🔴 高优先级</option>
@@ -1738,36 +1698,6 @@
             </div>
         </div><!-- end tab-todos -->
 
-        <!-- Journal Tab -->
-        <div class="tab-panel" id="tab-journal">
-            <div class="journal-container">
-                <div class="journal-today-card">
-                    <div class="journal-date-row">
-                        <div class="journal-date-label" id="journal-today-label"></div>
-                        <div class="journal-mood-row">
-                            <span class="journal-mood-label">今日心情</span>
-                            <button class="journal-mood-btn" data-mood="😄" title="开心">😄</button>
-                            <button class="journal-mood-btn" data-mood="😊" title="还不错">😊</button>
-                            <button class="journal-mood-btn" data-mood="😐" title="一般">😐</button>
-                            <button class="journal-mood-btn" data-mood="😔" title="有点累">😔</button>
-                            <button class="journal-mood-btn" data-mood="😤" title="烦躁">😤</button>
-                        </div>
-                    </div>
-                    <textarea class="journal-textarea" id="journal-textarea" placeholder="记录今天的想法、感受、发生的事情..."></textarea>
-                    <div class="journal-meta">
-                        <span id="journal-wordcount">0 字</span>
-                        <span class="journal-save-status" id="journal-save-status"></span>
-                    </div>
-                </div>
-                <div class="journal-past-section">
-                    <div class="journal-section-title">往日记录</div>
-                    <div class="journal-past-list" id="journal-past-list">
-                        <div class="journal-empty">还没有往日记录</div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- end tab-journal -->
-
     </div><!-- end mainApp -->
 
     <!-- Timeline Modal -->
@@ -1780,25 +1710,21 @@
             <div class="tl-modal-body">
                 <div class="tl-form-group">
                     <label>标题 <span class="tl-required">*</span></label>
-                    <input type="text" id="tl-input-title" placeholder="事件标题" maxlength="100">
+                    <input type="text" id="tl-input-title" placeholder="事件标题" maxlength="100" style="">
                 </div>
-                <div class="tl-form-group">
-                    <label>开始 <span class="tl-required">*</span></label>
-                    <div style="display:flex;gap:8px;">
-                        <input type="date" id="tl-input-start" style="flex:3">
-                        <input type="time" id="tl-input-start-time" style="flex:2">
+                <div class="tl-form-row">
+                    <div class="tl-form-group">
+                        <label>开始日期 <span class="tl-required">*</span></label>
+                        <input type="date" id="tl-input-start" style="">
                     </div>
-                </div>
-                <div class="tl-form-group">
-                    <label>结束 <span class="tl-optional">(可选)</span></label>
-                    <div style="display:flex;gap:8px;">
-                        <input type="date" id="tl-input-end" style="flex:3">
-                        <input type="time" id="tl-input-end-time" style="flex:2">
+                    <div class="tl-form-group">
+                        <label>结束日期 <span class="tl-optional">(可选)</span></label>
+                        <input type="date" id="tl-input-end" style="">
                     </div>
                 </div>
                 <div class="tl-form-group">
                     <label>描述</label>
-                    <textarea id="tl-input-desc" placeholder="详细描述..." rows="3"></textarea>
+                    <textarea id="tl-input-desc" placeholder="详细描述..." rows="3" style=""></textarea>
                 </div>
                 <div class="tl-form-group">
                     <label>颜色</label>
@@ -1821,30 +1747,6 @@
         </div>
     </div>
 
-    <!-- Timeline: New Project/Chart Modal -->
-    <div class="tl-modal-overlay" id="tl-project-modal-overlay">
-        <div class="tl-modal" style="max-width:320px;">
-            <div class="tl-modal-header">
-                <h2 class="tl-modal-title">新建图表</h2>
-                <button class="tl-modal-close" id="tl-project-modal-close">✕</button>
-            </div>
-            <div class="tl-modal-body">
-                <div class="tl-form-group">
-                    <label>图标 (emoji)</label>
-                    <input type="text" id="tl-project-input-icon" placeholder="🚀" maxlength="4" style="width:64px;text-align:center;font-size:20px;">
-                </div>
-                <div class="tl-form-group">
-                    <label>项目名称 <span class="tl-required">*</span></label>
-                    <input type="text" id="tl-project-input-name" placeholder="例如：巡检机器人" maxlength="30">
-                </div>
-            </div>
-            <div class="tl-modal-footer">
-                <button class="tl-btn-cancel" id="tl-project-btn-cancel">取消</button>
-                <button class="tl-btn-primary" id="tl-project-btn-save">创建</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Add Bookmark Modal -->
     <div class="modal" id="addBookmarkModal">
         <div class="modal-content">
@@ -1855,19 +1757,23 @@
             <form id="addBookmarkForm">
                 <div class="form-group">
                     <label class="form-label">名称</label>
-                    <input type="text" class="form-input" id="bookmarkName" required>
+                    <input type="text" class="form-input" id="bookmarkName" required="" style="">
                 </div>
                 <div class="form-group">
                     <label class="form-label">网址</label>
-                    <input type="url" class="form-input" id="bookmarkUrl" required placeholder="https://">
+                    <input type="url" class="form-input" id="bookmarkUrl" required="" placeholder="https://" style="">
                 </div>
                 <div class="form-group">
                     <label class="form-label">描述（可选）</label>
-                    <textarea class="form-textarea" id="bookmarkDesc"></textarea>
+                    <textarea class="form-textarea" id="bookmarkDesc" style=""></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">图标（emoji）</label>
+                    <input type="text" class="form-input" id="bookmarkIcon" placeholder="📌" style="">
                 </div>
                 <div class="form-group">
                     <label class="form-label">分类</label>
-                    <select class="form-select" id="bookmarkCategory" required>
+                    <select class="form-select" id="bookmarkCategory" required="">
                         <!-- Categories will be populated here -->
                     </select>
                 </div>
@@ -1889,15 +1795,15 @@
             <form id="addQuickLinkForm">
                 <div class="form-group">
                     <label class="form-label">名称</label>
-                    <input type="text" class="form-input" id="quickLinkName" required>
+                    <input type="text" class="form-input" id="quickLinkName" required="" style="">
                 </div>
                 <div class="form-group">
                     <label class="form-label">网址</label>
-                    <input type="url" class="form-input" id="quickLinkUrl" required placeholder="https://">
+                    <input type="url" class="form-input" id="quickLinkUrl" required="" placeholder="https://" style="">
                 </div>
                 <div class="form-group">
                     <label class="form-label">图标（emoji，可选）</label>
-                    <input type="text" class="form-input" id="quickLinkIcon" placeholder="留空自动获取网站图标">
+                    <input type="text" class="form-input" id="quickLinkIcon" placeholder="留空自动获取网站图标" style="">
                 </div>
                 <div class="form-buttons">
                     <button type="button" class="btn" onclick="closeQuickLinkModal()">取消</button>
@@ -1917,7 +1823,7 @@
             <div class="form-group">
                 <label class="form-label">添加新分类</label>
                 <div style="display: flex; gap: 0.5rem;">
-                    <input type="text" class="form-input" id="newCategoryName" placeholder="分类名称">
+                    <input type="text" class="form-input" id="newCategoryName" placeholder="分类名称" style="">
                     <button class="btn primary" onclick="addNewCategory()">添加</button>
                 </div>
             </div>
@@ -1974,24 +1880,18 @@
         let currentCategory = null;
         let todos = [];
         let todoFilter = 'all';
-        let journal = {};
-        let journalSaveTimer = null;
-        let journalTodayKey = '';
-        let journalInitialized = false;
 
         // Timeline state
         const MS_DAY = 86400000;
-        const TL_DEFAULT_PROJECT = { id: 'default', name: '弹簧无人机', icon: '🚁' };
         const tlState = {
             events: [], viewStart: null, viewEnd: null,
             selectedId: null, editingId: null,
             isDragging: false, dragStartX: 0, dragStartMs: 0,
-            selectedColor: '#4f8ef7',
-            projects: [TL_DEFAULT_PROJECT], currentProject: TL_DEFAULT_PROJECT.id
+            selectedColor: '#4f8ef7'
         };
-        let tlDetailPanel, tlModalOverlay, tlProjectModalOverlay;
+        let tlRuler, tlTrackWrapper, tlEventsTop, tlEventsBottom;
+        let tlTodayMarker, tlDetailPanel, tlModalOverlay, tlEmptyHint, tlScaleLabel;
         let tlInitialized = false;
-        let tlWeekStart = null; // Monday of displayed week
 
         // 立即绑定登录按钮 - 在页面加载时就绑定
         document.addEventListener('DOMContentLoaded', () => {
@@ -3148,10 +3048,7 @@
                     bookmarks = data.bookmarks || defaultBookmarks;
                     quickLinks = data.quickLinks || defaultQuickLinks;
                     tlState.events = parseTlEvents(data.events);
-                    tlState.projects = (data.tlProjects && data.tlProjects.length) ? data.tlProjects : [TL_DEFAULT_PROJECT];
-                    if (!tlState.projects.some(p => p.id === tlState.currentProject)) tlState.currentProject = tlState.projects[0].id;
                     todos = data.todos || [];
-                    journal = data.journal || {};
                 } else {
                     console.log('ℹ️ 新用户，使用默认数据');
                     bookmarks = JSON.parse(JSON.stringify(defaultBookmarks));
@@ -3166,17 +3063,11 @@
                         bookmarks = data.bookmarks || [];
                         quickLinks = data.quickLinks || [];
                         tlState.events = parseTlEvents(data.events);
-                        tlState.projects = (data.tlProjects && data.tlProjects.length) ? data.tlProjects : [TL_DEFAULT_PROJECT];
-                        if (!tlState.projects.some(p => p.id === tlState.currentProject)) tlState.currentProject = tlState.projects[0].id;
                         todos = data.todos || [];
-                        journal = data.journal || {};
                         renderQuickLinks();
                         setupCategoryFilters();
                         renderTimeline();
                         renderTodos();
-                        if (document.getElementById('tab-journal').classList.contains('active')) {
-                            renderJournalPastEntries();
-                        }
                     }
                 });
 
@@ -3203,9 +3094,7 @@
                         start: e.start instanceof Date ? e.start.toISOString() : e.start,
                         end: e.end instanceof Date ? e.end.toISOString() : (e.end || null)
                     })),
-                    tlProjects: tlState.projects,
                     todos: todos,
-                    journal: journal,
                     lastUpdated: new Date().toISOString()
                 });
                 updateSyncStatus('synced', '已同步');
@@ -3476,12 +3365,15 @@
                 const card = document.createElement('div');
                 card.className = 'bookmark-card';
 
-                const titleAttr = link.description ? ` title="${link.description.replace(/"/g, '&quot;')}"` : '';
                 card.innerHTML = `
-                    <div class="bookmark-info"${titleAttr}>
-                        <div class="bookmark-title">${link.name}</div>
-                        <div class="bookmark-url">${link.url}</div>
+                    <div class="bookmark-header">
+                        <div class="bookmark-icon">${link.icon || '📌'}</div>
+                        <div class="bookmark-info">
+                            <div class="bookmark-title">${link.name}</div>
+                            <div class="bookmark-url">${link.url}</div>
+                        </div>
                     </div>
+                    ${link.description ? `<div class="bookmark-desc">${link.description}</div>` : ''}
                     <div class="bookmark-footer">
                         <a href="${link.url}" target="_blank" class="bookmark-link">访问</a>
                         <button class="bookmark-delete" onclick="deleteBookmark(${index})">删除</button>
@@ -3519,7 +3411,8 @@
             const newBookmark = {
                 name: document.getElementById('bookmarkName').value,
                 url: document.getElementById('bookmarkUrl').value,
-                description: document.getElementById('bookmarkDesc').value
+                description: document.getElementById('bookmarkDesc').value,
+                icon: document.getElementById('bookmarkIcon').value || '📌'
             };
 
             const category = document.getElementById('bookmarkCategory').value;
@@ -3627,6 +3520,98 @@
         // 导出到全局
         window.saveUserData = saveUserData;
 
+        // ===== 数据导入/导出 =====
+        // 导出全部数据（书签、常用网站、时间轴、待办）为 JSON 文件
+        window.exportAllData = function () {
+            const exportData = {
+                type: 'bookmark-homepage-backup',
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                bookmarks: bookmarks,
+                quickLinks: quickLinks,
+                events: tlState.events.map(e => ({
+                    ...e,
+                    start: e.start instanceof Date ? e.start.toISOString() : e.start,
+                    end: e.end instanceof Date ? e.end.toISOString() : (e.end || null)
+                })),
+                todos: todos
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const dateStr = new Date().toISOString().slice(0, 10);
+            a.href = url;
+            a.download = `书签导航备份_${dateStr}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+
+        // 导入数据：读取 JSON 文件并合并/覆盖当前数据
+        window.importAllData = function (event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+
+                    if (!data || typeof data !== 'object' || (!Array.isArray(data.bookmarks) && !Array.isArray(data.quickLinks) && !Array.isArray(data.todos) && !Array.isArray(data.events))) {
+                        alert('导入失败：文件格式不正确，请选择由本页面导出的备份文件。');
+                        return;
+                    }
+
+                    const replace = confirm('是否覆盖现有数据？\n\n点击"确定"覆盖全部数据；点击"取消"将合并导入的数据（追加到现有数据后）。');
+
+                    const importedEvents = (data.events || []).map(ev => ({
+                        ...ev,
+                        start: new Date(ev.start),
+                        end: ev.end ? new Date(ev.end) : null
+                    }));
+
+                    if (replace) {
+                        bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : [];
+                        quickLinks = Array.isArray(data.quickLinks) ? data.quickLinks : [];
+                        tlState.events = importedEvents;
+                        todos = Array.isArray(data.todos) ? data.todos : [];
+                        currentCategory = null;
+                    } else {
+                        // 合并书签：相同分类名合并链接，其余分类追加
+                        (data.bookmarks || []).forEach(importedCat => {
+                            const existing = bookmarks.find(c => c.category === importedCat.category);
+                            if (existing) {
+                                existing.links = existing.links.concat(importedCat.links || []);
+                            } else {
+                                bookmarks.push(importedCat);
+                            }
+                        });
+                        quickLinks = quickLinks.concat(Array.isArray(data.quickLinks) ? data.quickLinks : []);
+                        tlState.events = tlState.events.concat(importedEvents);
+                        todos = todos.concat(Array.isArray(data.todos) ? data.todos : []);
+                    }
+
+                    await saveUserData();
+                    renderQuickLinks();
+                    setupCategoryFilters();
+                    renderBookmarks();
+                    populateCategorySelect();
+                    renderTimeline();
+                    renderTodos();
+
+                    alert('导入成功！');
+                } catch (err) {
+                    console.error('导入数据错误:', err);
+                    alert('导入失败：无法解析文件内容，请确认文件是有效的 JSON 备份文件。');
+                } finally {
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        };
+
         // ===== MAIN TABS =====
         function setupMainTabs() {
             document.querySelectorAll('.main-tab').forEach(btn => {
@@ -3638,10 +3623,6 @@
                     document.getElementById('tab-' + tab).classList.add('active');
                     if (tab === 'timeline') renderTimeline();
                     if (tab === 'todos') renderTodos();
-                    if (tab === 'journal') {
-                        if (!journalInitialized) { journalInitialized = true; setupJournal(); }
-                        else renderJournalPastEntries();
-                    }
                 });
             });
         }
@@ -3650,251 +3631,201 @@
         function initTimeline() {
             if (tlInitialized) { renderTimeline(); return; }
             tlInitialized = true;
+            tlRuler        = document.getElementById('tl-ruler');
+            tlTrackWrapper = document.getElementById('tl-track-wrapper');
+            tlEventsTop    = document.getElementById('tl-events-top');
+            tlEventsBottom = document.getElementById('tl-events-bottom');
+            tlTodayMarker  = document.getElementById('tl-today-marker');
             tlDetailPanel  = document.getElementById('tl-detail-panel');
             tlModalOverlay = document.getElementById('tl-modal-overlay');
-            tlProjectModalOverlay = document.getElementById('tl-project-modal-overlay');
+            tlEmptyHint    = document.getElementById('tl-empty-hint');
+            tlScaleLabel   = document.getElementById('tl-scale-label');
+
             const today = new Date(); today.setHours(0,0,0,0);
-            tlWeekStart = tlGetWeekStart(today);
+            tlState.viewStart = new Date(today.getFullYear() - 2, 0, 1);
+            tlState.viewEnd   = new Date(today.getFullYear() + 2, 11, 31);
             renderTimeline();
             bindTimelineEvents();
         }
 
-        // ── Week calendar helpers ──────────────────────────────
-        function tlGetWeekStart(date) {
-            const d = new Date(date); d.setHours(0,0,0,0);
-            const day = d.getDay(); // 0=Sun
-            d.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
-            return d;
-        }
-        function tlDateOnly(d) { const n = new Date(d); n.setHours(0,0,0,0); return n; }
-        function tlSameDay(a, b) {
-            return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
-        }
-        function tlDayStr(d) {
-            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        function tlGetContainerWidth() {
+            return (tlTrackWrapper && tlTrackWrapper.clientWidth) || window.innerWidth;
         }
 
-        function renderTimeline() { renderTlProjectBar(); renderTlWeek(); }
+        function tlDateToX(date) {
+            const total = tlState.viewEnd - tlState.viewStart;
+            return ((date - tlState.viewStart) / total) * tlGetContainerWidth();
+        }
 
-        function tlProjectOf(ev) { return ev.project || TL_DEFAULT_PROJECT.id; }
+        function tlXToDate(x) {
+            const total = tlState.viewEnd - tlState.viewStart;
+            return new Date(tlState.viewStart.getTime() + (x / tlGetContainerWidth()) * total);
+        }
 
-        function renderTlProjectBar() {
-            const bar = document.getElementById('tl-project-bar');
-            if (!bar) return;
-            bar.innerHTML = '';
-            tlState.projects.forEach(p => {
-                const tab = document.createElement('div');
-                tab.className = 'tl-project-tab' + (p.id === tlState.currentProject ? ' active' : '');
-                tab.innerHTML = `<span>${p.icon || '📌'}</span><span>${p.name}</span>` +
-                    (p.id !== TL_DEFAULT_PROJECT.id ? `<span class="tl-project-tab-del" title="删除图表">✕</span>` : '');
-                tab.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('tl-project-tab-del')) {
-                        e.stopPropagation();
-                        tlDeleteProject(p.id);
-                        return;
-                    }
-                    if (tlState.currentProject === p.id) return;
-                    tlState.currentProject = p.id;
-                    tlState.selectedId = null;
-                    tlClosePanel();
-                    renderTlProjectBar();
-                    renderTlWeek();
-                });
-                bar.appendChild(tab);
+        function tlVisibleRangeDays() {
+            return (tlState.viewEnd - tlState.viewStart) / MS_DAY;
+        }
+
+        function tlGetScaleConfig() {
+            const d = tlVisibleRangeDays();
+            if (d > 365*50) return { major:'decade', minor:'year',  label:'世纪视图' };
+            if (d > 365*10) return { major:'year',   minor:'month', label:'十年视图' };
+            if (d > 365*2)  return { major:'year',   minor:'month', label:'年视图'  };
+            if (d > 120)    return { major:'month',  minor:'week',  label:'月视图'  };
+            if (d > 30)     return { major:'week',   minor:'day',   label:'周视图'  };
+            return              { major:'day',    minor:'day',   label:'日视图'  };
+        }
+
+        function tlIterateTicks(cfg) {
+            const ticks = []; const W = tlGetContainerWidth();
+            const advance = (d, unit) => {
+                const n = new Date(d);
+                if (unit==='day')   n.setDate(n.getDate()+1);
+                if (unit==='week')  n.setDate(n.getDate()+7);
+                if (unit==='month') n.setMonth(n.getMonth()+1);
+                if (unit==='year')  n.setFullYear(n.getFullYear()+1);
+                if (unit==='decade')n.setFullYear(n.getFullYear()+10);
+                return n;
+            };
+            const snap = (d, unit) => {
+                const n = new Date(d); n.setHours(0,0,0,0);
+                if (unit==='week')  n.setDate(n.getDate()-n.getDay());
+                if (unit==='month') n.setDate(1);
+                if (unit==='year')  n.setMonth(0,1);
+                if (unit==='decade')n.setFullYear(Math.floor(n.getFullYear()/10)*10,0,1);
+                return n;
+            };
+            const add = (date, type) => {
+                const x = tlDateToX(date);
+                if (x < -20 || x > W+20) return;
+                ticks.push({ x, date: new Date(date), type });
+            };
+            let cur = snap(new Date(tlState.viewStart), cfg.major);
+            while (cur <= tlState.viewEnd) { add(cur,'major'); cur = advance(cur,cfg.major); }
+            if (cfg.minor !== cfg.major) {
+                cur = snap(new Date(tlState.viewStart), cfg.minor);
+                while (cur <= tlState.viewEnd) { add(cur,'minor'); cur = advance(cur,cfg.minor); }
+            }
+            return ticks;
+        }
+
+        function tlFormatTickLabel(date, unit) {
+            const y=date.getFullYear(), m=date.getMonth()+1, d=date.getDate();
+            if (unit==='decade') return `${Math.floor(y/10)*10}s`;
+            if (unit==='year')   return `${y}`;
+            if (unit==='month')  return `${y}/${String(m).padStart(2,'0')}`;
+            return `${m}/${d}`;
+        }
+
+        function renderTimeline() {
+            if (!tlRuler) return;
+            renderTlRuler(); renderTlEvents(); renderTlTodayMarker(); tlUpdateUI();
+        }
+
+        function renderTlRuler() {
+            tlRuler.innerHTML = '';
+            const cfg = tlGetScaleConfig();
+            tlScaleLabel.textContent = cfg.label;
+            const seen = new Set();
+            tlIterateTicks(cfg).forEach(t => {
+                const key = `${t.type}-${Math.round(t.x)}`;
+                if (seen.has(key)) return; seen.add(key);
+                const el = document.createElement('div');
+                el.className = `tl-ruler-tick ${t.type==='major'?'tl-major':'tl-minor'}`;
+                el.style.left = t.x + 'px';
+                if (t.type==='major') {
+                    const lbl = document.createElement('div');
+                    lbl.className = 'tl-tick-label';
+                    lbl.textContent = tlFormatTickLabel(t.date, cfg.major);
+                    el.appendChild(lbl);
+                }
+                const line = document.createElement('div');
+                line.className = 'tl-tick-line';
+                el.appendChild(line);
+                tlRuler.appendChild(el);
             });
-            const addTab = document.createElement('div');
-            addTab.className = 'tl-project-tab tl-project-tab-add';
-            addTab.textContent = '+ 新图表';
-            addTab.addEventListener('click', tlOpenProjectModal);
-            bar.appendChild(addTab);
         }
 
-        async function tlDeleteProject(id) {
-            const p = tlState.projects.find(x => x.id === id);
-            if (!p) return;
-            if (!confirm(`确定要删除图表"${p.name}"吗？其中的事件将转移到"${TL_DEFAULT_PROJECT.name}"图表下。`)) return;
-            tlState.events.forEach(ev => { if (tlProjectOf(ev) === id) ev.project = TL_DEFAULT_PROJECT.id; });
-            tlState.projects = tlState.projects.filter(x => x.id !== id);
-            if (tlState.currentProject === id) tlState.currentProject = TL_DEFAULT_PROJECT.id;
-            await saveUserData();
-            renderTimeline();
-        }
-
-        function tlOpenProjectModal() {
-            document.getElementById('tl-project-input-icon').value = '';
-            document.getElementById('tl-project-input-name').value = '';
-            tlProjectModalOverlay.classList.add('visible');
-            document.getElementById('tl-project-input-name').focus();
-        }
-
-        function tlCloseProjectModal() {
-            tlProjectModalOverlay.classList.remove('visible');
-        }
-
-        async function tlSaveProjectModal() {
-            const nameInput = document.getElementById('tl-project-input-name');
-            const name = nameInput.value.trim();
-            if (!name) { tlShake(nameInput); return; }
-            const icon = document.getElementById('tl-project-input-icon').value.trim() || '🚀';
-            const newProject = { id: 'p' + Date.now() + Math.floor(Math.random()*1000), name, icon };
-            tlState.projects.push(newProject);
-            tlState.currentProject = newProject.id;
-            tlState.selectedId = null;
-            await saveUserData();
-            tlCloseProjectModal();
-            renderTimeline();
-        }
-
-        function renderTlWeek() {
-            const body = document.getElementById('tlw-body');
-            if (!body || !tlWeekStart) return;
-
+        function renderTlTodayMarker() {
             const today = new Date(); today.setHours(0,0,0,0);
+            const x = tlDateToX(today);
+            const W = tlGetContainerWidth();
+            if (x > 0 && x < W) {
+                tlTodayMarker.style.display = 'block';
+                tlTodayMarker.style.left = x + 'px';
+            } else { tlTodayMarker.style.display = 'none'; }
+        }
 
-            // 本周7天 (周一 ~ 周日)
-            const days = Array.from({length:7}, (_,i) => {
-                const d = new Date(tlWeekStart); d.setDate(d.getDate()+i); return d;
+        function renderTlEvents() {
+            tlEventsTop.innerHTML = ''; tlEventsBottom.innerHTML = '';
+            const W = tlGetContainerWidth();
+            const sorted = [...tlState.events].sort((a,b) => a.start - b.start);
+            let topCount=0, botCount=0;
+            sorted.forEach(ev => {
+                const x = tlDateToX(ev.start);
+                if (x < -200 || x > W+200) return;
+                if (ev.end && ev.end > ev.start) { renderTlRangeEvent(ev, x, W); return; }
+                const isTop = topCount <= botCount;
+                const container = isTop ? tlEventsTop : tlEventsBottom;
+                isTop ? topCount++ : botCount++;
+                const marker = document.createElement('div');
+                marker.className = `tl-event-marker ${isTop?'tl-top':'tl-bottom'}`;
+                marker.style.left = x + 'px';
+                marker.dataset.id = ev.id;
+                const stemH = Math.max(40, (container.clientHeight||120)*0.4);
+                const dot = document.createElement('div');
+                dot.className = 'tl-event-dot'; dot.style.background = ev.color;
+                const stem = document.createElement('div');
+                stem.className = 'tl-event-stem'; stem.style.height = stemH + 'px';
+                const card = document.createElement('div');
+                card.className = 'tl-event-card';
+                card.style.borderTopColor = ev.color;
+                card.style.borderTopWidth = '2px'; card.style.borderTopStyle = 'solid';
+                const titleEl = document.createElement('div');
+                titleEl.className = 'tl-event-card-title'; titleEl.textContent = ev.title;
+                const dateEl = document.createElement('div');
+                dateEl.className = 'tl-event-card-date'; dateEl.textContent = tlFormatDate(ev.start);
+                card.appendChild(titleEl); card.appendChild(dateEl);
+                if (isTop) { marker.appendChild(card); marker.appendChild(stem); marker.appendChild(dot); }
+                else       { marker.appendChild(dot);  marker.appendChild(stem); marker.appendChild(card); }
+                if (ev.id === tlState.selectedId)
+                    dot.style.boxShadow = `0 0 0 3px ${ev.color}, 0 0 12px ${ev.color}`;
+                marker.addEventListener('click', e => { e.stopPropagation(); tlSelectEvent(ev.id); });
+                container.appendChild(marker);
             });
-            const weekEnd = new Date(days[6]); weekEnd.setHours(23,59,59,999);
+        }
 
-            // 更新周范围标签
-            const m1=days[0].getMonth()+1, d1=days[0].getDate();
-            const m2=days[6].getMonth()+1, d2=days[6].getDate();
-            const rangeEl = document.getElementById('tlw-range');
-            if (rangeEl) rangeEl.textContent = m1===m2
-                ? `${days[0].getFullYear()}年 ${m1}月 ${d1} — ${d2}日`
-                : `${days[0].getFullYear()}年 ${m1}月${d1}日 — ${m2}月${d2}日`;
-
-            // 当前图表(项目)的事件
-            const projectEvents = tlState.events.filter(ev => tlProjectOf(ev) === tlState.currentProject);
-
-            // 筛选本周事件
-            const weekEvents = projectEvents.filter(ev => {
-                const evEnd = ev.end && ev.end > ev.start ? tlDateOnly(ev.end) : tlDateOnly(ev.start);
-                return tlDateOnly(ev.start) <= weekEnd && evEnd >= tlWeekStart;
-            });
-
-            // 跨天事件 vs 单天事件
-            const isMulti = ev => ev.end && ev.end > ev.start && !tlSameDay(ev.start, ev.end);
-            const multiDay  = weekEvents.filter(isMulti);
-            const singleDay = weekEvents.filter(ev => !isMulti(ev));
-
-            // 为跨天事件分配泳道
-            const mdClipped = multiDay.map(ev => ({
-                ...ev,
-                c0: Math.max(0, Math.floor((tlDateOnly(ev.start) - tlWeekStart) / 86400000)),
-                c1: Math.min(6, Math.floor((tlDateOnly(ev.end)   - tlWeekStart) / 86400000)),
-            })).sort((a,b) => a.c0-b.c0 || b.c1-a.c1);
-
-            const lanes = [];
-            mdClipped.forEach(ev => {
-                let placed = false;
-                for (let i=0; i<lanes.length; i++) {
-                    if (lanes[i][lanes[i].length-1].c1 < ev.c0) {
-                        lanes[i].push(ev); ev._lane=i; placed=true; break;
-                    }
-                }
-                if (!placed) { ev._lane=lanes.length; lanes.push([ev]); }
-            });
-            const numLanes = lanes.length;
-
-            // ── 构建 DOM ───────────────────────────────────────
-            body.innerHTML = '';
-
-            // 1. 日期标题行
-            const head = document.createElement('div');
-            head.className = 'tlw-head';
-            const DAY_NAMES = ['周一','周二','周三','周四','周五','周六','周日'];
-            days.forEach((day, i) => {
-                const dh = document.createElement('div');
-                dh.className = 'tlw-dhead' + (tlSameDay(day,today) ? ' tlw-today' : '');
-                dh.innerHTML = `<div class="tlw-dname">${DAY_NAMES[i]}</div><div class="tlw-dnum">${day.getDate()}</div>`;
-                dh.addEventListener('click', () => tlOpenModal(null, tlDayStr(day)));
-                head.appendChild(dh);
-            });
-            body.appendChild(head);
-
-            // 2. 跨天事件条带
-            if (numLanes > 0) {
-                const strip = document.createElement('div');
-                strip.className = 'tlw-multiday';
-                strip.style.height = (numLanes * 24 + 6) + 'px';
-                // 列分割线
-                for (let i=1; i<7; i++) {
-                    const line = document.createElement('div');
-                    line.className = 'tlw-md-col-line';
-                    line.style.left = (i/7*100)+'%';
-                    strip.appendChild(line);
-                }
-                mdClipped.forEach(ev => {
-                    const el = document.createElement('div');
-                    el.className = 'tlw-md-event' + (ev.id===tlState.selectedId ? ' tlw-sel' : '');
-                    el.style.cssText = `background:${ev.color};left:calc(${ev.c0/7*100}% + 2px);width:calc(${(ev.c1-ev.c0+1)/7*100}% - 4px);top:${ev._lane*24+3}px`;
-                    el.textContent = ev.title;
-                    el.addEventListener('click', () => tlSelectEvent(ev.id));
-                    strip.appendChild(el);
-                });
-                body.appendChild(strip);
-            }
-
-            // 3. 单天事件列区域
-            const cols = document.createElement('div');
-            cols.className = 'tlw-cols';
-
-            if (projectEvents.length === 0) {
-                const empty = document.createElement('div');
-                empty.className = 'tlw-empty';
-                empty.innerHTML = '<div class="tlw-empty-icon">📅</div><div class="tlw-empty-text">点击任意日期格子添加事件</div>';
-                cols.appendChild(empty);
-            }
-
-            days.forEach(day => {
-                const col = document.createElement('div');
-                col.className = 'tlw-dcol' + (tlSameDay(day,today) ? ' tlw-today' : '');
-                col.addEventListener('click', () => tlOpenModal(null, tlDayStr(day)));
-
-                const dayEvs = singleDay
-                    .filter(ev => tlSameDay(tlDateOnly(ev.start), day))
-                    .sort((a,b) => a.start-b.start);
-
-                dayEvs.forEach(ev => {
-                    const el = document.createElement('div');
-                    el.className = 'tlw-event' + (ev.id===tlState.selectedId ? ' tlw-sel' : '');
-                    el.style.background = ev.color;
-                    const hasTime = ev.start.getHours() !== 0 || ev.start.getMinutes() !== 0;
-                    el.textContent = hasTime ? `${tlFormatTime(ev.start)} ${ev.title}` : ev.title;
-                    el.addEventListener('click', e => { e.stopPropagation(); tlSelectEvent(ev.id); });
-                    col.appendChild(el);
-                });
-
-                cols.appendChild(col);
-            });
-            body.appendChild(cols);
+        function renderTlRangeEvent(ev, x1, W) {
+            const x2 = tlDateToX(ev.end);
+            const left = Math.max(0,x1), right = Math.min(W,x2);
+            if (right <= left) return;
+            const el = document.createElement('div');
+            el.className = 'tl-event-range';
+            el.style.left  = left + 'px'; el.style.width = (right-left) + 'px';
+            el.style.background = ev.color; el.textContent = ev.title; el.dataset.id = ev.id;
+            if (ev.id === tlState.selectedId) el.style.outline = '2px solid white';
+            el.addEventListener('click', e => { e.stopPropagation(); tlSelectEvent(ev.id); });
+            tlEventsBottom.appendChild(el);
         }
 
         function tlSelectEvent(id) {
-            // 如果再次点击同一项则关闭面板
-            if (tlState.selectedId === id) { tlClosePanel(); return; }
             tlState.selectedId = id;
             const ev = tlState.events.find(e => e.id === id);
             if (!ev) return;
             document.getElementById('tl-panel-color-bar').style.background = ev.color;
             document.getElementById('tl-panel-date').textContent = ev.end
-                ? `${tlFormatDateTime(ev.start)} — ${tlFormatDateTime(ev.end)}`
-                : tlFormatDateTime(ev.start);
+                ? `${tlFormatDate(ev.start)} — ${tlFormatDate(ev.end)}`
+                : tlFormatDate(ev.start);
             document.getElementById('tl-panel-title').textContent = ev.title;
             document.getElementById('tl-panel-desc').textContent  = ev.desc || '（无描述）';
             tlDetailPanel.classList.add('visible');
-            // 更新日历高亮
-            document.querySelectorAll('.tlw-event, .tlw-md-event').forEach(el => {
-                el.classList.toggle('tlw-sel', el.closest('[data-id]')?.dataset.id === id || el.dataset?.id === id);
-            });
+            renderTimeline();
         }
 
         function tlClosePanel() {
             tlState.selectedId = null;
             tlDetailPanel.classList.remove('visible');
-            document.querySelectorAll('.tlw-event, .tlw-md-event').forEach(el => el.classList.remove('tlw-sel'));
+            renderTimeline();
         }
 
         function tlFormatDate(d) {
@@ -3902,27 +3833,13 @@
             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         }
 
-        function tlFormatTime(d) {
-            if (!d) return '';
-            return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        }
-
-        function tlFormatDateTime(d) {
-            if (!d) return '';
-            const h = d.getHours(), m = d.getMinutes();
-            if (h === 0 && m === 0) return tlFormatDate(d);
-            return `${tlFormatDate(d)} ${tlFormatTime(d)}`;
-        }
-
-        function tlOpenModal(editId=null, defaultDate=null) {
+        function tlOpenModal(editId=null) {
             tlState.editingId = editId;
             const ev = editId ? tlState.events.find(e => e.id===editId) : null;
             document.getElementById('tl-modal-title').textContent = ev ? '编辑事件' : '添加事件';
             document.getElementById('tl-input-title').value = ev ? ev.title : '';
-            document.getElementById('tl-input-start').value = ev ? tlFormatDate(ev.start) : (defaultDate || tlFormatDate(new Date()));
-            document.getElementById('tl-input-start-time').value = ev ? tlFormatTime(ev.start) : tlFormatTime(new Date());
+            document.getElementById('tl-input-start').value = ev ? tlFormatDate(ev.start) : tlFormatDate(new Date());
             document.getElementById('tl-input-end').value   = ev && ev.end ? tlFormatDate(ev.end) : '';
-            document.getElementById('tl-input-end-time').value   = ev && ev.end ? tlFormatTime(ev.end) : '';
             document.getElementById('tl-input-desc').value  = ev ? (ev.desc||'') : '';
             const color = ev ? ev.color : '#4f8ef7';
             tlState.selectedColor = color;
@@ -3943,11 +3860,9 @@
             const startVal = document.getElementById('tl-input-start').value;
             if (!title) { tlShake(document.getElementById('tl-input-title')); return; }
             if (!startVal) { tlShake(document.getElementById('tl-input-start')); return; }
-            const startTimeVal = document.getElementById('tl-input-start-time').value;
-            const start = new Date(startVal + 'T' + (startTimeVal || '00:00') + ':00');
+            const start = new Date(startVal + 'T00:00:00');
             const endVal = document.getElementById('tl-input-end').value;
-            const endTimeVal = document.getElementById('tl-input-end-time').value;
-            const end = endVal ? new Date(endVal + 'T' + (endTimeVal || '00:00') + ':00') : null;
+            const end = endVal ? new Date(endVal + 'T00:00:00') : null;
             const desc = document.getElementById('tl-input-desc').value.trim();
             const color = tlState.selectedColor;
             if (tlState.editingId) {
@@ -3957,9 +3872,8 @@
                     if (tlState.selectedId === tlState.editingId) tlSelectEvent(tlState.editingId);
                 }
             } else {
-                tlState.events.push({ id: Date.now()+Math.random(), title, start, end, desc, color, project: tlState.currentProject });
-                // 跳转到事件所在周
-                tlWeekStart = tlGetWeekStart(start);
+                tlState.events.push({ id: Date.now()+Math.random(), title, start, end, desc, color });
+                tlCenterOnDate(start);
             }
             await saveUserData();
             tlCloseModal();
@@ -3972,17 +3886,44 @@
             setTimeout(() => { el.style.animation = ''; }, 400);
         }
 
+        function tlZoom(factor) {
+            const center = new Date((tlState.viewStart.getTime()+tlState.viewEnd.getTime())/2);
+            const half = (tlState.viewEnd-tlState.viewStart)/2 * factor;
+            const clamped = Math.max(MS_DAY*7, Math.min(MS_DAY*365*100, half));
+            tlState.viewStart = new Date(center.getTime()-clamped);
+            tlState.viewEnd   = new Date(center.getTime()+clamped);
+            renderTimeline();
+        }
+
+        function tlPan(dx) {
+            const total = tlState.viewEnd - tlState.viewStart;
+            const dt = -(dx/tlGetContainerWidth())*total;
+            tlState.viewStart = new Date(tlState.viewStart.getTime()+dt);
+            tlState.viewEnd   = new Date(tlState.viewEnd.getTime()+dt);
+            renderTimeline();
+        }
+
+        function tlGoToToday() {
+            const t = new Date(); t.setHours(0,0,0,0); tlCenterOnDate(t);
+        }
+
+        function tlCenterOnDate(date) {
+            const half = (tlState.viewEnd-tlState.viewStart)/2;
+            tlState.viewStart = new Date(date.getTime()-half);
+            tlState.viewEnd   = new Date(date.getTime()+half);
+            renderTimeline();
+        }
+
+        function tlUpdateUI() {
+            if (tlEmptyHint)
+                tlEmptyHint.classList.toggle('hidden', tlState.events.length > 0);
+        }
+
         function bindTimelineEvents() {
+            document.getElementById('tl-btn-zoom-in').addEventListener('click', () => tlZoom(0.5));
+            document.getElementById('tl-btn-zoom-out').addEventListener('click', () => tlZoom(2));
+            document.getElementById('tl-btn-today').addEventListener('click', tlGoToToday);
             document.getElementById('tl-btn-add-event').addEventListener('click', () => tlOpenModal());
-            document.getElementById('tlw-prev').addEventListener('click', () => {
-                tlWeekStart = new Date(tlWeekStart); tlWeekStart.setDate(tlWeekStart.getDate()-7); renderTlWeek();
-            });
-            document.getElementById('tlw-next').addEventListener('click', () => {
-                tlWeekStart = new Date(tlWeekStart); tlWeekStart.setDate(tlWeekStart.getDate()+7); renderTlWeek();
-            });
-            document.getElementById('tlw-today').addEventListener('click', () => {
-                const t = new Date(); t.setHours(0,0,0,0); tlWeekStart = tlGetWeekStart(t); renderTlWeek();
-            });
             document.getElementById('tl-panel-close').addEventListener('click', tlClosePanel);
             document.getElementById('tl-panel-edit').addEventListener('click', () => {
                 if (tlState.selectedId) tlOpenModal(tlState.selectedId);
@@ -3990,17 +3931,13 @@
             document.getElementById('tl-panel-delete').addEventListener('click', async () => {
                 if (tlState.selectedId) {
                     tlState.events = tlState.events.filter(e => e.id !== tlState.selectedId);
-                    await saveUserData(); tlClosePanel(); renderTlWeek();
+                    await saveUserData(); tlClosePanel(); renderTimeline();
                 }
             });
             document.getElementById('tl-modal-close').addEventListener('click', tlCloseModal);
             document.getElementById('tl-btn-cancel').addEventListener('click', tlCloseModal);
             document.getElementById('tl-btn-save').addEventListener('click', tlSaveModal);
-            tlModalOverlay.addEventListener('click', e => { if (e.target === tlModalOverlay) tlCloseModal(); });
-            document.getElementById('tl-project-modal-close').addEventListener('click', tlCloseProjectModal);
-            document.getElementById('tl-project-btn-cancel').addEventListener('click', tlCloseProjectModal);
-            document.getElementById('tl-project-btn-save').addEventListener('click', tlSaveProjectModal);
-            tlProjectModalOverlay.addEventListener('click', e => { if (e.target === tlProjectModalOverlay) tlCloseProjectModal(); });
+            tlModalOverlay.addEventListener('click', e => { if (e.target===tlModalOverlay) tlCloseModal(); });
             document.querySelectorAll('.tl-color-swatch').forEach(sw => {
                 sw.addEventListener('click', () => {
                     document.querySelectorAll('.tl-color-swatch').forEach(s => s.classList.remove('selected'));
@@ -4009,134 +3946,76 @@
                 });
             });
             document.addEventListener('keydown', e => {
-                if (e.key === 'Escape') {
+                const inInput = ['INPUT','TEXTAREA'].includes(document.activeElement?.tagName);
+                if (e.key==='Escape') {
                     if (tlModalOverlay.classList.contains('visible')) { tlCloseModal(); return; }
-                    if (tlProjectModalOverlay.classList.contains('visible')) { tlCloseProjectModal(); return; }
                     if (tlState.selectedId) { tlClosePanel(); return; }
                 }
-                if (e.key === 'Enter' && tlModalOverlay.classList.contains('visible')) tlSaveModal();
-                if (e.key === 'Enter' && tlProjectModalOverlay.classList.contains('visible')) tlSaveProjectModal();
+                if (!inInput && (e.key==='+'||e.key==='=')) tlZoom(0.5);
+                if (!inInput && e.key==='-') tlZoom(2);
+                if (e.key==='Enter' && tlModalOverlay.classList.contains('visible')) tlSaveModal();
             });
+            tlTrackWrapper.addEventListener('mousedown', e => {
+                if (e.button!==0) return;
+                tlState.isDragging = true; tlState.dragStartX = e.clientX;
+                tlState.dragStartMs = tlState.viewStart.getTime();
+                tlTrackWrapper.style.cursor = 'grabbing';
+            });
+            document.addEventListener('mousemove', e => {
+                if (!tlState.isDragging) return;
+                const dx = e.clientX - tlState.dragStartX;
+                const total = tlState.viewEnd - tlState.viewStart;
+                const dt = -(dx/tlGetContainerWidth())*total;
+                tlState.viewStart = new Date(tlState.dragStartMs+dt);
+                tlState.viewEnd   = new Date(tlState.dragStartMs+dt+total);
+                renderTimeline();
+            });
+            document.addEventListener('mouseup', () => {
+                tlState.isDragging = false;
+                tlTrackWrapper.style.cursor = 'grab';
+            });
+            tlTrackWrapper.addEventListener('click', e => {
+                if (e.target===tlTrackWrapper || e.target.classList.contains('tl-track-inner') ||
+                    e.target.classList.contains('tl-events-top') || e.target.classList.contains('tl-events-bottom') ||
+                    e.target.classList.contains('tl-axis-line-wrapper') || e.target.classList.contains('tl-axis-line')) {
+                    tlClosePanel();
+                }
+            });
+            tlRuler.parentElement.addEventListener('wheel', e => {
+                e.preventDefault(); tlZoom(e.deltaY>0?1.2:0.83);
+            }, { passive: false });
+            tlTrackWrapper.addEventListener('wheel', e => {
+                e.preventDefault();
+                if (e.ctrlKey||e.metaKey) tlZoom(e.deltaY>0?1.2:0.83);
+                else tlPan(e.deltaY*2);
+            }, { passive: false });
+            let touchStartX=0, touchStartMs=0, lastTouchDist=0;
+            tlTrackWrapper.addEventListener('touchstart', e => {
+                if (e.touches.length===1) { touchStartX=e.touches[0].clientX; touchStartMs=tlState.viewStart.getTime(); }
+                else if (e.touches.length===2) {
+                    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+                    lastTouchDist=Math.hypot(dx,dy);
+                }
+            }, { passive: true });
+            tlTrackWrapper.addEventListener('touchmove', e => {
+                if (e.touches.length===1) {
+                    const dx=e.touches[0].clientX-touchStartX, total=tlState.viewEnd-tlState.viewStart;
+                    const dt=-(dx/tlGetContainerWidth())*total;
+                    tlState.viewStart=new Date(touchStartMs+dt); tlState.viewEnd=new Date(touchStartMs+dt+total);
+                    renderTimeline();
+                } else if (e.touches.length===2) {
+                    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+                    const dist=Math.hypot(dx,dy);
+                    if (lastTouchDist>0) tlZoom(lastTouchDist/dist);
+                    lastTouchDist=dist;
+                }
+            }, { passive: true });
+            window.addEventListener('resize', renderTimeline);
 
             // Inject shake keyframe
             const sty = document.createElement('style');
             sty.textContent = `@keyframes tlShakeAnim { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }`;
             document.head.appendChild(sty);
-        }
-
-        // ===== JOURNAL =====
-        function journalTodayKeyFn() {
-            const d = new Date();
-            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        }
-
-        function formatJournalDate(key) {
-            const [y, m, d] = key.split('-').map(Number);
-            const date = new Date(y, m - 1, d);
-            const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
-            return `${y}年${m}月${d}日  ${weekdays[date.getDay()]}`;
-        }
-
-        function setupJournal() {
-            journalTodayKey = journalTodayKeyFn();
-            document.getElementById('journal-today-label').textContent = formatJournalDate(journalTodayKey);
-
-            const textarea = document.getElementById('journal-textarea');
-            const todayEntry = journal[journalTodayKey];
-            if (todayEntry) {
-                textarea.value = todayEntry.text || '';
-                journalUpdateWordCount(textarea.value);
-                if (todayEntry.mood) {
-                    document.querySelectorAll('.journal-mood-btn').forEach(btn => {
-                        btn.classList.toggle('selected', btn.dataset.mood === todayEntry.mood);
-                    });
-                }
-                if (todayEntry.text) {
-                    const s = document.getElementById('journal-save-status');
-                    s.textContent = '已同步 ✓'; s.className = 'journal-save-status saved';
-                }
-            }
-
-            textarea.addEventListener('input', () => {
-                journalUpdateWordCount(textarea.value);
-                const s = document.getElementById('journal-save-status');
-                s.textContent = '编辑中...'; s.className = 'journal-save-status';
-                clearTimeout(journalSaveTimer);
-                journalSaveTimer = setTimeout(journalSaveToday, 1500);
-            });
-
-            document.querySelectorAll('.journal-mood-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const wasSelected = btn.classList.contains('selected');
-                    document.querySelectorAll('.journal-mood-btn').forEach(b => b.classList.remove('selected'));
-                    if (!wasSelected) btn.classList.add('selected');
-                    clearTimeout(journalSaveTimer);
-                    journalSaveTimer = setTimeout(journalSaveToday, 600);
-                });
-            });
-
-            renderJournalPastEntries();
-        }
-
-        function journalUpdateWordCount(text) {
-            document.getElementById('journal-wordcount').textContent = (text.trim().length || 0) + ' 字';
-        }
-
-        async function journalSaveToday() {
-            const text = document.getElementById('journal-textarea').value;
-            const selectedMood = document.querySelector('.journal-mood-btn.selected');
-            const mood = selectedMood ? selectedMood.dataset.mood : '';
-            const s = document.getElementById('journal-save-status');
-            s.textContent = '保存中...'; s.className = 'journal-save-status saving';
-            journal[journalTodayKey] = { text, mood, updatedAt: new Date().toISOString() };
-            await saveUserData();
-            s.textContent = '已保存 ✓'; s.className = 'journal-save-status saved';
-            renderJournalPastEntries();
-        }
-
-        function renderJournalPastEntries() {
-            const list = document.getElementById('journal-past-list');
-            if (!list) return;
-            const today = journalTodayKey || journalTodayKeyFn();
-            const pastKeys = Object.keys(journal)
-                .filter(k => k !== today && journal[k] && journal[k].text)
-                .sort((a, b) => b.localeCompare(a));
-
-            if (pastKeys.length === 0) {
-                list.innerHTML = '<div class="journal-empty">还没有往日记录，坚持写下去吧 ✨</div>';
-                return;
-            }
-
-            list.innerHTML = '';
-            pastKeys.forEach(key => {
-                const entry = journal[key];
-                const preview = entry.text.replace(/\n/g,' ').slice(0,60) + (entry.text.length > 60 ? '...' : '');
-                const card = document.createElement('div');
-                card.className = 'journal-past-card';
-                card.innerHTML = `
-                    <div class="journal-past-header">
-                        <div class="journal-past-date">${formatJournalDate(key)}</div>
-                        <div class="journal-past-right">
-                            ${entry.mood ? `<span class="journal-past-mood">${entry.mood}</span>` : ''}
-                            <span class="journal-past-preview">${escapeHtml(preview)}</span>
-                            <span class="journal-past-toggle">▼</span>
-                        </div>
-                    </div>
-                    <div class="journal-past-body">
-                        <div class="journal-past-text">${escapeHtml(entry.text)}</div>
-                    </div>
-                `;
-                const header = card.querySelector('.journal-past-header');
-                const body   = card.querySelector('.journal-past-body');
-                const toggle = card.querySelector('.journal-past-toggle');
-                const previewEl = card.querySelector('.journal-past-preview');
-                header.addEventListener('click', () => {
-                    const open = body.classList.toggle('open');
-                    toggle.textContent = open ? '▲' : '▼';
-                    previewEl.style.display = open ? 'none' : '';
-                });
-                list.appendChild(card);
-            });
         }
 
         // ===== TODOS =====
@@ -4226,6 +4105,7 @@
             });
         }
     </script>
-</body>
 
-</html>
+
+
+</body></html>

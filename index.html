@@ -159,7 +159,8 @@
             gap: 0.5rem;
         }
 
-        .logout-btn {
+        .logout-btn,
+        .data-action-btn {
             background: none;
             border: none;
             color: var(--text-secondary);
@@ -170,7 +171,8 @@
             transition: all 0.3s ease;
         }
 
-        .logout-btn:hover {
+        .logout-btn:hover,
+        .data-action-btn:hover {
             background: rgba(255, 255, 255, 0.1);
             color: var(--text-primary);
         }
@@ -1555,6 +1557,9 @@
             <span id="syncText">已同步</span>
             <div class="user-info">
                 <span id="userEmail"></span>
+                <button class="data-action-btn" id="exportDataBtn" title="下载全部数据的 JSON 备份">导出</button>
+                <button class="data-action-btn" id="importDataBtn" title="从 JSON 备份恢复数据">导入</button>
+                <input type="file" id="importDataInput" accept="application/json,.json" hidden>
                 <button class="logout-btn" id="logoutBtn">登出</button>
             </div>
         </div>
@@ -3235,6 +3240,116 @@
             initTimeline();
             renderTodos();
             setupTodoHandlers();
+            setupImportExport();
+        }
+
+        // 导入 / 导出完整用户数据
+        function serializeUserData() {
+            return {
+                format: 'front-page-backup',
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                data: {
+                    bookmarks,
+                    quickLinks,
+                    events: tlState.events.map(event => ({
+                        ...event,
+                        start: event.start instanceof Date ? event.start.toISOString() : event.start,
+                        end: event.end instanceof Date ? event.end.toISOString() : (event.end || null)
+                    })),
+                    tlProjects: tlState.projects,
+                    todos,
+                    journal
+                }
+            };
+        }
+
+        function exportUserData() {
+            const backup = serializeUserData();
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            const date = new Date().toISOString().slice(0, 10);
+            link.href = url;
+            link.download = `front-page-backup-${date}.json`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+            updateSyncStatus('synced', '已导出');
+        }
+
+        function validateImportData(parsed) {
+            if (!parsed || parsed.format !== 'front-page-backup' || parsed.version !== 1 || !parsed.data) {
+                throw new Error('这不是有效的 Front Page 备份文件');
+            }
+
+            const data = parsed.data;
+            if (!Array.isArray(data.bookmarks) || !Array.isArray(data.quickLinks) ||
+                !Array.isArray(data.events) || !Array.isArray(data.tlProjects) ||
+                !Array.isArray(data.todos) || !data.journal || typeof data.journal !== 'object' || Array.isArray(data.journal)) {
+                throw new Error('备份文件的数据结构不完整');
+            }
+
+            const events = data.events.map(event => {
+                const start = new Date(event.start);
+                const end = event.end ? new Date(event.end) : null;
+                if (Number.isNaN(start.getTime()) || (end && Number.isNaN(end.getTime()))) {
+                    throw new Error('备份中包含无效的时间轴日期');
+                }
+                return { ...event, start, end };
+            });
+
+            return { ...data, events };
+        }
+
+        async function importUserData(file) {
+            if (!file) return;
+            if (file.size > 10 * 1024 * 1024) throw new Error('备份文件不能超过 10 MB');
+
+            const parsed = JSON.parse(await file.text());
+            const data = validateImportData(parsed);
+            if (!confirm('导入将覆盖当前账号的全部书签、快捷链接、时间轴、待办和日记。确定继续吗？')) return;
+
+            bookmarks = data.bookmarks;
+            quickLinks = data.quickLinks;
+            tlState.events = data.events;
+            tlState.projects = data.tlProjects.length ? data.tlProjects : [TL_DEFAULT_PROJECT];
+            if (!tlState.projects.some(project => project.id === tlState.currentProject)) {
+                tlState.currentProject = tlState.projects[0].id;
+            }
+            todos = data.todos;
+            journal = data.journal;
+
+            await saveUserData();
+            renderQuickLinks();
+            setupCategoryFilters();
+            renderTimeline();
+            renderTodos();
+            if (document.getElementById('tab-journal').classList.contains('active')) renderJournalPastEntries();
+            updateSyncStatus('synced', '导入成功');
+        }
+
+        function setupImportExport() {
+            const exportBtn = document.getElementById('exportDataBtn');
+            const importBtn = document.getElementById('importDataBtn');
+            const fileInput = document.getElementById('importDataInput');
+            if (exportBtn.dataset.ready) return;
+            exportBtn.dataset.ready = 'true';
+
+            exportBtn.addEventListener('click', exportUserData);
+            importBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', async () => {
+                try {
+                    await importUserData(fileInput.files[0]);
+                } catch (error) {
+                    console.error('导入数据错误:', error);
+                    updateSyncStatus('offline', '导入失败');
+                    alert('导入失败：' + (error instanceof SyntaxError ? '文件不是有效的 JSON' : error.message));
+                } finally {
+                    fileInput.value = '';
+                }
+            });
         }
 
         // 搜索功能

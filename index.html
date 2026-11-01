@@ -654,9 +654,9 @@
         }
 
         .bookmarks-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.75rem;
         }
 
         .bookmark-card {
@@ -926,7 +926,7 @@
             }
 
             .bookmarks-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
 
@@ -1032,6 +1032,10 @@
             }
 
             /* 书签部分 */
+            .bookmarks-grid {
+                grid-template-columns: 1fr;
+            }
+
             .section-header {
                 flex-direction: column;
                 align-items: flex-start;

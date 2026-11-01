@@ -2164,6 +2164,7 @@
         let journalTodayKey = '';
         let journalInitialized = false;
         let uiInitialized = false;
+        let loginPending = false;
         const APPEARANCE_KEY = 'front-page-appearance';
         const DEFAULT_APPEARANCE = { theme: 'purple', motion: true, glass: 'balanced', density: 'comfortable' };
         let appearanceSettings = { ...DEFAULT_APPEARANCE };
@@ -2184,38 +2185,68 @@
         let tlCurrentView = ['week', 'month', 'list'].includes(localStorage.getItem('front-page-timeline-view'))
             ? localStorage.getItem('front-page-timeline-view') : 'week';
 
+        function setLoginPendingState(isLoading, label = '登录中...') {
+            const loginButtons = document.querySelectorAll('.login-btn');
+            loginButtons.forEach(button => {
+                button.disabled = isLoading;
+                button.style.opacity = isLoading ? '0.7' : '1';
+                button.style.cursor = isLoading ? 'wait' : 'pointer';
+            });
+
+            const loginError = document.getElementById('loginError');
+            if (loginError) {
+                if (isLoading) {
+                    loginError.textContent = label;
+                    loginError.style.color = '#fbbf24';
+                } else {
+                    loginError.textContent = '';
+                    loginError.style.color = '#f5576c';
+                }
+            }
+        }
+
         // 立即绑定登录按钮 - 在页面加载时就绑定
         document.addEventListener('DOMContentLoaded', () => {
             const googleLoginBtn = document.getElementById('googleLoginBtn');
             const anonymousLoginBtn = document.getElementById('anonymousLoginBtn');
 
-            if (googleLoginBtn) {
-                googleLoginBtn.addEventListener('click', async () => {
-                    console.log('🔐 点击了Google登录按钮');
-                    const provider = new GoogleAuthProvider();
-                    try {
-                        document.getElementById('loginError').textContent = '';
-                        console.log('📡 正在调用Firebase登录...');
-                        await signInWithPopup(auth, provider);
-                    } catch (error) {
-                        console.error('❌ 登录错误:', error);
-                        document.getElementById('loginError').textContent = '登录失败: ' + error.message;
+            const handleAuthLogin = async (loginFn, mode) => {
+                if (loginPending) return;
+                loginPending = true;
+                setLoginPendingState(true, mode === 'google' ? 'Google 登录中...' : '匿名登录中...');
+
+                try {
+                    const loginError = document.getElementById('loginError');
+                    if (loginError) {
+                        loginError.textContent = '';
                     }
-                });
+                    console.log(mode === 'google' ? '🔐 点击了Google登录按钮' : '👤 点击了匿名登录按钮');
+                    await loginFn();
+                } catch (error) {
+                    console.error('❌ 登录错误:', error);
+                    const loginError = document.getElementById('loginError');
+                    if (loginError) {
+                        loginError.textContent = '登录失败: ' + (error?.message || '未知错误');
+                    }
+                } finally {
+                    loginPending = false;
+                    setLoginPendingState(false);
+                }
+            };
+
+            if (googleLoginBtn) {
+                googleLoginBtn.addEventListener('click', () => handleAuthLogin(async () => {
+                    const provider = new GoogleAuthProvider();
+                    console.log('📡 正在调用Firebase登录...');
+                    await signInWithPopup(auth, provider);
+                }, 'google'));
             }
 
             if (anonymousLoginBtn) {
-                anonymousLoginBtn.addEventListener('click', async () => {
-                    console.log('👤 点击了匿名登录按钮');
-                    try {
-                        document.getElementById('loginError').textContent = '';
-                        console.log('📡 正在调用Firebase匿名登录...');
-                        await signInAnonymously(auth);
-                    } catch (error) {
-                        console.error('❌ 登录错误:', error);
-                        document.getElementById('loginError').textContent = '登录失败: ' + error.message;
-                    }
-                });
+                anonymousLoginBtn.addEventListener('click', () => handleAuthLogin(async () => {
+                    console.log('📡 正在调用Firebase匿名登录...');
+                    await signInAnonymously(auth);
+                }, 'anonymous'));
             }
         });
 
@@ -3698,79 +3729,62 @@
 
         // 天气功能
         async function setupWeather() {
-            try {
-                // 使用免费的天气API
-                const response = await fetch('https://wttr.in/?format=j1');
-                const data = await response.json();
-
-                const current = data.current_condition[0];
-                const location = data.nearest_area[0];
-                
-                document.getElementById('weatherCity').textContent = location.areaName[0].value || '当前位置';
-                document.getElementById('weatherDesc').textContent = current.weatherDesc[0].value || current.lang_zh[0].value || '晴朗';
-                document.getElementById('weatherTemp').textContent = current.temp_C + '°';
-
-                // 天气图标映射
-                const weatherCode = current.weatherCode;
-                const iconMap = {
-                    '113': '☀️',  // 晴天
-                    '116': '⛅',  // 局部多云
-                    '119': '☁️',  // 多云
-                    '122': '☁️',  // 阴天
-                    '143': '🌫️',  // 雾
-                    '176': '🌦️',  // 局部小雨
-                    '179': '🌨️',  // 局部小雪
-                    '182': '🌧️',  // 冻雨
-                    '185': '🌧️',  // 冻毛毛雨
-                    '200': '⛈️',  // 雷暴
-                    '227': '🌨️',  // 暴风雪
-                    '230': '🌨️',  // 暴风雪
-                    '248': '🌫️',  // 大雾
-                    '260': '🌫️',  // 冰雾
-                    '263': '🌦️',  // 小雨
-                    '266': '🌧️',  // 小雨
-                    '281': '🌧️',  // 冻毛毛雨
-                    '284': '🌧️',  // 强冻毛毛雨
-                    '293': '🌧️',  // 小雨
-                    '296': '🌧️',  // 小雨
-                    '299': '🌧️',  // 中雨
-                    '302': '🌧️',  // 中雨
-                    '305': '🌧️',  // 大雨
-                    '308': '⛈️',  // 暴雨
-                    '311': '🌧️',  // 冻雨
-                    '314': '🌧️',  // 冻雨
-                    '317': '🌨️',  // 雨夹雪
-                    '320': '🌨️',  // 雨夹雪
-                    '323': '🌨️',  // 小雪
-                    '326': '🌨️',  // 小雪
-                    '329': '🌨️',  // 中雪
-                    '332': '🌨️',  // 中雪
-                    '335': '❄️',  // 大雪
-                    '338': '❄️',  // 暴雪
-                    '350': '🌧️',  // 冰雹
-                    '353': '🌦️',  // 小阵雨
-                    '356': '🌧️',  // 中到大阵雨
-                    '359': '⛈️',  // 暴雨
-                    '362': '🌨️',  // 雨夹雪
-                    '365': '🌨️',  // 雨夹雪
-                    '368': '🌨️',  // 小阵雪
-                    '371': '❄️',  // 中到大阵雪
-                    '374': '🌧️',  // 冰雹
-                    '377': '🌧️',  // 冰雹
-                    '386': '⛈️',  // 雷阵雨
-                    '389': '⛈️',  // 雷阵雨
-                    '392': '⛈️',  // 雷阵雪
-                    '395': '⛈️'   // 雷阵雪
-                };
-                
-                document.getElementById('weatherIcon').textContent = iconMap[weatherCode] || '🌤️';
-            } catch (error) {
-                console.log('天气获取失败，使用默认信息:', error);
-                // 优雅降级 - 显示默认信息
+            const fallbackWeather = () => {
                 document.getElementById('weatherCity').textContent = '欢迎使用';
                 document.getElementById('weatherDesc').textContent = '云端同步书签';
                 document.getElementById('weatherTemp').textContent = '😊';
                 document.getElementById('weatherIcon').textContent = '📚';
+            };
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 700);
+
+                try {
+                    const response = await fetch('https://wttr.in/?format=j1', {
+                        signal: controller.signal,
+                        cache: 'no-store'
+                    });
+                    const data = await response.json();
+
+                    if (!data || !data.current_condition || !data.current_condition[0]) {
+                        fallbackWeather();
+                        return;
+                    }
+
+                    const current = data.current_condition[0];
+                    const location = data.nearest_area && data.nearest_area[0] ? data.nearest_area[0] : null;
+
+                    const weatherCity = location && location.areaName && location.areaName[0]
+                        ? location.areaName[0].value || '当前位置'
+                        : '当前位置';
+                    const weatherDesc = current.weatherDesc && current.weatherDesc[0]
+                        ? current.weatherDesc[0].value
+                        : (current.lang_zh && current.lang_zh[0] ? current.lang_zh[0].value : '晴朗');
+
+                    document.getElementById('weatherCity').textContent = weatherCity;
+                    document.getElementById('weatherDesc').textContent = weatherDesc;
+                    document.getElementById('weatherTemp').textContent = current.temp_C + '°';
+
+                    const weatherCode = current.weatherCode;
+                    const iconMap = {
+                        '113': '☀️', '116': '⛅', '119': '☁️', '122': '☁️', '143': '🌫️', '176': '🌦️',
+                        '179': '🌨️', '182': '🌧️', '185': '🌧️', '200': '⛈️', '227': '🌨️', '230': '🌨️',
+                        '248': '🌫️', '260': '🌫️', '263': '🌦️', '266': '🌧️', '281': '🌧️', '284': '🌧️',
+                        '293': '🌧️', '296': '🌧️', '299': '🌧️', '302': '🌧️', '305': '🌧️', '308': '⛈️',
+                        '311': '🌧️', '314': '🌧️', '317': '🌨️', '320': '🌨️', '323': '🌨️', '326': '🌨️',
+                        '329': '🌨️', '332': '🌨️', '335': '❄️', '338': '❄️', '350': '🌧️', '353': '🌦️',
+                        '356': '🌧️', '359': '⛈️', '362': '🌨️', '365': '🌨️', '368': '🌨️', '371': '❄️',
+                        '374': '🌧️', '377': '🌧️', '386': '⛈️', '389': '⛈️', '392': '⛈️', '395': '⛈️'
+                    };
+
+                    document.getElementById('weatherIcon').textContent = iconMap[weatherCode] || '🌤️';
+                } finally {
+                    clearTimeout(timeoutId);
+                }
+            } catch (error) {
+                console.log('天气获取失败，使用默认信息:', error);
+                fallbackWeather();
             }
         }
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的书签导航 - 云同步版</title>
+    <title>书签</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
 
@@ -109,18 +109,11 @@
         }
 
         .login-card h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
+            display: none;
         }
 
         .login-card p {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
+            display: none;
         }
 
         .login-buttons {
@@ -266,9 +259,7 @@
         }
 
         .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeInDown 1s ease-out;
+            display: none;
         }
 
         .header h1 {
@@ -1326,6 +1317,26 @@
         }
         .tl-project-tab-del:hover { opacity: 1; background: rgba(0,0,0,0.25); }
         .tl-project-tab-add { background: none; border-style: dashed; color: var(--tl-text2); }
+        .tl-outlook-wrap {
+            width: 100%; height: 100%; display: flex; flex-direction: column; padding: 20px; gap: 12px;
+            background: var(--tl-bg); color: var(--tl-text);
+        }
+        .tl-outlook-header {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            background: var(--tl-bg2); border: 1px solid var(--tl-border); border-radius: 12px;
+            padding: 12px 16px;
+        }
+        .tl-outlook-title {
+            font-size: 16px; font-weight: 700; color: var(--tl-text);
+        }
+        .tl-outlook-link {
+            background: linear-gradient(135deg, #4f8ef7, #7b5cf0); color: #fff; padding: 8px 12px;
+            border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: 600;
+        }
+        .tl-outlook-iframe {
+            width: 100%; flex: 1; min-height: 600px; border: 1px solid var(--tl-border); border-radius: 12px;
+            background: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+        }
         .tl-project-tab-add:hover { color: var(--tl-accent); border-color: var(--tl-accent); }
         .tl-main-area { display: flex; flex: 1; overflow: hidden; }
         /* === WEEK CALENDAR === */
@@ -1670,8 +1681,8 @@
     <!-- Login Screen -->
     <div id="loginScreen" class="login-screen">
         <div class="login-card">
-            <h1>📚 我的书签导航</h1>
-            <p>云端同步，随时随地访问你的书签</p>
+            <h1 aria-hidden="true"></h1>
+            <p aria-hidden="true"></p>
             <div class="login-buttons">
                 <button class="login-btn google" id="googleLoginBtn">
                     <span>🔐</span>
@@ -1704,7 +1715,7 @@
 
         <!-- Tab Navigation -->
         <nav class="main-tabs">
-            <button class="main-tab active" data-tab="bookmarks">📚 书签导航</button>
+            <button class="main-tab active" data-tab="bookmarks">书签</button>
             <button class="main-tab" data-tab="timeline">⏱️ 时间轴</button>
             <button class="main-tab" data-tab="todos">✅ 待办清单</button>
             <button class="main-tab" data-tab="journal">📖 日记</button>
@@ -1714,10 +1725,7 @@
         <div class="tab-panel active" id="tab-bookmarks">
         <div class="container">
             <!-- Header -->
-            <div class="header">
-                <h1>📚 我的书签导航</h1>
-                <p>云端同步版 - 你的个人网址收藏夹</p>
-            </div>
+            <div class="header" aria-hidden="true"></div>
 
             <!-- Weather Widget -->
             <div class="weather-widget">
@@ -2114,6 +2122,10 @@
                         <option value="compact">紧凑</option>
                     </select>
                 </label>
+                <label class="setting-row">
+                    <span>书签网址<small>隐藏书签地址，界面更简洁</small></span>
+                    <input class="setting-switch" type="checkbox" id="hideBookmarkUrlSetting">
+                </label>
                 <button class="btn" id="resetAppearanceBtn" type="button">恢复默认外观</button>
             </div>
         </div>
@@ -2170,18 +2182,20 @@
         let uiInitialized = false;
         let loginPending = false;
         const APPEARANCE_KEY = 'front-page-appearance';
-        const DEFAULT_APPEARANCE = { theme: 'purple', motion: true, glass: 'balanced', density: 'comfortable' };
+        const DEFAULT_APPEARANCE = { theme: 'purple', motion: true, glass: 'balanced', density: 'comfortable', hideBookmarkUrl: false };
         let appearanceSettings = { ...DEFAULT_APPEARANCE };
 
         // Timeline state
         const MS_DAY = 86400000;
+        const OUTLOOK_MAIN_CALENDAR_URL = 'https://outlook.office365.com/owa/calendar/5639141975484bd38ed0c471182ee46c@bristol.ac.uk/953affcddc2c41b68c21d0da30f5508b9966075675113539858/calendar.html';
         const TL_DEFAULT_PROJECT = { id: 'default', name: '弹簧无人机', icon: '🚁' };
+        const TL_OUTLOOK_PROJECT = { id: 'outlook-main', name: '主日历', icon: '📅', isExternal: true };
         const tlState = {
             events: [], viewStart: null, viewEnd: null,
             selectedId: null, editingId: null,
             isDragging: false, dragStartX: 0, dragStartMs: 0,
             selectedColor: '#4f8ef7',
-            projects: [TL_DEFAULT_PROJECT], currentProject: TL_DEFAULT_PROJECT.id
+            projects: [TL_OUTLOOK_PROJECT, TL_DEFAULT_PROJECT], currentProject: TL_OUTLOOK_PROJECT.id
         };
         let tlDetailPanel, tlModalOverlay, tlProjectModalOverlay;
         let tlInitialized = false;
@@ -3376,7 +3390,11 @@
             bookmarks = Array.isArray(data.bookmarks) ? data.bookmarks : JSON.parse(JSON.stringify(defaultBookmarks));
             quickLinks = Array.isArray(data.quickLinks) ? data.quickLinks : JSON.parse(JSON.stringify(defaultQuickLinks));
             tlState.events = parseTlEvents(data.events);
-            tlState.projects = (Array.isArray(data.tlProjects) && data.tlProjects.length) ? data.tlProjects : [TL_DEFAULT_PROJECT];
+            const savedProjects = Array.isArray(data.tlProjects) ? data.tlProjects : [];
+            const mergedProjects = savedProjects.some(project => project.id === TL_OUTLOOK_PROJECT.id)
+                ? savedProjects
+                : [TL_OUTLOOK_PROJECT, ...savedProjects];
+            tlState.projects = mergedProjects.length ? mergedProjects : [TL_OUTLOOK_PROJECT, TL_DEFAULT_PROJECT];
             if (!tlState.projects.some(project => project.id === tlState.currentProject)) {
                 tlState.currentProject = tlState.projects[0].id;
             }
@@ -3524,9 +3542,11 @@
             const motionInput = document.getElementById('motionSetting');
             const glassInput = document.getElementById('glassSetting');
             const densityInput = document.getElementById('densitySetting');
+            const hideBookmarkUrlInput = document.getElementById('hideBookmarkUrlSetting');
             if (motionInput) motionInput.checked = appearanceSettings.motion;
             if (glassInput) glassInput.value = appearanceSettings.glass;
             if (densityInput) densityInput.value = appearanceSettings.density;
+            if (hideBookmarkUrlInput) hideBookmarkUrlInput.checked = !!appearanceSettings.hideBookmarkUrl;
         }
 
         function saveAppearanceSettings() {
@@ -3542,7 +3562,8 @@
                         theme: ['purple', 'ocean', 'sunset', 'forest'].includes(saved.theme) ? saved.theme : DEFAULT_APPEARANCE.theme,
                         motion: typeof saved.motion === 'boolean' ? saved.motion : DEFAULT_APPEARANCE.motion,
                         glass: ['clear', 'balanced', 'solid'].includes(saved.glass) ? saved.glass : DEFAULT_APPEARANCE.glass,
-                        density: ['comfortable', 'compact'].includes(saved.density) ? saved.density : DEFAULT_APPEARANCE.density
+                        density: ['comfortable', 'compact'].includes(saved.density) ? saved.density : DEFAULT_APPEARANCE.density,
+                        hideBookmarkUrl: typeof saved.hideBookmarkUrl === 'boolean' ? saved.hideBookmarkUrl : DEFAULT_APPEARANCE.hideBookmarkUrl
                     };
                 }
             } catch (error) {
@@ -3585,9 +3606,15 @@
                 appearanceSettings.density = event.target.value;
                 saveAppearanceSettings();
             });
+            document.getElementById('hideBookmarkUrlSetting').addEventListener('change', event => {
+                appearanceSettings.hideBookmarkUrl = event.target.checked;
+                saveAppearanceSettings();
+                renderBookmarks();
+            });
             document.getElementById('resetAppearanceBtn').addEventListener('click', () => {
                 appearanceSettings = { ...DEFAULT_APPEARANCE };
                 saveAppearanceSettings();
+                renderBookmarks();
             });
         }
 
@@ -3925,10 +3952,14 @@
                 card.className = 'bookmark-card';
 
                 const titleAttr = link.description ? ` title="${link.description.replace(/"/g, '&quot;')}"` : '';
+                const bookmarkUrlMarkup = appearanceSettings.hideBookmarkUrl
+                    ? ''
+                    : `<div class="bookmark-url">${link.url}</div>`;
+
                 card.innerHTML = `
                     <div class="bookmark-info"${titleAttr}>
                         <div class="bookmark-title">${link.name}</div>
-                        <div class="bookmark-url">${link.url}</div>
+                        ${bookmarkUrlMarkup}
                     </div>
                     <div class="bookmark-footer">
                         <a href="${link.url}" target="_blank" class="bookmark-link">访问</a>
@@ -4128,12 +4159,37 @@
             document.querySelectorAll('[data-tl-view]').forEach(button => {
                 button.classList.toggle('active', button.dataset.tlView === tlCurrentView);
             });
+            if (tlState.currentProject === TL_OUTLOOK_PROJECT.id) {
+                renderTlOutlookCalendar();
+                return;
+            }
             if (tlCurrentView === 'month') renderTlMonth();
             else if (tlCurrentView === 'list') renderTlList();
             else renderTlWeek();
         }
 
         function tlProjectOf(ev) { return ev.project || TL_DEFAULT_PROJECT.id; }
+
+        function renderTlOutlookCalendar() {
+            const body = document.getElementById('tlw-body');
+            if (!body) return;
+            body.className = 'tlw-body';
+            body.innerHTML = `
+                <div class="tl-outlook-wrap">
+                    <div class="tl-outlook-header">
+                        <div class="tl-outlook-title">📅 主日历</div>
+                        <a class="tl-outlook-link" href="${OUTLOOK_MAIN_CALENDAR_URL}" target="_blank" rel="noopener noreferrer">打开原始日历</a>
+                    </div>
+                    <iframe
+                        class="tl-outlook-iframe"
+                        src="${OUTLOOK_MAIN_CALENDAR_URL}"
+                        title="主日历"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        loading="lazy"
+                    ></iframe>
+                </div>
+            `;
+        }
 
         function renderTlProjectBar() {
             const bar = document.getElementById('tl-project-bar');
@@ -4143,7 +4199,7 @@
                 const tab = document.createElement('div');
                 tab.className = 'tl-project-tab' + (p.id === tlState.currentProject ? ' active' : '');
                 tab.innerHTML = `<span>${p.icon || '📌'}</span><span>${p.name}</span>` +
-                    (p.id !== TL_DEFAULT_PROJECT.id ? `<span class="tl-project-tab-del" title="删除图表">✕</span>` : '');
+                    (p.id !== TL_DEFAULT_PROJECT.id && p.id !== TL_OUTLOOK_PROJECT.id ? `<span class="tl-project-tab-del" title="删除图表">✕</span>` : '');
                 tab.addEventListener('click', (e) => {
                     if (e.target.classList.contains('tl-project-tab-del')) {
                         e.stopPropagation();
